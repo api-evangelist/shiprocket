@@ -1,0 +1,13 @@
+generated: '2026-09-18'
+method: searched
+source: https://apidocs.shiprocket.in/ ("Errors and Response codes")
+docs: https://apidocs.shiprocket.in/
+limit_count: 0
+notes: Shiprocket documents that 429 Too Many Requests is returned when "you have exceeded the API call rate limit"
+  but publishes no numeric limit, window or scope, and no rate-limit response headers (X-RateLimit-*, RateLimit-*,
+  Retry-After). Honest zero.
+exhaustion:
+  status: 429
+  message: You have exceeded the API call rate limit.
+  headers: []
+limits: []

@@ -1,0 +1,95 @@
+generated: '2026-09-18'
+method: searched
+source: registry.npmjs.org, pypi.org, packagist.org, rubygems.org, NuGet search, pkg.go.dev + github.com/bfrs +
+  apidocs.shiprocket.in
+notes: 'Shiprocket ships NO first-party API client SDK on any public registry; the docs steer developers to the
+  Postman collection and raw REST. The only first-party packages are the @bfrs/agentic-components UI library (npm,
+  published by ashish.gupta@shiprocket.com, author ''Shiprocket''; its GitHub repo is now private/404, the Vercel
+  showcase is live) and the shiprocket-mcp server (GitHub clone only). Everything else is community-maintained (official:
+  false); the newest community API client was last released in 2022. Because no official API client exists, no `SDKs`
+  pointer is emitted.'
+packages:
+- language: javascript
+  registry: npm
+  name: '@bfrs/agentic-components'
+  url: https://www.npmjs.com/package/@bfrs/agentic-components
+  install: npm install @bfrs/agentic-components
+  official: true
+  kind: ui-components
+  version: 0.8.2
+  published: '2026-09-14'
+  license: ISC
+  description: Shiprocket agentic component library and documentation showcase (embeddable UI, not an API client).
+  showcase: https://agentic-components.vercel.app/
+  repo: https://github.com/bfrs/agentic-components (404 — private or removed as of 2026-09-18)
+- language: typescript
+  registry: github
+  name: shiprocket-mcp
+  url: https://github.com/bfrs/shiprocket-mcp
+  install: git clone https://github.com/bfrs/shiprocket-mcp.git && npm install && npm run build
+  official: true
+  kind: mcp-server
+  version: 1.0.0
+  published: '2026-06-17'
+  note: version from package.json; date is the last push — not on a registry under Shiprocket's name
+- language: typescript
+  registry: npm
+  name: '@iflow-mcp/bfrs-shiprocket-mcp'
+  url: https://www.npmjs.com/package/@iflow-mcp/bfrs-shiprocket-mcp
+  install: npx -y @iflow-mcp/bfrs-shiprocket-mcp
+  official: false
+  kind: mcp-server
+  version: 1.0.0
+  published: '2026-02-10'
+  note: Third-party (iflow-mcp) republish of the official server; named in server.json of bfrs/shiprocket-mcp but
+    not published by Shiprocket
+- language: javascript
+  registry: npm
+  name: shiprocket
+  url: https://www.npmjs.com/package/shiprocket
+  install: npm install shiprocket
+  official: false
+  version: 1.2.2
+  published: '2022-06-25'
+- language: javascript
+  registry: npm
+  name: shiprocket-api
+  url: https://www.npmjs.com/package/shiprocket-api
+  install: npm install shiprocket-api
+  official: false
+  version: 1.1.4
+  published: '2022-01-17'
+- language: python
+  registry: pypi
+  name: shiprocket
+  url: https://pypi.org/project/shiprocket/
+  install: pip install shiprocket
+  official: false
+  version: 1.0.1
+  published: '2021-09-15'
+- language: php
+  registry: packagist
+  name: seshac/laravel-shiprocket-api
+  url: https://packagist.org/packages/seshac/laravel-shiprocket-api
+  install: composer require seshac/laravel-shiprocket-api
+  official: false
+  version: 2.0.0
+  published: '2021-12-12'
+- language: php
+  registry: packagist
+  name: rajathans/shiprocket-php
+  url: https://packagist.org/packages/rajathans/shiprocket-php
+  install: composer require rajathans/shiprocket-php
+  official: false
+  version: 1.0.0
+  published: '2018-04-03'
+absent:
+- registry: rubygems
+  name: shiprocket
+  status: 404
+- registry: nuget
+  query: shiprocket
+  result: no packages
+- registry: npm
+  name: '@shiprocket/sdk'
+  status: 404

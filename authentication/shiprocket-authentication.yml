@@ -1,0 +1,36 @@
+generated: '2026-09-18'
+method: searched
+source: openapi/shiprocket-api-openapi.yml + https://apidocs.shiprocket.in/ (Getting Started, Authentication API)
+docs: https://apidocs.shiprocket.in/
+summary:
+  types:
+  - http
+  style: login-for-JWT bearer
+  oauth2: false
+  openid: false
+  api_keys: false
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: 'JWT obtained from POST /v1/external/auth/login with an API user email + password. Sent as Authorization:
+    Bearer <token> on every other call.'
+  token_endpoint: https://apiv2.shiprocket.in/v1/external/auth/login
+  logout_endpoint: https://apiv2.shiprocket.in/v1/external/auth/logout
+  token_ttl: 10 days
+  sources:
+  - openapi/shiprocket-api-openapi.yml
+  - https://apidocs.shiprocket.in/
+credential_provisioning:
+  where: Shiprocket panel > Settings > API > Add New API User
+  steps:
+  - Create an API user with a unique email (must differ from the main login).
+  - 'Select the API modules the user may access ("Modules to Access") and whether buyer details are exposed ("Buyer''s
+    Details Access": Allowed / Not Allowed).'
+  - Copy the generated API password immediately — it is shown once.
+  - Exchange email + password at POST /v1/external/auth/login for the JWT.
+  scoping: module-level access per API user; no OAuth scopes
+  sandbox: none — the docs warn that any request with valid credentials affects live account data
+notes: No OAuth 2.0 or OpenID Connect on the logistics API. (The separate WordPress MCP endpoint on www.shiprocket.in
+  uses OAuth 2.1 with PKCE and scope "mcp" — see well-known/ and mcp/.)

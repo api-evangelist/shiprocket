@@ -64,5 +64,24 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Shiprocket is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Shiprocket (BigFoot Retail Solutions Pvt Ltd, formerly KartRocket) is India's largest eCommerce shipping and enablement platform, aggregating 25+ courier partners for D2C brands, SMEs and enterprise sellers. The public Shiprocket API (`apiv2.shiprocket.in/v1/external`) covers orders, courier serviceability and AWB assignment, pickups, labels/manifests, tracking, NDR, returns, products, listings, channels, inventory and account statements, and is published as a public Postman collection with a tracking webhook. An official open-source MCP server (`bfrs/shiprocket-mcp`) exposes ten of those flows to AI agents.
+
+- Website: https://www.shiprocket.in/
+- Developers: https://www.shiprocket.in/developers/
+- API documentation (Postman documenter): https://apidocs.shiprocket.in/
+- Status: https://status.shiprocket.in/
+- GitHub: https://github.com/bfrs
+
+## What is in this repository
+
+| Artifact | Method | Notes |
+|---|---|---|
+| `postman/shiprocket-api.postman_collection.json` | searched | the provider's public collection, verbatim (93 requests) |
+| `openapi/shiprocket-api-openapi.yml` | generated | faithful conversion of that collection (75 operations); Shiprocket publishes no first-party OpenAPI |
+| `well-known/` | probed | RFC 8414 + RFC 9728 OAuth metadata served on www.shiprocket.in for a WordPress MCP endpoint; everything else 404/403 |
+| `llms/shiprocket-llms.txt` | searched | verbatim `/llms.txt` |
+| `mcp/` | searched + derived | official stdio MCP server (tool schemas from source) and its crosswalk to the OpenAPI |
+| `asyncapi/shiprocket-tracking-webhooks.yml` | searched | the one documented webhook (tracking updates) |
+| `authentication/`, `conventions/`, `errors/`, `lifecycle/`, `conformance/`, `rate-limits/`, `plans/`, `packages/`, `components/`, `data-model/`, `overlays/`, `skills/`, `security/` | see each file's `method:` | |
+
+Note: `all/kartrocket` profiles the same company under its former brand name; see `x-duplicate-of` in `apis.yml`.

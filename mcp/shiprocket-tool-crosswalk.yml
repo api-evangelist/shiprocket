@@ -1,0 +1,292 @@
+generated: '2026-09-18'
+method: derived
+source: mcp/shiprocket-mcp.yml (tool -> REST calls read from src/mcp/tools.ts) + openapi/shiprocket-api-openapi.yml
+surfaces:
+  openapi:
+    path: openapi/shiprocket-api-openapi.yml
+    operations: 75
+    gated: false
+    note: generated from the public Postman collection
+  mcp:
+    url: null
+    mode: local-stdio
+    gated: false
+    note: tool schemas read from source; no hosted endpoint to introspect
+  graphql: null
+crosswalk:
+- tool: order_track
+  category: tracking
+  rest:
+  - getTrackingThroughAWB
+  binding: direct
+  confidence: high
+- tool: order_list
+  category: orders
+  rest:
+  - getAllOrders
+  binding: direct
+  confidence: high
+- tool: order_ship
+  category: shipping
+  rest:
+  - generateAWBForShipment
+  binding: direct
+  confidence: high
+  note: tool resolves order -> shipment_id first, then assigns the AWB; courier_id optional
+- tool: order_schedule_pickup
+  category: shipping
+  rest:
+  - requestForShipmentPickup
+  binding: direct
+  confidence: high
+- tool: order_cancel
+  category: orders
+  rest:
+  - cancelAnOrder
+  binding: direct
+  confidence: high
+- tool: order_create
+  category: orders
+  rest:
+  - createCustomOrder
+  binding: direct
+  confidence: high
+  note: flattened subset of the adhoc order body (one line item; billing = shipping)
+- tool: list_pickup_addresses
+  category: settings
+  rest:
+  - getAllPickupLocations
+  binding: direct
+  confidence: high
+- tool: generate_shipment_label
+  category: documents
+  rest:
+  - generateLabel
+  binding: direct
+  confidence: high
+- tool: estimated_delivery
+  category: serviceability
+  rest:
+  - getAllPickupLocations
+  binding: composite
+  confidence: medium
+  note: origin = first pickup address, then GET serviceability.shiprocket.in/courier/ratingserviceability — an endpoint
+    the Postman collection does not list (the collection documents /v1/external/courier/serviceability on apiv2
+    instead)
+- tool: shipping_rate_calculator
+  category: serviceability
+  rest: []
+  binding: undocumented-endpoint
+  confidence: medium
+  note: calls GET serviceability.shiprocket.in/courier/ratingserviceability, which is not in the public collection;
+    semantically equals checkCourierServiceability
+mcp_only:
+- tool: shipping_rate_calculator
+  reason: backed by serviceability.shiprocket.in/courier/ratingserviceability, absent from the public API reference
+coverage:
+  tools: 10
+  tools_bound_to_documented_rest: 9
+  rest_operations: 75
+  rest_operations_with_tool: 8
+rest_only:
+- operationId: generateToken
+  method: POST
+  path: /v1/external/auth/login
+- operationId: tokenLogout
+  method: POST
+  path: /v1/external/auth/logout
+- operationId: createChannelSpecificOrder
+  method: POST
+  path: /v1/external/orders/create
+- operationId: changeUpdatePickupLocationOfCreatedOrders
+  method: PATCH
+  path: /v1/external/orders/address/pickup
+- operationId: updateCustomerDeliveryAddress
+  method: POST
+  path: /v1/external/orders/address/update
+- operationId: updateOrder
+  method: POST
+  path: /v1/external/orders/update/adhoc
+- operationId: addInventoryForOrderedProduct
+  method: PATCH
+  path: /v1/external/orders/fulfill
+- operationId: mapUnmappedProducts
+  method: PATCH
+  path: /v1/external/orders/mapping
+- operationId: importOrdersInBulk
+  method: POST
+  path: /v1/external/orders/import
+- operationId: listOfCouriers
+  method: GET
+  path: /v1/external/courier/courierListWithCounts
+- operationId: checkCourierServiceability
+  method: GET
+  path: /v1/external/courier/serviceability
+- operationId: uploadBlockedPincodes
+  method: POST
+  path: /v1/external/blocked-pincodes/upload
+- operationId: getBlockedPincodes
+  method: GET
+  path: /v1/external/block-pincodes/get
+- operationId: getSpecificOrderDetails
+  method: GET
+  path: /v1/external/orders/show/{id}
+- operationId: exportYourOrders
+  method: POST
+  path: /v1/external/orders/export
+- operationId: createAReturnOrder
+  method: POST
+  path: /v1/external/orders/create/return
+- operationId: createExchangeOrder
+  method: POST
+  path: /v1/external/orders/create/exchange
+- operationId: updateReturnOrder
+  method: POST
+  path: /v1/external/orders/edit
+- operationId: getAllReturnOrders
+  method: GET
+  path: /v1/external/orders/processing/return
+- operationId: getAllShipmentDetails
+  method: GET
+  path: /v1/external/shipments
+- operationId: getDetailsOfSpecificShipment
+  method: GET
+  path: /v1/external/shipments/{shipment_id}
+- operationId: cancelAShipment
+  method: POST
+  path: /v1/external/orders/cancel/shipment/awbs
+- operationId: generateManifest
+  method: POST
+  path: /v1/external/manifests/generate
+- operationId: printManifest
+  method: POST
+  path: /v1/external/manifests/print
+- operationId: generateInvoice
+  method: POST
+  path: /v1/external/orders/print/invoice
+- operationId: generateLabelInvoiceCombined
+  method: POST
+  path: /v1/external/courier/generate/label-invoice
+- operationId: forward
+  method: POST
+  path: /v1/external/shipments/create/forward-shipment
+- operationId: return
+  method: POST
+  path: /v1/external/shipments/create/return-shipment
+- operationId: getAllNDRShipments
+  method: GET
+  path: /v1/external/ndr/all
+- operationId: getSpecificNDRShipmentDetails
+  method: GET
+  path: /v1/external/ndr/{AWB}
+- operationId: actionNDR
+  method: POST
+  path: /v1/external/ndr/{awb}/action
+- operationId: getTrackingDataForMultipleAWBS
+  method: POST
+  path: /v1/external/courier/track/awbs
+- operationId: getTrackingThroughShipmentID
+  method: GET
+  path: /v1/external/courier/track/shipment/{shipment_id}
+- operationId: getTrackingDataThroughOrderID
+  method: GET
+  path: /v1/external/courier/track
+- operationId: addANewPickupLocation
+  method: POST
+  path: /v1/external/settings/company/addpickup
+- operationId: tracking
+  method: GET
+  path: /v1/external/international/orders/track
+- operationId: internationalKYC
+  method: POST
+  path: /v1/external/international/settings/international_kyc
+- operationId: addBankDetails
+  method: POST
+  path: /v1/external/international/settings/add-bank-details
+- operationId: createOrder
+  method: POST
+  path: /v1/external/international/orders/create/adhoc
+- operationId: updateOrder2
+  method: POST
+  path: /v1/external/international/orders/update/adhoc
+- operationId: internationalWrapperAPI
+  method: POST
+  path: /v1/external/international/shipments/create/forward-shipment
+- operationId: serviceability
+  method: GET
+  path: /v1/external/international/courier/serviceability
+- operationId: awbAssignment
+  method: POST
+  path: /v1/external/international/courier/assign/awb
+- operationId: manifestGeneration
+  method: POST
+  path: /v1/external/international/manifests/generate
+- operationId: getWalletBalance
+  method: GET
+  path: /v1/external/account/details/wallet-balance
+- operationId: getAllProducts
+  method: GET
+  path: /v1/external/products
+- operationId: addNewProducts
+  method: POST
+  path: /v1/external/products
+- operationId: getSpecificProductDetails
+  method: GET
+  path: /v1/external/products/show/{product_id}
+- operationId: convertToQCProduct
+  method: POST
+  path: /v1/external/products/qc-product-update/{productID}
+- operationId: bulkImportProducts
+  method: POST
+  path: /v1/external/products/import
+- operationId: getSampleCsvFormat
+  method: GET
+  path: /v1/external/products/sample
+- operationId: getAllListings
+  method: GET
+  path: /v1/external/listings
+- operationId: mapChannelProduct
+  method: POST
+  path: /v1/external/listings/link
+- operationId: importCatalogMappings
+  method: POST
+  path: /v1/external/listings/import
+- operationId: exportMappedProducts
+  method: GET
+  path: /v1/external/listings/export/mapped
+- operationId: exportUnmappedProducts
+  method: GET
+  path: /v1/external/listings/export/unmapped
+- operationId: exportCatalogSample
+  method: GET
+  path: /v1/external/listings/sample
+- operationId: getIntegratedChannelDetails
+  method: GET
+  path: /v1/external/channels
+- operationId: createCustomChannel
+  method: POST
+  path: /v1/external/channels
+- operationId: getInventoryDetails
+  method: GET
+  path: /v1/external/inventory
+- operationId: updateYourInventory
+  method: PUT
+  path: /v1/external/inventory/{product_id}/update
+- operationId: getCountryCodes
+  method: GET
+  path: /v1/external/countries
+- operationId: getAllZones
+  method: GET
+  path: /v1/external/countries/show/{country_id}
+- operationId: getLocalityDetails
+  method: GET
+  path: /v1/external/open/postcode/details
+- operationId: getStatementDetails
+  method: GET
+  path: /v1/external/account/details/statement
+- operationId: getDicrepancyData
+  method: GET
+  path: /v1/external/billing/discrepancy
+- operationId: getFileImportResults
+  method: GET
+  path: /v1/external/errors/{import_id}/check

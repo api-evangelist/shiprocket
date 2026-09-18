@@ -1,0 +1,52 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Shiprocket API
+  version: '2026-09-18'
+extends: shiprocket-api-openapi.yml
+x-provenance:
+  generated: '2026-09-18'
+  method: generated
+  source: openapi/shiprocket-api-openapi.yml + mcp/shiprocket-tool-crosswalk.yml + conventions/shiprocket-conventions.yml
+actions:
+- target: $.info
+  update:
+    x-api-evangelist:
+      profile: https://apis.io/apis/shiprocket/
+      generated_from: public Postman collection
+      reviewed: '2026-09-18'
+- target: $.paths['/v1/external/orders/create/adhoc'].post
+  update:
+    x-mcp-tool: order_create
+    x-reversible-by: cancelAnOrder
+- target: $.paths['/v1/external/orders/create'].post
+  update:
+    x-reversible-by: cancelAnOrder
+- target: $.paths['/v1/external/orders/cancel'].post
+  update:
+    x-mcp-tool: order_cancel
+    x-reversal-of:
+    - createCustomOrder
+    - createChannelSpecificOrder
+- target: $.paths['/v1/external/courier/assign/awb'].post
+  update:
+    x-mcp-tool: order_ship
+    x-reversible-by: cancelAShipment
+- target: $.paths['/v1/external/courier/generate/pickup'].post
+  update:
+    x-mcp-tool: order_schedule_pickup
+- target: $.paths['/v1/external/orders'].get
+  update:
+    x-mcp-tool: order_list
+- target: $.paths['/v1/external/orders/cancel/shipment/awbs'].post
+  update:
+    x-reversal-of:
+    - generateAWBForShipment
+- target: $.paths['/v1/external/courier/generate/label'].post
+  update:
+    x-mcp-tool: generate_shipment_label
+- target: $.paths['/v1/external/courier/track/awb/{awb_code}'].get
+  update:
+    x-mcp-tool: order_track
+- target: $.paths['/v1/external/settings/company/pickup'].get
+  update:
+    x-mcp-tool: list_pickup_addresses

@@ -1,0 +1,116 @@
+generated: '2026-09-18'
+method: searched
+source: https://apidocs.shiprocket.in/ (collection + folder descriptions) + openapi/shiprocket-api-openapi.yml
+docs: https://apidocs.shiprocket.in/
+auth:
+  style: bearer JWT from /auth/login
+  header: 'Authorization: Bearer <token>'
+  ttl: 10 days
+  ref: authentication/shiprocket-authentication.yml
+base_url: https://apiv2.shiprocket.in/v1/external
+secondary_hosts:
+- https://serviceability.shiprocket.in (blocked-pincode upload/get; rate serviceability used by the MCP server)
+content:
+  request: 'application/json (multipart/form-data for CSV imports: orders/import, products/import, listings/import)'
+  response: application/json
+identifiers:
+  order_id: The order_id you send on create is your channel/reference id; the order_id returned is the Shiprocket
+    order id, which every other endpoint expects unless stated otherwise.
+  shipment_id: Returned on order creation; used for AWB assignment, labels, pickups, tracking.
+  awb_code: Courier airway bill number assigned by POST /courier/assign/awb; used for tracking, NDR and cancel-shipment.
+idempotency:
+  coverage: none
+  header: null
+  notes: No Idempotency-Key or equivalent replay-protection mechanism is documented anywhere in the API reference;
+    re-sending POST /orders/create/adhoc creates a second order. Order-level dedupe relies on the seller's own order_id
+    but the docs make no uniqueness guarantee.
+pagination:
+  style: page-number
+  params:
+  - page
+  - per_page
+  sorting:
+  - sort (ASC|DESC)
+  - sort_by (id|status)
+  filtering:
+  - filter_by + filter
+  - from/to dates
+  - search
+  - pickup_location
+  - channel_id
+  response_fields: meta.pagination (total, count, per_page, current_page, total_pages, links.next) as shown in the
+    GET /orders and GET /shipments examples
+  endpoints:
+  - getAllOrders
+  - getAllShipmentDetails
+  - getAllProducts
+  - getAllNDRShipments
+  - listings
+errors:
+  envelope: 'plain JSON {"message": "..."} or {"status_code": n, "message": "..."}; validation failures (422) return
+    {"message": "...", "errors": {field: [msg]}}'
+  codes_documented:
+  - 200
+  - 202
+  - 400
+  - 401
+  - 404
+  - 405
+  - 422
+  - 429
+  - 500
+  - 502
+  - 503
+  - 504
+  ref: errors/shiprocket-problem-types.yml
+rate_limiting:
+  documented: 429 Too Many Requests — "You have exceeded the API call rate limit"; no numeric limit and no rate-limit
+    response headers are published
+  ref: rate-limits/shiprocket-rate-limits.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  segment: /v1/external/
+  ref: lifecycle/shiprocket-lifecycle.yml
+request_id_tracing: none documented
+field_expansion: none
+dry_run_mode: none — no sandbox or test mode; the docs state that valid-credential requests affect live data
+webhooks:
+  ref: asyncapi/shiprocket-tracking-webhooks.yml
+  summary: POST JSON tracking events to a seller-configured URL, optional x-api-key security token
+reversibility:
+  grade: documented
+  summary: Orders and shipments can be cancelled and NDR shipments can be re-attempted or returned, but the docs
+    state no time window for any reversal.
+  surfaces:
+  - write: createCustomOrder / createChannelSpecificOrder (POST /orders/create[/adhoc])
+    reversal: cancelAnOrder (POST /orders/cancel, ids[])
+    window: null
+    docs: https://apidocs.shiprocket.in/
+    note: 'Docs section "Create Or Update Order": "You can also cancel an order"; the MCP docs say "Cancel orders
+      or shipments before they''re dispatched" but no cut-off is stated as a rule.'
+  - write: generateAWBForShipment (POST /courier/assign/awb)
+    reversal: cancelAShipment (POST /orders/cancel/shipment/awbs)
+    window: null
+    docs: https://apidocs.shiprocket.in/
+  - write: requestForShipmentPickup (POST /courier/generate/pickup)
+    reversal: null
+    window: null
+    docs: https://apidocs.shiprocket.in/
+    note: no pickup-cancel endpoint is documented
+  - write: createAReturnOrder / createExchangeOrder
+    reversal: cancelAnOrder
+    window: null
+    docs: https://apidocs.shiprocket.in/
+  - write: 'NDR: actionNDR (POST /ndr/{awb}/action with action re-attempt|return)'
+    reversal: null
+    window: null
+    docs: https://apidocs.shiprocket.in/
+  - write: addANewPickupLocation, addProduct, updateInventory, importOrdersInBulk
+    reversal: null
+    window: null
+    docs: https://apidocs.shiprocket.in/
+    note: no delete/undo endpoints documented
+  notes: No reversal window is published, so this stays at documented (0.4), not verified.
+notes: Conventions read from the provider's own Postman documentation; the API is a thin REST projection of the
+  seller panel (see the per-folder descriptions in openapi/ tags).

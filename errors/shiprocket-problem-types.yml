@@ -1,0 +1,222 @@
+generated: '2026-09-18'
+method: derived
+source: openapi/shiprocket-api-openapi.yml (4xx/5xx response examples) + https://apidocs.shiprocket.in/ "Errors
+  and Response codes"
+docs: https://apidocs.shiprocket.in/
+format: plain-json
+rfc9457: false
+envelope:
+  shape: '{"message": string} | {"status_code": int, "message": string} | {"message": string, "errors": {field:
+    [string]}} (422)'
+  content_type: application/json
+status_codes:
+- status: 200
+  title: OK
+  description: Everything worked as expected. Some APIs may respond with an error message in a 200 body if data
+    is invalid.
+- status: 202
+  title: Accepted
+  description: Accepted (e.g. NDR action, invoice print).
+- status: 400
+  title: Bad Request
+  description: The request was invalid or cannot be otherwise served.
+  remediation: Check required fields and their formats.
+- status: 401
+  title: Unauthorized
+  description: Error during validation — check your token or credentials.
+  remediation: Re-login at POST /auth/login; tokens expire after 10 days.
+- status: 403
+  title: Forbidden
+  description: Seen in the collection examples on courier/label operations when the resource is not permitted for
+    the API user.
+- status: 404
+  title: Not Found
+  description: The URI requested is invalid or the resource requested does not exist.
+- status: 405
+  title: Method Not Allowed
+  description: The API was accessed using the wrong method.
+  remediation: Check your HTTP method.
+- status: 422
+  title: Unprocessable Entity
+  description: The request contains incorrect syntax or cannot be fulfilled; the body carries a per-field errors
+    map.
+  remediation: Fix the fields named in errors{}.
+- status: 429
+  title: Too Many Requests
+  description: You have exceeded the API call rate limit.
+  remediation: Back off and retry; no Retry-After or limit headers are documented.
+- status: 500
+  title: Internal Server Error
+  description: Server error; some APIs return this on syntax or parameter errors.
+  remediation: Contact support if it persists.
+- status: 502
+  title: Bad Gateway
+  description: Server error.
+- status: 503
+  title: Service Unavailable
+  description: Server error.
+- status: 504
+  title: Gateway Timeout
+  description: Server error.
+problem_types:
+- status: 400
+  message: Cannot update inventory for a combo product
+  operations:
+  - updateYourInventory
+- status: 400
+  message: File required
+  operations:
+  - importCatalogMappings
+- status: 400
+  message: Given channel id does not exist
+  operations:
+  - createCustomOrder
+- status: 400
+  message: Invalid shipment id
+  operations:
+  - requestForShipmentPickup
+- status: 400
+  message: Inventory sync is turned off. Please add a manual order!
+  operations:
+  - createChannelSpecificOrder
+- status: 400
+  message: Invoice could not be created
+  operations:
+  - generateInvoice
+- status: 400
+  message: Listing ID not found
+  operations:
+  - mapChannelProduct
+- status: 400
+  message: Listing already mapped
+  operations:
+  - mapChannelProduct
+- status: 400
+  message: Manifest already generated for some shipment_ids, Please try again after removin them
+  operations:
+  - generateManifest
+- status: 400
+  message: Manifest already generated.
+  operations:
+  - manifestGeneration
+- status: 400
+  message: Oops! Cannot reassign courier for this shipment.
+  operations:
+  - generateAWBForShipment
+- status: 400
+  message: Order ID not found
+  operations:
+  - getSpecificOrderDetails
+- status: 400
+  message: Order Id does not exists
+  operations:
+  - changeUpdatePickupLocationOfCreatedOrders
+- status: 400
+  message: Order Update for this channel is not allowed
+  operations:
+  - updateOrder2
+- status: 400
+  message: Pickup Code does not exist
+  operations:
+  - changeUpdatePickupLocationOfCreatedOrders
+- status: 400
+  message: Product ID not found
+  operations:
+  - mapChannelProduct
+- status: 400
+  message: Quantity must be numeric, and upto 8 digits are allowed!
+  operations:
+  - updateYourInventory
+- status: 400
+  message: Sorry, text/x-c file type is not allowed
+  operations:
+  - importOrdersInBulk
+- status: 400
+  message: The per page must be at least 1. The current page must be at least 1.
+  operations:
+  - getBlockedPincodes
+- status: 400
+  message: This product is either inactive or does not exist
+  operations:
+  - getSpecificProductDetails
+- status: 400
+  message: Uh-oh! Invalid Courier for international shipment!
+  operations:
+  - awbAssignment
+- status: 401
+  message: Unauthenticated.
+  operations:
+  - getBlockedPincodes
+- status: 403
+  message: 'Mapped City-State details not found for '
+  operations:
+  - getLocalityDetails
+- status: 403
+  message: Mapped City-State details not found for 10000893
+  operations:
+  - getLocalityDetails
+- status: 404
+  message: 404 Not Found
+  operations:
+  - exportCatalogSample
+  - exportMappedProducts
+  - exportUnmappedProducts
+  - getAllListings
+  - getAllPickupLocations
+  - getAllReturnOrders
+  - getAllShipmentDetails
+  - getAllZones
+- status: 404
+  message: Order does not exist!
+  operations:
+  - serviceability
+- status: 422
+  message: Not a valid mobile number
+  operations:
+  - addANewPickupLocation
+- status: 422
+  message: Oops! Invalid Data.
+  operations:
+  - createAReturnOrder
+  - createChannelSpecificOrder
+  - createCustomOrder
+  - createOrder
+  - forward
+  - generateLabel
+  - updateCustomerDeliveryAddress
+- status: 422
+  message: Oops! Something went wrong.
+  operations:
+  - bulkImportProducts
+  - importOrdersInBulk
+- status: 422
+  message: Required field missing
+  operations:
+  - cancelAnOrder
+  - checkCourierServiceability
+  - generateAWBForShipment
+- status: 422
+  message: There were errors in adding new product!
+  operations:
+  - addNewProducts
+- status: 500
+  message: Failed to generate CSV. Please try again later.
+  operations:
+  - getBlockedPincodes
+- status: 500
+  message: Internal server error.
+  operations:
+  - getBlockedPincodes
+- status: 500
+  message: Invalid argument supplied for foreach()
+  operations:
+  - changeUpdatePickupLocationOfCreatedOrders
+  - generateInvoice
+  - getTrackingDataForMultipleAWBS
+  - printManifest
+- status: 500
+  message: Trying to get property of non-object
+  operations:
+  - cancelAnOrder
+  - getFileImportResults
+problem_type_count: 35

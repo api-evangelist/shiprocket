@@ -1,0 +1,300 @@
+generated: '2026-09-18'
+method: probed
+source: live probes of every host the record knows (registrable domain + www, apiv2 + serviceability API hosts,
+  apidocs, app, status)
+notes: 'Real hits on www.shiprocket.in only: /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource
+  (RFC 8414 / RFC 9728 metadata for the WordPress MCP endpoint at https://www.shiprocket.in/wp-json/mcp/mcp-oauth-server,
+  scope ''mcp'', PKCE S256, public client with client_id_metadata_document_supported) and a real /llms.txt (saved
+  to llms/). No security.txt, openid-configuration, api-catalog, ai-plugin, ucp, acp, aauth, apis.json or agent
+  card on any host. status.shiprocket.in answers 200 with an HTML shell for every path (SPA catch-all) and app.shiprocket.in
+  for several — all treated as misses. apiv2 and serviceability API hosts return 403 for /.well-known/* from their
+  edge.'
+hosts:
+- host: shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    note: 301 to www.shiprocket.in; the document is served on www (see that host)
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    note: 301 to www.shiprocket.in; the document is served on www (see that host)
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 200
+    note: 301 to www.shiprocket.in; the document is served on www (see that host)
+- host: www.shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: well-known/shiprocket-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: well-known/shiprocket-oauth-protected-resource.json
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 200
+    file: llms/shiprocket-llms.txt
+- host: apiv2.shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/openid-configuration
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/oauth-protected-resource
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/api-catalog
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/api-catalog.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/ai-plugin.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/ucp.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/acp.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/aauth-resource.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/apis.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/agent.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /llms.txt
+    status: 404
+- host: apidocs.shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: serviceability.shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/openid-configuration
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/oauth-protected-resource
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/api-catalog
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/api-catalog.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/ai-plugin.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/ucp.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/acp.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/aauth-resource.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/apis.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /.well-known/agent.json
+    status: 403
+    note: 403 from the API edge (bot/edge policy), not a served document
+  - path: /llms.txt
+    status: 404
+- host: app.shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+- host: status.shiprocket.in
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/openid-configuration
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/api-catalog
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/api-catalog.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/ucp.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/acp.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/apis.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /apis.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /apis.yml
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/agent-card.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /.well-known/agent.json
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss
+  - path: /llms.txt
+    status: 200
+    note: 200 but an HTML/SPA shell, not a document — treated as a miss

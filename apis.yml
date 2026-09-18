@@ -1,8 +1,18 @@
 aid: shiprocket
 name: Shiprocket
-description: 'Shiprocket is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Shiprocket (BigFoot Retail Solutions Pvt Ltd, formerly KartRocket) is India's largest eCommerce shipping
+  and enablement platform, aggregating 25+ courier partners into one panel for D2C brands, SMEs and enterprise
+  sellers: domestic and hyperlocal shipping, cross-border (ShipX/CargoX), warehouse fulfillment, returns
+  and NDR management, COD reconciliation, checkout (fastrr), capital and the Sense address-intelligence
+  and RTO-prediction APIs. The public Shiprocket API (apiv2.shiprocket.in/v1/external, JWT bearer from
+  an API-user login) covers order create/update/cancel, courier serviceability and AWB assignment, pickup
+  scheduling, labels/manifests/invoices, tracking, returns/exchanges, NDR actions, products, listings,
+  channels, inventory, wallet and statements, and is published as a public Postman collection with tracking
+  webhooks. An official open-source MCP server (bfrs/shiprocket-mcp) exposes ten of those flows to AI
+  agents.
 url: https://raw.githubusercontent.com/api-evangelist/shiprocket/refs/heads/main/apis.yml
+image: https://sr-website.shiprocket.in/wp-content/uploads/2025/02/OG-Image-for-Shiprocket.png
 x-type: company
 x-source: harvest:secondary-market
 x-tier: stub
@@ -12,12 +22,165 @@ created: '2026-09-18'
 modified: '2026-09-18'
 tags:
 - Company
-apis: []
+- Shipping
+- Logistics
+- eCommerce
+- Fulfillment
+- Last-Mile Delivery
+- Order Management
+- Courier Aggregation
+- India
+apis:
+- aid: shiprocket:shiprocket-api
+  name: Shiprocket API
+  description: >-
+    Public REST API (v1/external) for eCommerce shipping and order management: API-user login returning
+    a 10-day JWT, order create/update/cancel/import, courier serviceability, AWB assignment and pickup
+    scheduling, labels, manifests and invoices, shipment tracking by AWB/shipment/order, NDR actions,
+    returns and exchanges, hyperlocal and international orders, products, listings, channels, inventory,
+    countries/postcodes, wallet balance, statements and billing discrepancies. Published as a public Postman
+    collection (93 requests) with a tracking webhook.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Shipping
+  - Logistics
+  - Order Management
+  - Tracking
+  - Courier Aggregation
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: MCPServer
+    url: mcp/shiprocket-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: Overlay
+    url: overlays/shiprocket-api-overlay.yaml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  image: https://sr-website.shiprocket.in/wp-content/uploads/2025/02/OG-Image-for-Shiprocket.png
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/shiprocket-domain-security.yml
+- type: Authentication
+  url: authentication/shiprocket-authentication.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.shiprocket.in/
+- type: DeveloperPortal
+  url: https://www.shiprocket.in/developers/
+- type: Documentation
+  url: https://apidocs.shiprocket.in/
+- type: APIReference
+  url: https://apidocs.shiprocket.in/
+- type: GettingStarted
+  url: https://www.shiprocket.in/developers/
+- type: Postman
+  url: https://apidocs.shiprocket.in/
+- type: Blog
+  url: https://www.shiprocket.in/blog/
+- type: Pricing
+  url: https://www.shiprocket.in/pricing/
+- type: SignUp
+  url: https://app.shiprocket.in/register
+- type: Login
+  url: https://app.shiprocket.in/login
+- type: Support
+  url: https://support.shiprocket.in/support/home
+- type: TermsOfService
+  url: https://www.shiprocket.in/terms-conditions/
+- type: PrivacyPolicy
+  url: https://www.shiprocket.in/privacy-policy/
+- type: StatusPage
+  url: https://status.shiprocket.in/
+- type: GitHubOrganization
+  url: https://github.com/bfrs
+- type: LLMsTxt
+  url: llms/shiprocket-llms.txt
+- type: WellKnown
+  url: well-known/shiprocket-well-known.yml
+- type: MCPServer
+  url: mcp/shiprocket-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/shiprocket-tool-crosswalk.yml
+- type: Packages
+  url: packages/shiprocket-packages.yml
+- type: Components
+  url: components/shiprocket-components.yml
+- type: Webhooks
+  url: asyncapi/shiprocket-tracking-webhooks.yml
+- type: Conventions
+  url: conventions/shiprocket-conventions.yml
+- type: ErrorCatalog
+  url: errors/shiprocket-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/shiprocket-lifecycle.yml
+- type: Conformance
+  url: conformance/shiprocket-conformance.yml
+- type: RateLimits
+  url: rate-limits/shiprocket-rate-limits.yml
+- type: Plans
+  url: plans/shiprocket-plans-pricing.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/shiprocket-api-overlay.yaml
+- type: DataModel
+  url: data-model/shiprocket-data-model.yml
+x-duplicate-of:
+  slug: kartrocket
+  repo: https://github.com/api-evangelist/kartrocket
+  confidence: high
+  recommended_survivor: shiprocket
+  basis: >-
+    Same legal entity. all/kartrocket profiles BigFoot Retail Solutions Pvt Ltd under its FORMER brand
+    (KartRocket) and already says so in its own description; its Website, docs (apidocs.shiprocket.in),
+    API base (apiv2.shiprocket.in/v1/external), GitHub org (bfrs), MCP server and status page are all
+    Shiprocket's. This record was created independently from the secondary-market harvest backlog under
+    the company's CURRENT name. Shiprocket is the name the company trades under today (llms.txt, server.json
+    websiteUrl, every host), so the merge should keep this slug and retire kartrocket as an alias, carrying
+    kartrocket's kin/ score history. This pass enriched shiprocket fully (Postman collection, generated
+    OpenAPI, well-known OAuth metadata, webhooks) because those artifacts are net-new to either record;
+    the identity decision is deliberately left to a human.
+  evidence:
+  - url: https://www.shiprocket.in/llms.txt
+    status: 200
+    note: '"Shiprocket is India''s leading eCommerce enablement platform"'
+  - url: https://api.github.com/users/bfrs
+    status: 200
+    note: org name "Shiprocket"
+  - url: https://apidocs.shiprocket.in/
+    status: 200
+  checked: '2026-09-18'
+x-enrichment:
+  date: '2026-09-18'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v3

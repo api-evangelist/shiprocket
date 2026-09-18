@@ -1,0 +1,80 @@
+generated: '2026-09-18'
+method: searched
+source: https://apidocs.shiprocket.in/ ("Webhooks" section of the collection description)
+docs: https://apidocs.shiprocket.in/
+asyncapi: null
+notes: 'Shiprocket documents ONE outbound webhook — shipment tracking updates — configured in the panel (Settings
+  > API > Webhooks), not via the API. No AsyncAPI document is published, so this is a webhook catalog (type: Webhooks),
+  not an AsyncAPI contract. The sample payload is the provider''s own (scans truncated to two entries).'
+delivery:
+  method: POST
+  content_type: application/json
+  security: optional security token sent as an x-api-key header
+  expected_response: HTTP 200 only
+  url_rules: the callback URL must not contain the keywords shiprocket, kartrocket, sr or kr
+  setup:
+  - Log in to Shiprocket
+  - Settings > API > Webhooks
+  - Add the webhook URL
+  - Enable the toggle
+  - Add the security token (optional)
+  retries: not documented
+  signature: none — shared token only
+  event_catalog_endpoint: null
+events:
+- name: shipment.tracking_update
+  description: Sent whenever a new tracking event (scan) is recorded for an order or return shipment.
+  payload_fields:
+  - awb
+  - courier_name
+  - current_status
+  - current_status_id
+  - shipment_status
+  - shipment_status_id
+  - current_timestamp
+  - order_id
+  - sr_order_id
+  - awb_assigned_date
+  - pickup_scheduled_date
+  - etd
+  - scans[] {date,status,activity,location,sr-status,sr-status-label}
+  - is_return
+  - channel_id
+  - pod_status
+  - pod
+  - qc_image
+  - qc_failure_reason
+  status_codes_ref: shipment status code table in the Tracking / Shipments tag descriptions of openapi/shiprocket-api-openapi.yml
+  example:
+    awb: '19041424751540'
+    courier_name: Delhivery Surface
+    current_status: IN TRANSIT
+    current_status_id: 20
+    shipment_status: IN TRANSIT
+    shipment_status_id: 18
+    current_timestamp: 23 05 2023 11:43:52
+    order_id: '1373900_150876814'
+    sr_order_id: 348456385
+    awb_assigned_date: '2023-05-19 11:59:16'
+    pickup_scheduled_date: '2023-05-19 11:59:17'
+    etd: '2023-05-23 15:40:19'
+    scans:
+    - date: '2023-05-19 11:59:16'
+      status: X-UCI
+      activity: Manifested - Manifest uploaded
+      location: Chomu_SamodRd_D (Rajasthan)
+      sr-status: '5'
+      sr-status-label: MANIFEST GENERATED
+    - date: '2023-05-19 15:32:17'
+      status: X-PPOM
+      activity: In Transit - Shipment picked up
+      location: Chomu_SamodRd_D (Rajasthan)
+      sr-status: '42'
+      sr-status-label: PICKED UP
+    is_return: 0
+    channel_id: 3422553
+    pod_status: OTP Based Delivery
+    pod: Not Available
+    qc_image: ''
+    qc_failure_reason: ''
+event_count: 1

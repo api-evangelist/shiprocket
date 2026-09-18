@@ -1,0 +1,54 @@
+generated: '2026-09-18'
+method: derived
+source: openapi/shiprocket-api-openapi.yml + authentication/ + conventions/ + well-known/ probes + https://www.shiprocket.in/
+  (no trust/compliance page found)
+notes: Cross-cutting standards posture. No compliance program page (SOC 2 / ISO 27001 / PCI DSS) was found on shiprocket.in
+  (/security, /trust 404; probe-security-programs.py found no trust center), so no Compliance pointer is emitted.
+  The logistics market has no domain standard the contract could declare (no GS1/EDIFACT/X12 shapes appear in the
+  spec) — reward-only, nothing recorded.
+standards:
+- id: http-bearer
+  conforms: true
+  evidence: components.securitySchemes.bearerAuth (http/bearer/JWT) applied globally in openapi/shiprocket-api-openapi.yml
+- id: oauth2
+  conforms: false
+  evidence: logistics API uses login-for-JWT; the only OAuth 2.1 surface (RFC 8414 + RFC 9728 metadata at www.shiprocket.in/.well-known/)
+    protects the WordPress MCP endpoint, not the API
+- id: rfc8414-oauth-as-metadata
+  conforms: true
+  evidence: https://www.shiprocket.in/.well-known/oauth-authorization-server (200, PKCE S256, authorization_code
+    + refresh_token) — scope is the marketing-site MCP endpoint only
+- id: rfc9728-protected-resource-metadata
+  conforms: true
+  evidence: https://www.shiprocket.in/.well-known/oauth-protected-resource (200) and WWW-Authenticate resource_metadata
+    on the 401 from /wp-json/mcp/mcp-oauth-server
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration 404 on every host
+- id: rfc9457
+  conforms: false
+  evidence: errors are plain JSON {message} / {status_code,message} / {message,errors{}} — no application/problem+json
+- id: pagination
+  conforms: true
+  evidence: page/per_page with meta.pagination in GET /v1/external/orders, /shipments, /products, /ndr/all
+- id: idempotency
+  conforms: false
+  evidence: 'no Idempotency-Key or replay protection documented (conventions/shiprocket-conventions.yml idempotency.coverage:
+    none)'
+- id: rfc8594-sunset
+  conforms: false
+  evidence: no Sunset/Deprecation headers documented
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt 404 on shiprocket.in and www; 403 on API hosts
+- id: mcp
+  conforms: true
+  evidence: official MCP server bfrs/shiprocket-mcp (@modelcontextprotocol/sdk ^1.10, stdio + streamable-http transports);
+    mcp/shiprocket-mcp.yml
+- id: llms-txt
+  conforms: true
+  evidence: https://www.shiprocket.in/llms.txt (200, generated 2026-03-30, links per-section llms-*.txt and per-page
+    .md twins)
+- id: json-api
+  conforms: false
+  evidence: no JSON:API media type

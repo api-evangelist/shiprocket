@@ -1,0 +1,267 @@
+generated: '2026-09-18'
+method: searched
+status: published
+source: https://github.com/bfrs/shiprocket-mcp (src/mcp/tools.ts, server.json, README.md) + https://apidocs.shiprocket.in/
+  "Shiprocket MCP Server" section
+name: Shiprocket MCP
+registry_name: io.github.bfrs/shiprocket-mcp
+vendor: Shiprocket (BigFoot Retail Solutions Pvt Ltd — GitHub org bfrs, display name "Shiprocket")
+repository: https://github.com/bfrs/shiprocket-mcp
+license: ISC (package.json); no LICENSE file in the repo
+language: TypeScript
+runtime: Node >20 <23
+last_push: '2026-06-17'
+description: Official Shiprocket Model Context Protocol server. Wraps the public Shiprocket REST API (apiv2.shiprocket.in/v1/external
+  + serviceability.shiprocket.in) as ten tools for rate shopping, EDD, order create/ship/cancel, pickup scheduling,
+  label generation, tracking and pickup-address listing. Authenticates to the seller account with SELLER_EMAIL +
+  SELLER_PASSWORD (exchanged for the 10-day API JWT). Requests carry medium=shiprocketMCP.
+deployment:
+  mode: local-stdio
+  endpoint: null
+  install: 'git clone https://github.com/bfrs/shiprocket-mcp.git && cd shiprocket-mcp && npm install && npm run
+    build  # then in claude_desktop_config.json / mcp.json: {"command":"npm","args":["--prefix","{{PATH_TO_SRC}}","start","--silent"],"env":{"SELLER_EMAIL":"...","SELLER_PASSWORD":"..."}}'
+  package: https://github.com/bfrs/shiprocket-mcp
+  auth: api-key
+  verified: searched
+  note: 'The README and docs ship it as a local stdio server run from a clone (no npm publish by Shiprocket; the
+    npm identifier in server.json, @iflow-mcp/bfrs-shiprocket-mcp 1.0.0, is published by the third-party iflow-mcp
+    mirror, not by Shiprocket). The source also carries a Streamable HTTP transport (MCP_TRANSPORT=HTTP, /oauth/authorize
+    + /oauth/token + /.well-known/oauth-protected-resource, Redis-backed) but Shiprocket publishes no hosted URL
+    for it: mcp.shiprocket.in answers 404 and no endpoint is documented. auth is the seller email + password exchanged
+    for the API bearer JWT (api-key-shaped, not OAuth, in stdio mode).'
+  tools: 10
+  checked: '2026-09-18'
+transports:
+- stdio (default)
+- streamable-http (MCP_TRANSPORT=HTTP; OAuth 2.1 authorization-code + PKCE, dynamic client registration) — self-hosted
+  only, no public endpoint
+environment:
+- name: SELLER_EMAIL
+  required: true
+  secret: false
+- name: SELLER_PASSWORD
+  required: true
+  secret: true
+- name: API_BASE_SHIPROCKET
+  default: https://apiv2.shiprocket.in
+- name: API_BASE_SERVICEABILITY
+  default: https://serviceability.shiprocket.in
+tools:
+- name: estimated_delivery
+  title: Estimated Delivery Date
+  description: Get the Estimated Date of Delivery (EDD) for a given destination pincode (uses the seller's first
+    pickup address as origin, 0.5 kg, prepaid).
+  readOnlyHint: true
+  destructiveHint: false
+  inputSchema:
+    type: object
+    properties:
+      delivery_pincode:
+        type: string
+    required:
+    - delivery_pincode
+  backing:
+  - GET https://serviceability.shiprocket.in/courier/ratingserviceability
+  - GET /v1/external/settings/company/pickup
+- name: order_track
+  title: Track Order
+  description: Get order tracking related information by AWB number.
+  readOnlyHint: true
+  destructiveHint: false
+  inputSchema:
+    type: object
+    properties:
+      awb_number:
+        type: string
+    required:
+    - awb_number
+  backing:
+  - GET /v1/external/courier/track/awb/{awb_code}
+- name: order_list
+  title: List Orders
+  description: Get list of orders.
+  readOnlyHint: true
+  destructiveHint: false
+  inputSchema:
+    type: object
+    properties: {}
+  backing:
+  - GET /v1/external/orders
+- name: shipping_rate_calculator
+  title: Shipping Rate Calculator
+  description: Get serviceable shipping couriers, their prices and EDDs (Estimated Delivery Dates).
+  readOnlyHint: true
+  destructiveHint: false
+  inputSchema:
+    type: object
+    properties:
+      pickup_postcode:
+        type: string
+      delivery_postcode:
+        type: string
+      weight_in_kg:
+        type: number
+    required:
+    - pickup_postcode
+    - delivery_postcode
+    - weight_in_kg
+  backing:
+  - GET https://serviceability.shiprocket.in/courier/ratingserviceability
+- name: order_ship
+  title: Ship Order
+  description: Ship order by assigning courier to the order.
+  readOnlyHint: false
+  destructiveHint: true
+  inputSchema:
+    type: object
+    properties:
+      order_id:
+        type: string
+      courier_id:
+        type: number
+    required:
+    - order_id
+  backing:
+  - POST /v1/external/courier/assign/awb
+- name: order_schedule_pickup
+  title: Schedule Order Pickup
+  description: Schedule pickup for the order shipment.
+  readOnlyHint: false
+  destructiveHint: true
+  inputSchema:
+    type: object
+    properties:
+      order_id:
+        type: string
+      pickup_date:
+        type: string
+    required:
+    - order_id
+    - pickup_date
+  backing:
+  - POST /v1/external/courier/generate/pickup
+- name: order_cancel
+  title: Cancel Order
+  description: Cancel order.
+  readOnlyHint: false
+  destructiveHint: true
+  inputSchema:
+    type: object
+    properties:
+      order_id:
+        type: number
+      cancel_on_channel:
+        type: boolean
+    required:
+    - order_id
+    - cancel_on_channel
+  backing:
+  - POST /v1/external/orders/cancel
+- name: order_create
+  title: Create Order
+  description: Create order (single-item adhoc order with pickup location, customer, delivery address, package dimensions
+    and one line item).
+  readOnlyHint: false
+  destructiveHint: true
+  inputSchema:
+    type: object
+    properties:
+      pickup_location:
+        type: string
+      customer_name:
+        type: string
+      customer_email:
+        type: string
+      customer_phone:
+        type: number
+      delivery_address:
+        type: string
+      delivery_city:
+        type: string
+      delivery_pincode:
+        type: number
+      delivery_state:
+        type: string
+      delivery_country:
+        type: string
+      length:
+        type: number
+      breadth:
+        type: number
+      height:
+        type: number
+      weight:
+        type: number
+      name:
+        type: string
+      sku:
+        type: string
+      units:
+        type: number
+      selling_price:
+        type: number
+    required:
+    - pickup_location
+    - customer_name
+    - customer_email
+    - customer_phone
+    - delivery_address
+    - delivery_city
+    - delivery_pincode
+    - delivery_state
+    - delivery_country
+    - length
+    - breadth
+    - height
+    - weight
+    - name
+    - sku
+    - units
+    - selling_price
+  backing:
+  - POST /v1/external/orders/create/adhoc
+- name: list_pickup_addresses
+  title: List Pickup Addresses
+  description: Get all the pickup addresses of the seller.
+  readOnlyHint: true
+  destructiveHint: false
+  inputSchema:
+    type: object
+    properties: {}
+  backing:
+  - GET /v1/external/settings/company/pickup
+- name: generate_shipment_label
+  title: Generate Shipment Label
+  description: Generate shipment label and get the link of the generated label as a PDF file.
+  readOnlyHint: true
+  destructiveHint: false
+  inputSchema:
+    type: object
+    properties:
+      shipment_id:
+        type: number
+    required:
+    - shipment_id
+  backing:
+  - POST /v1/external/courier/generate/label
+other_mcp_surfaces:
+- name: WordPress MCP endpoint on the marketing site
+  endpoint: https://www.shiprocket.in/wp-json/mcp/mcp-oauth-server
+  mode: remote
+  auth: oauth
+  verified: probed
+  probe:
+    fetched: '2026-09-18'
+    method: POST tools/list
+    http_status: 401
+    www_authenticate: Bearer realm="https://www.shiprocket.in", resource_metadata="https://www.shiprocket.in/.well-known/oauth-protected-resource"
+    body: '{"code":"mcp_unauthorized","message":"MCP authentication required."}'
+  discovery:
+  - well-known/shiprocket-oauth-authorization-server.json
+  - well-known/shiprocket-oauth-protected-resource.json
+  note: A WordPress MCP plugin (wp-json namespaces mcp + wp-abilities/v1) on www.shiprocket.in, protected by OAuth
+    2.1 (scope "mcp", PKCE S256, client_id_metadata_document). It exposes the WordPress site, not the logistics
+    API, and its tool list is auth-gated; recorded as a probed surface, not as the product MCP server.
+notes: Tool names in the current source (estimated_delivery, order_schedule_pickup) differ slightly from the README/docs
+  table (estimated_date_of_delivery, order_pickup_schedule); the source is authoritative. Input schemas above are
+  read from the zod definitions in src/mcp/tools.ts, not introspected live (stdio server, no public endpoint).

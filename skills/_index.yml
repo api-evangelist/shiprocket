@@ -1,0 +1,14 @@
+generated: '2026-09-18'
+method: generated
+source: openapi/shiprocket-api-openapi.yml (operationIds grepped from the generated spec) + conventions/ + errors/ + asyncapi/
+provider: shiprocket
+notes: No provider-published Agent Skills or AGENTS.md were found (bfrs org has none; the docs ship an MCP server instead). Two skills generated for the marquee flows, grounded only in real operationIds.
+skills:
+- name: shiprocket-ship-an-order
+  file: skills/shiprocket-ship-an-order.md
+  api: shiprocket:shiprocket-api
+  operations: [generateToken, getAllPickupLocations, checkCourierServiceability, createCustomOrder, generateAWBForShipment, requestForShipmentPickup, generateLabel, generateManifest]
+- name: shiprocket-track-and-handle-ndr
+  file: skills/shiprocket-track-and-handle-ndr.md
+  api: shiprocket:shiprocket-api
+  operations: [generateToken, getTrackingThroughAWB, getTrackingThroughShipmentID, getTrackingDataThroughOrderID, getTrackingDataForMultipleAWBS, getAllNDRShipments, getSpecificNDRShipmentDetails, actionNDR]

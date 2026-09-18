@@ -1,0 +1,236 @@
+generated: '2026-09-18'
+method: derived
+source: openapi/shiprocket-api-openapi.yml (resource paths, id-reference fields in the provider's parameter tables
+  and examples)
+notes: 'No provider object reference exists; entities and relationships are read from the endpoint families and
+  the id fields (order_id, shipment_id, awb_code, courier_id, channel_id, product_id, import_id) the provider''s
+  own parameter tables name. Two order ids coexist: the seller''s channel order_id (sent on create) and the Shiprocket
+  order_id (returned, used everywhere else).'
+id_prefixes:
+  order_id: seller-supplied reference on create; Shiprocket integer id on every other call
+  shipment_id: integer
+  awb_code: courier airway bill string (e.g. 14-digit numeric for Delhivery)
+  courier_company_id: integer from the courier table in the Couriers tag description
+entities:
+- name: APIUser
+  operations:
+  - generateToken
+  - tokenLogout
+  reference_fields: []
+- name: Order
+  operations:
+  - addInventoryForOrderedProduct
+  - cancelAShipment
+  - cancelAnOrder
+  - changeUpdatePickupLocationOfCreatedOrders
+  - createAReturnOrder
+  - createChannelSpecificOrder
+  - createCustomOrder
+  - createExchangeOrder
+  - exportYourOrders
+  - generateInvoice
+  - getAllOrders
+  - getAllReturnOrders
+  - getSpecificOrderDetails
+  - importOrdersInBulk
+  - mapUnmappedProducts
+  - updateCustomerDeliveryAddress
+  - updateOrder
+  - updateReturnOrder
+  reference_fields:
+  - awbs
+  - channel_id
+  - exchange_order_id
+  - existing_order_id
+  - ids
+  - order_id
+  - return_order_id
+  - return_warehouse_id
+  - seller_pickup_location_id
+  - seller_shipping_location_id
+- name: Courier
+  operations:
+  - checkCourierServiceability
+  - generateAWBForShipment
+  - generateLabel
+  - generateLabelInvoiceCombined
+  - getTrackingDataForMultipleAWBS
+  - getTrackingDataThroughOrderID
+  - getTrackingThroughAWB
+  - getTrackingThroughShipmentID
+  - listOfCouriers
+  - requestForShipmentPickup
+  reference_fields:
+  - awbs
+  - courier_id
+  - shipment_id
+- name: BlockedPincode
+  operations:
+  - getBlockedPincodes
+  - uploadBlockedPincodes
+  reference_fields: []
+- name: Shipment
+  operations:
+  - forward
+  - getAllShipmentDetails
+  - getDetailsOfSpecificShipment
+  - return
+  reference_fields:
+  - channel_id
+  - courier_id
+  - order_id
+- name: Manifest
+  operations:
+  - generateManifest
+  - printManifest
+  reference_fields:
+  - shipment_id
+- name: NDRShipment
+  operations:
+  - actionNDR
+  - getAllNDRShipments
+  - getSpecificNDRShipmentDetails
+  reference_fields: []
+- name: PickupLocation
+  operations:
+  - addANewPickupLocation
+  - getAllPickupLocations
+  reference_fields: []
+- name: InternationalOrder
+  operations:
+  - addBankDetails
+  - awbAssignment
+  - createOrder
+  - internationalKYC
+  - internationalWrapperAPI
+  - manifestGeneration
+  - serviceability
+  - tracking
+  - updateOrder2
+  reference_fields:
+  - channel_id
+  - courier_id
+  - order_id
+  - pickup_location_id
+  - shipment_id
+- name: Account
+  operations:
+  - getStatementDetails
+  - getWalletBalance
+  reference_fields: []
+- name: Product
+  operations:
+  - addNewProducts
+  - bulkImportProducts
+  - convertToQCProduct
+  - getAllProducts
+  - getSampleCsvFormat
+  - getSpecificProductDetails
+  reference_fields: []
+- name: Listing
+  operations:
+  - exportCatalogSample
+  - exportMappedProducts
+  - exportUnmappedProducts
+  - getAllListings
+  - importCatalogMappings
+  - mapChannelProduct
+  reference_fields:
+  - listing_id
+  - product_id
+- name: Channel
+  operations:
+  - createCustomChannel
+  - getIntegratedChannelDetails
+  reference_fields: []
+- name: Inventory
+  operations:
+  - getInventoryDetails
+  - updateYourInventory
+  reference_fields: []
+- name: Country
+  operations:
+  - getAllZones
+  - getCountryCodes
+  reference_fields: []
+- name: Postcode
+  operations:
+  - getLocalityDetails
+  reference_fields: []
+- name: Discrepancy
+  operations:
+  - getDicrepancyData
+  reference_fields: []
+- name: FileImport
+  operations:
+  - getFileImportResults
+  reference_fields: []
+relationships:
+- from: Order
+  to: Shipment
+  type: has_many
+  via: shipment_id (returned by createCustomOrder; orders/show/{id} embeds shipments)
+- from: Shipment
+  to: Courier
+  type: belongs_to
+  via: courier_id / courier_company_id (generateAWBForShipment)
+- from: Shipment
+  to: AWB
+  type: has_one
+  via: awb_code (assigned by generateAWBForShipment; key for tracking, NDR, cancelAShipment)
+- from: Order
+  to: Channel
+  type: belongs_to
+  via: channel_id (createChannelSpecificOrder, getTrackingDataThroughOrderID)
+- from: Order
+  to: PickupLocation
+  type: belongs_to
+  via: pickup_location nickname (createCustomOrder) / changeUpdatePickupLocationOfCreatedOrders
+- from: Order
+  to: OrderItem
+  type: has_many
+  via: order_items[] {name, sku, units, selling_price}
+- from: OrderItem
+  to: Product
+  type: belongs_to
+  via: sku (mapUnmappedProducts, listings/link)
+- from: Product
+  to: Inventory
+  type: has_one
+  via: product_id (updateInventory PUT /inventory/{product_id}/update)
+- from: Product
+  to: Listing
+  type: has_many
+  via: listings/link (channel listing mapped to product)
+- from: Listing
+  to: Channel
+  type: belongs_to
+  via: channel_id
+- from: Shipment
+  to: Manifest
+  type: belongs_to
+  via: shipment_id[] (generateManifest / printManifest)
+- from: Shipment
+  to: NDRShipment
+  type: has_one
+  via: awb (getAllNDRShipments / actionNDR)
+- from: Order
+  to: ReturnOrder
+  type: has_one
+  via: order_id (createAReturnOrder / createExchangeOrder)
+- from: Account
+  to: PickupLocation
+  type: has_many
+  via: getAllPickupLocations / addANewPickupLocation
+- from: Account
+  to: Statement
+  type: has_many
+  via: getStatementDetails
+- from: Account
+  to: Discrepancy
+  type: has_many
+  via: billing/discrepancy
+- from: FileImport
+  to: Order
+  type: has_many
+  via: import_id (errors/{import_id}/check after importOrdersInBulk)

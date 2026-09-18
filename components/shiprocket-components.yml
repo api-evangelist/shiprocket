@@ -1,0 +1,15 @@
+generated: '2026-09-18'
+method: searched
+source: https://www.npmjs.com/package/@bfrs/agentic-components + https://agentic-components.vercel.app/
+notes: First-party embeddable UI component library published by Shiprocket on npm (author "Shiprocket", publisher
+  ashish.gupta@shiprocket.com). Distinct from server-side SDKs. The GitHub repo named in package.json (bfrs/agentic-components)
+  returns 404, so the showcase site and the npm tarball are the only public surfaces.
+families:
+- family: Agentic Components
+  package: '@bfrs/agentic-components'
+  version: 0.8.2
+  published: '2026-09-14'
+  loader: npm install @bfrs/agentic-components
+  showcase: https://agentic-components.vercel.app/
+  official: true
+  description: Shiprocket agentic component library and documentation showcase.

@@ -1,0 +1,44 @@
+generated: '2026-09-18'
+method: searched
+source: https://apidocs.shiprocket.in/ + https://status.shiprocket.in/ (probed 2026-09-18)
+versioning:
+  scheme: uri-path
+  current: v1
+  segment: /v1/external/
+  docs: https://apidocs.shiprocket.in/
+  notes: The Postman documenter exposes only the "latest" version tag; no dated API versions.
+status_page:
+  url: https://status.shiprocket.in/
+  provider: Better Stack
+  verified: '2026-09-18'
+  http_status: 200
+  components:
+  - ShipRocket API
+  - ShipRocket UI
+  - ShipRocket M-Site
+  - ShipRocket Dashboard
+  - ShipRocket Support Api
+  - ShipRocket Engage Web
+  - ShipRocket Engage API
+  - ShipRocket Serviceability
+  - ShipRocket Sense API
+  - Shiprocket Tracking
+  - Channel Wigzo
+  - Bookkeeper
+  subscribe: true
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  notes: No public deprecation policy, no RFC 8594 Sunset/Deprecation header, and no operation in the collection
+    is marked deprecated. No Deprecation pointer is emitted.
+changelog:
+  url: null
+  notes: No developer changelog or release-notes page found (www.shiprocket.in/product-updates, /changelog and /roadmap
+    all 404). The Postman collection carries no version history.
+sla:
+  url: null
+  notes: No published API SLA.
+notes: A StatusPage pointer is emitted (live Better Stack page listing the API, Serviceability, Sense API and Tracking
+  components). No Deprecation or ChangeLog pointer.
