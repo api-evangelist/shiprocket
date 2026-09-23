@@ -1,14 +1,14 @@
 generated: '2026-09-18'
 method: probed
-source: live probes of every host the record knows (registrable domain + www, apiv2 + serviceability API hosts,
-  apidocs, app, status)
+source: live probes of every host the record knows (registrable domain + www, apiv2 + serviceability API
+  hosts, apidocs, app, status)
 notes: 'Real hits on www.shiprocket.in only: /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource
   (RFC 8414 / RFC 9728 metadata for the WordPress MCP endpoint at https://www.shiprocket.in/wp-json/mcp/mcp-oauth-server,
-  scope ''mcp'', PKCE S256, public client with client_id_metadata_document_supported) and a real /llms.txt (saved
-  to llms/). No security.txt, openid-configuration, api-catalog, ai-plugin, ucp, acp, aauth, apis.json or agent
-  card on any host. status.shiprocket.in answers 200 with an HTML shell for every path (SPA catch-all) and app.shiprocket.in
-  for several — all treated as misses. apiv2 and serviceability API hosts return 403 for /.well-known/* from their
-  edge.'
+  scope ''mcp'', PKCE S256, public client with client_id_metadata_document_supported) and a real /llms.txt
+  (saved to llms/). No security.txt, openid-configuration, api-catalog, ai-plugin, ucp, acp, aauth, apis.json
+  or agent card on any host. status.shiprocket.in answers 200 with an HTML shell for every path (SPA catch-all)
+  and app.shiprocket.in for several — all treated as misses. apiv2 and serviceability API hosts return
+  403 for /.well-known/* from their edge.'
 hosts:
 - host: shiprocket.in
   documents:
@@ -55,10 +55,10 @@ hosts:
     status: 404
   - path: /.well-known/oauth-authorization-server
     status: 200
-    file: well-known/shiprocket-oauth-authorization-server.json
+    file: shiprocket-oauth-authorization-server.json
   - path: /.well-known/oauth-protected-resource
     status: 200
-    file: well-known/shiprocket-oauth-protected-resource.json
+    file: shiprocket-oauth-protected-resource.json
   - path: /.well-known/api-catalog
     status: 404
   - path: /.well-known/api-catalog.json
