@@ -1,0 +1,415 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Labels | Manifests | Invoice API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Labels | Manifests | Invoice
+  description: These APIs are designed for the generation of manifests, invoices and labels for your shipment. You can also get manifest details and print a manifest using the respective API's.
+paths:
+  /v1/external/manifests/generate:
+    post:
+      summary: Generate Manifest
+      description: 'Using this API, you can generate the manifest for your order.
+
+        This API generates the manifest and displays the download URL of the same.
+
+        Note:
+
+        Multiple ids can also be passed as an array for bulk generation of manifests.
+
+        AWB must be assigned and pickup requested on the shipment id to generate manifest.
+
+        Parameters:'
+      operationId: generateManifest
+      tags:
+      - Labels | Manifests | Invoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment_id:
+                  type: array
+                  items: {}
+                  description: The shipment id of the order. Multiple ids can be passed as an array, separated by commas.
+              required:
+              - shipment_id
+            example:
+              shipment_id: []
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    status: 1
+                    manifest_url: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/25149/manifest/MANIFEST-3051.pdf
+                Missing-Field-or-Invalid-Data:
+                  value:
+                    status: 1
+                    manifest_url: ''
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  manifest_url:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                Bad-Request:
+                  value:
+                    message: Manifest already generated for some shipment_ids, Please try again after removin them
+                    status_code: 400
+                    already_manifested_shipment_ids:
+                    - 16090109
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+                  already_manifested_shipment_ids:
+                    type: array
+                    items:
+                      type: integer
+  /v1/external/manifests/print:
+    post:
+      summary: Print Manifest
+      description: 'Use this API to print the generated manifest of orders at an individual level.
+
+        Note
+
+        Manifest needs to be generated first for this API to print it. Use the ''Generate Manifest'' API to do the same.
+
+        Multiple order ids can be passed together.
+
+        Parameters:'
+      operationId: printManifest
+      tags:
+      - Labels | Manifests | Invoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_ids:
+                  type: array
+                  items: {}
+                  description: The Shiprocket order id of whose manifest is to be generated. Multiple ids can be passed together as an array.
+              required:
+              - order_ids
+            example:
+              order_ids: []
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    manifest_url: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/manifest/c_25149/print_manifests/115261_fedex-surface_D52FE1564654197.pdf
+                Missing-or-Invalid-Data:
+                  value:
+                    manifest_url: ''
+              schema:
+                type: object
+                properties:
+                  manifest_url:
+                    type: string
+        '500':
+          description: Wrong Format
+          content:
+            application/json:
+              examples:
+                Wrong-Format:
+                  value:
+                    message: Invalid argument supplied for foreach()
+                    status_code: 500
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/generate/label:
+    post:
+      summary: Generate Label
+      description: 'Generate the label of order by passing the shipment id in the form of an array.
+
+        This API displays the URL of the generated label.
+
+        Note:
+
+        The AWB must be assigned to the shipment to generate the label.
+
+        ''shipment_id'' must be passed as an array.
+
+        Parameters:'
+      operationId: generateLabel
+      tags:
+      - Labels | Manifests | Invoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment_id:
+                  type: array
+                  items: {}
+                  description: The shipment id of the order whose label is to be generated. Multiple ids can be passed together as an array.
+              required:
+              - shipment_id
+            example:
+              shipment_id: []
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    label_created: 1
+                    label_url: https://kr-shipmultichannel.s3.ap-southeast-1.amazonaws.com/25149/labels/shipping-label-16104408-788830567028.pdf
+                    response: Label has been created and uploaded successfully!
+                    not_created: []
+                Missing-or-Invalid-Data:
+                  value:
+                    label_created: 0
+                    not_created: []
+                    response: No valid shipment ids to print label
+              schema:
+                type: object
+                properties:
+                  label_created:
+                    type: integer
+                  label_url:
+                    type: string
+                  response:
+                    type: string
+                  not_created:
+                    type: array
+                    items: {}
+        '422':
+          description: Wrong Format
+          content:
+            application/json:
+              examples:
+                Wrong-Format:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      shipment_id:
+                      - The shipment id must be an array.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      shipment_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/print/invoice:
+    post:
+      summary: Generate Invoice
+      description: 'Use this API to generate the invoice for your order by passing the respective Shiprocket order ids.
+
+        The generated invoice URL is displayed as a response.
+
+        Multiple ids can be passed together as an array.
+
+        Note
+
+        Order ids must be passed as an array.
+
+        Parameters:'
+      operationId: generateInvoice
+      tags:
+      - Labels | Manifests | Invoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items: {}
+                  description: The Shiprocket order id of the orders whose invoices are to be created. Multiple ids can be passed together as an array.
+              required:
+              - ids
+            example:
+              ids: []
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    is_invoice_created: true
+                    invoice_url: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/25149/invoices/KD101019281564656872.pdf
+                    not_created: []
+              schema:
+                type: object
+                properties:
+                  is_invoice_created:
+                    type: boolean
+                  invoice_url:
+                    type: string
+                  not_created:
+                    type: array
+                    items: {}
+        '400':
+          description: Missing Fields or Invalid Data
+          content:
+            application/json:
+              examples:
+                Missing-Fields-or-Invalid-Data:
+                  value:
+                    is_invoice_created: false
+                    message: Invoice could not be created
+                    not_created: []
+              schema:
+                type: object
+                properties:
+                  is_invoice_created:
+                    type: boolean
+                  message:
+                    type: string
+                  not_created:
+                    type: array
+                    items: {}
+        '500':
+          description: Wrong Format
+          content:
+            application/json:
+              examples:
+                Wrong-Format:
+                  value:
+                    message: Invalid argument supplied for foreach()
+                    status_code: 500
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/generate/label-invoice:
+    post:
+      summary: Generate Label + Invoice (Combined)
+      description: 'Generates a single combined PDF containing the shipping label followed by the invoice for each shipment. Output preserves the input order of shipment_ids .
+
+        Note:
+
+        shipment_ids is mandatory for external requests.
+
+        Not supported for reseller-enabled accounts.
+
+        completed: true in the response means the request ran synchronously (always true for external callers) — it does not guarantee every shipment succeeded. Check success_count / error_count ; on partial/full failure error_file_url points to the error details.
+
+        Parameters:'
+      operationId: generateLabelInvoiceCombined
+      tags:
+      - Labels | Manifests | Invoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment_ids:
+                  type: array
+                  items: {}
+                  description: Shipment IDs to generate the combined label+invoice for. Multiple ids can be passed as an array. Max 200 per request.
+              required:
+              - shipment_ids
+            example:
+              shipment_ids: []
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    completed: true
+                    file_url: https://shiprocket.s3.amazonaws.com/combined-label-invoice.pdf
+                    error_file_url: ''
+                    success_count: 2
+                    error_count: 0
+              schema:
+                type: object
+                properties:
+                  completed:
+                    type: boolean
+                  file_url:
+                    type: string
+                  error_file_url:
+                    type: string
+                  success_count:
+                    type: integer
+                  error_count:
+                    type: integer
+        '400':
+          description: Missing or Invalid Data
+          content:
+            text/plain:
+              examples:
+                Missing-or-Invalid-Data:
+                  value: '{\n    \"message\": \"shipment_ids is required for external requests\"\n}'
+                Max-Limit-Exceeded:
+                  value: '{\n    \"message\": \"Max 200 shipment_ids allowed per external request\"\n}'
+                Reseller-Not-Supported:
+                  value: '{\n    \"message\": \"Combined label+invoice not supported for reseller setup\"\n}'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

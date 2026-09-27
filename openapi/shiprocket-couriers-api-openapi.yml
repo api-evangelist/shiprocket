@@ -1,0 +1,1597 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Couriers API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Couriers
+  description: 'Use these APIs to assign AWB to your order, check for courier serviceability, and request for the pickup of your order.
+
+    All available couriers, along with their codes, are mentioned below:'
+paths:
+  /v1/external/courier/assign/awb:
+    post:
+      summary: Generate AWB for Shipment
+      description: 'This API can be used to assign the AWB (Air Waybill Number) to your shipment. The AWB is a unique number that helps you track the shipment and get details about it.
+
+        Parameters:'
+      operationId: generateAWBForShipment
+      tags:
+      - Couriers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment_id:
+                  type: integer
+                  description: The shipment id of the order you want to create the AWB for.
+                courier_id:
+                  type: integer
+                  description: The courier id of the courier service you want to select. The default courier is selected in case no id is specified.
+                status:
+                  type: string
+                  description: 'Use this to change the courier of a shipment. Value: reassign. Note that this can be done only once in 24 hours.'
+              required:
+              - shipment_id
+            example:
+              shipment_id: ''
+              courier_id: ''
+              status: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    awb_assign_status: 1
+                    response:
+                      data:
+                        courier_company_id: 142
+                        awb_code: '321055706540'
+                        cod: 0
+                        order_id: 281248157
+                        shipment_id: 16090281
+                        awb_code_status: 1
+                        assigned_date_time:
+                          date: '2022-11-25 11:17:52.878599'
+                          timezone_type: 3
+                          timezone: Asia/Kolkata
+                        applied_weight: 0.5
+                        company_id: 25149
+                        courier_name: Amazon Surface
+                        child_courier_name: null
+                        pickup_scheduled_date: '2022-11-25 14:00:00'
+                        routing_code: ''
+                        rto_routing_code: ''
+                        invoice_no: retail5769122647118
+                        transporter_id: ''
+                        transporter_name: ''
+                        shipped_by:
+                          shipper_company_name: manoj
+                          shipper_address_1: Aligarh
+                          shipper_address_2: noida
+                          shipper_city: Jammu
+                          shipper_state: Jammu & Kashmir
+                          shipper_country: India
+                          shipper_postcode: '110030'
+                          shipper_first_mile_activated: 0
+                          shipper_phone: '8976967989'
+                          lat: '32.731899'
+                          long: '74.860376'
+                          shipper_email: hdhd@gshd.com
+                          rto_company_name: test
+                          rto_address_1: Unnamed Road, Bengaluru, Karnataka 560060, India
+                          rto_address_2: Katrabrahmpur
+                          rto_city: Bangalore
+                          rto_state: Karnataka
+                          rto_country: India
+                          rto_postcode: '560060'
+                          rto_phone: '9999999999'
+                          rto_email: test@test.com
+              schema:
+                type: object
+                properties:
+                  awb_assign_status:
+                    type: integer
+                  response:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courier_company_id:
+                            type: integer
+                          awb_code:
+                            type: string
+                          cod:
+                            type: integer
+                          order_id:
+                            type: integer
+                          shipment_id:
+                            type: integer
+                          awb_code_status:
+                            type: integer
+                          assigned_date_time:
+                            type: object
+                            properties:
+                              date:
+                                type: string
+                              timezone_type:
+                                type: integer
+                              timezone:
+                                type: string
+                          applied_weight:
+                            type: number
+                          company_id:
+                            type: integer
+                          courier_name:
+                            type: string
+                          child_courier_name: {}
+                          pickup_scheduled_date:
+                            type: string
+                          routing_code:
+                            type: string
+                          rto_routing_code:
+                            type: string
+                          invoice_no:
+                            type: string
+                          transporter_id:
+                            type: string
+                          transporter_name:
+                            type: string
+                          shipped_by:
+                            type: object
+                            properties:
+                              shipper_company_name:
+                                type: string
+                              shipper_address_1:
+                                type: string
+                              shipper_address_2:
+                                type: string
+                              shipper_city:
+                                type: string
+                              shipper_state:
+                                type: string
+                              shipper_country:
+                                type: string
+                              shipper_postcode:
+                                type: string
+                              shipper_first_mile_activated:
+                                type: integer
+                              shipper_phone:
+                                type: string
+                              lat:
+                                type: string
+                              long:
+                                type: string
+                              shipper_email:
+                                type: string
+                              rto_company_name:
+                                type: string
+                              rto_address_1:
+                                type: string
+                              rto_address_2:
+                                type: string
+                              rto_city:
+                                type: string
+                              rto_state:
+                                type: string
+                              rto_country:
+                                type: string
+                              rto_postcode:
+                                type: string
+                              rto_phone:
+                                type: string
+                              rto_email:
+                                type: string
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Required field missing
+                    errors:
+                      shipment_id:
+                      - The shipment id field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      shipment_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Oops! Cannot reassign courier for this shipment.
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/courierListWithCounts:
+    get:
+      summary: List of Couriers
+      description: 'Use this API to check the list of couriers and the related information with Shiprocket based on the search criteria. Note:
+
+        This API will work on a company level.
+
+        You can use filters to sort your data. By default, all the couriers are shown if no filter is used.
+
+        total_courier_count will change based on the filter used.
+
+        Parameters:'
+      operationId: listOfCouriers
+      tags:
+      - Couriers
+      parameters:
+      - name: type
+        in: query
+        schema:
+          type: string
+        description: 'Use this as a parameter. Possible values are : active/inactive/all'
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    total_courier_count: 72
+                    serviceable_pincodes_count: 26416
+                    pickup_pincodes_count: 25501
+                    total_rto_count: 3380
+                    total_oda_count: 2032
+                    courier_count: 12
+                    courier_data:
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 53
+                      min_weight: 1
+                      base_courier_id: 53
+                      name: Gati Surface 1 Kg
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: Gati Surface 1 Kg
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/GATI-SURFACE.png
+                        small_logo: post_order/img/courier/thumb/gati.jpg
+                        email_logo_s3_path: gati.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: On Request
+                      call_before_delivery: Available
+                      activated_date: '2021-10-14'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 40
+                      min_weight: 5
+                      base_courier_id: 40
+                      name: Gati Surface 5 Kg
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: Gati Surface 5 Kg
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/GATI-SURFACE.png
+                        small_logo: post_order/img/courier/thumb/gati.jpg
+                        email_logo_s3_path: gati.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: On Request
+                      call_before_delivery: Available
+                      activated_date: '2021-10-14'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 50
+                      min_weight: 0.5
+                      base_courier_id: 50
+                      name: Wow Express
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: Wow Express
+                      service_type: 1
+                      mode: 1
+                      image:
+                        logo: post_order/img/courier/wow_express.png
+                        small_logo: post_order/img/courier/thumb/wow_express.jpg
+                        email_logo_s3_path: easyco.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: On Request
+                      call_before_delivery: Available
+                      activated_date: '2021-10-14'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 16
+                      min_weight: 0.5
+                      base_courier_id: 16
+                      name: Dotzot
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: Dotzot
+                      service_type: 1
+                      mode: 1
+                      image:
+                        logo: post_order/img/courier/DOTZOT.png
+                        small_logo: post_order/img/courier/thumb/dotzot.jpg
+                        email_logo_s3_path: dozot.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: On Request
+                      call_before_delivery: Available
+                      activated_date: '2021-10-14'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 3
+                      min_weight: 0
+                      base_courier_id: 3
+                      name: ARAMEX
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: ARAMEX
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/ARAMEX.png
+                        small_logo: post_order/img/courier/thumb/aramex.jpg
+                        email_logo_s3_path: aramax.png
+                      realtime_tracking: MIS
+                      delivery_boy_contact: Not Available
+                      pod_available: On Request
+                      call_before_delivery: Not Available
+                      activated_date: '2021-10-14'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 2
+                      min_weight: 0.5
+                      base_courier_id: 2
+                      name: FedEx
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: FedEx
+                      service_type: 1
+                      mode: 1
+                      image:
+                        logo: post_order/img/courier/FEDEX.png
+                        small_logo: post_order/img/courier/thumb/fedex.jpg
+                        email_logo_s3_path: fedex.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-06-21'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 41
+                      min_weight: 0.5
+                      base_courier_id: 41
+                      name: FedEx Flat Rate
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: FedEx Flat Rate
+                      service_type: 1
+                      mode: 1
+                      image:
+                        logo: post_order/img/courier/FEDEX.png
+                        small_logo: post_order/img/courier/thumb/fedex.jpg
+                        email_logo_s3_path: fedex.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-06-21'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 12
+                      min_weight: 10
+                      base_courier_id: 12
+                      name: FedEx Surface 10 Kg
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: FedEx Surface 10 Kg
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/FEDEX-SURFACE.png
+                        small_logo: post_order/img/courier/thumb/fedex.jpg
+                        email_logo_s3_path: fedex.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-06-21'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 42
+                      min_weight: 5
+                      base_courier_id: 42
+                      name: FedEx Surface 5 Kg
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: FedEx Surface 5 Kg
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/FEDEX.png
+                        small_logo: post_order/img/courier/thumb/fedex.jpg
+                        email_logo_s3_path: fedex.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-06-21'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 62
+                      min_weight: 1
+                      base_courier_id: 62
+                      name: FedEx Surface 1 Kg
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: FedEx Surface 1 Kg
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/FEDEX-SURFACE.png
+                        small_logo: post_order/img/courier/thumb/fedex.jpg
+                        email_logo_s3_path: fedex.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Not Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-06-21'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 1
+                      min_weight: 0.5
+                      base_courier_id: 1
+                      name: Blue Dart
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: Blue Dart
+                      service_type: 1
+                      mode: 1
+                      image:
+                        logo: post_order/img/courier/BLUEDART.png
+                        small_logo: post_order/img/courier/thumb/bluedart.jpg
+                        email_logo_s3_path: Bluedart.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-03-12'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+                    - is_own_key_courier: 0
+                      ownkey_courier_id: 0
+                      id: 55
+                      min_weight: 0.5
+                      base_courier_id: 55
+                      name: Blue Dart Surface
+                      use_sr_postcodes: 1
+                      type: 1
+                      status: 1
+                      courier_type: 0
+                      master_company: Blue Dart Surface
+                      service_type: 1
+                      mode: 0
+                      image:
+                        logo: post_order/img/courier/DARTPLUS.png
+                        small_logo: post_order/img/courier/thumb/bluedart.jpg
+                        email_logo_s3_path: Bluedart.png
+                      realtime_tracking: Real Time
+                      delivery_boy_contact: Available
+                      pod_available: Instant
+                      call_before_delivery: Available
+                      activated_date: '2021-03-12'
+                      newest_date: null
+                      shipment_count: ''
+                      is_hyperlocal: 0
+              schema:
+                type: object
+                properties:
+                  total_courier_count:
+                    type: integer
+                  serviceable_pincodes_count:
+                    type: integer
+                  pickup_pincodes_count:
+                    type: integer
+                  total_rto_count:
+                    type: integer
+                  total_oda_count:
+                    type: integer
+                  courier_count:
+                    type: integer
+                  courier_data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        is_own_key_courier:
+                          type: integer
+                        ownkey_courier_id:
+                          type: integer
+                        id:
+                          type: integer
+                        min_weight:
+                          type: integer
+                        base_courier_id:
+                          type: integer
+                        name:
+                          type: string
+                        use_sr_postcodes:
+                          type: integer
+                        type:
+                          type: integer
+                        status:
+                          type: integer
+                        courier_type:
+                          type: integer
+                        master_company:
+                          type: string
+                        service_type:
+                          type: integer
+                        mode:
+                          type: integer
+                        image:
+                          type: object
+                          properties:
+                            logo:
+                              type: string
+                            small_logo:
+                              type: string
+                            email_logo_s3_path:
+                              type: string
+                        realtime_tracking:
+                          type: string
+                        delivery_boy_contact:
+                          type: string
+                        pod_available:
+                          type: string
+                        call_before_delivery:
+                          type: string
+                        activated_date:
+                          type: string
+                        newest_date: {}
+                        shipment_count:
+                          type: string
+                        is_hyperlocal:
+                          type: integer
+  /v1/external/courier/serviceability:
+    get:
+      summary: Check Courier Serviceability
+      description: 'Use this API to check the availability of couriers between the pickup and delivery postal codes. Further details like the estimated time of delivery, the rates along with the ids are also shown.
+
+        Note:
+
+        One of either the ''order_id'' or ''cod'' and ''weight'' is required. If you specify the order id, the cod and weight fields are not required and vice versa.
+
+        You can add further fields to add the shipment details and filter the search.
+
+        Parameters:'
+      operationId: checkCourierServiceability
+      tags:
+      - Couriers
+      parameters:
+      - name: pickup_postcode
+        in: query
+        schema:
+          type: integer
+        description: Postcode from where the order will be picked.
+        required: true
+      - name: delivery_postcode
+        in: query
+        schema:
+          type: integer
+        description: Postcode where the order will be delivered
+        required: true
+      - name: order_id
+        in: query
+        schema:
+          type: integer
+        description: If order id is already created in Shiprocket panel then you can use this shiprocket order id in servicibility
+      - name: cod
+        in: query
+        schema:
+          type: boolean
+        description: 1 for Cash on Delivery and 0 for Prepaid orders.
+      - name: weight
+        in: query
+        schema:
+          type: string
+        description: The weight of shipment in kgs.
+      - name: length
+        in: query
+        schema:
+          type: integer
+        description: The length of the shipment in cms.
+      - name: breadth
+        in: query
+        schema:
+          type: integer
+        description: The breadth of the shipment in cms.
+      - name: height
+        in: query
+        schema:
+          type: integer
+        description: The height of the shipment in cms.
+      - name: declared_value
+        in: query
+        schema:
+          type: integer
+        description: The price of the order shipment in rupees.
+      - name: mode
+        in: query
+        schema:
+          type: string
+        description: 'The mode of travel. Either: Surface or Air'
+      - name: is_return
+        in: query
+        schema:
+          type: integer
+        description: Whether the order is a return order or not. 1 in case of Yes and 0 for No. (declared_value field is required in case you use this parameter)
+      - name: couriers_type
+        in: query
+        schema:
+          type: integer
+        description: Use this to filter out and show only "documents" couriers like XB documents, etc. The only accepted value is 1.
+      - name: only_local
+        in: query
+        schema:
+          type: integer
+        description: Use this to filter out and show only Hyperlocal couriers. The only accepted value is 1.
+      - name: qc_check
+        in: query
+        schema:
+          type: integer
+        description: Use this filter to show only the QC-enabled couriers. is_return has to be set to 1
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    company_auto_shipment_insurance_setting: true
+                    covid_zones:
+                      delivery_zone: null
+                      pickup_zone: null
+                    currency: INR
+                    data:
+                      available_courier_companies:
+                      - air_max_weight: '0.00'
+                        assured_amount: 0
+                        base_courier_id: null
+                        base_weight: ''
+                        blocked: 0
+                        call_before_delivery: Available
+                        charge_weight: 0.5
+                        city: Mandi
+                        cod: 1
+                        cod_charges: 0
+                        cod_multiplier: 0.01
+                        cost: ''
+                        courier_company_id: 43
+                        courier_name: Delhivery Surface
+                        courier_type: '0'
+                        coverage_charges: 0
+                        cutoff_time: '11:00'
+                        delivery_boy_contact: Not Available
+                        delivery_performance: 5
+                        description: ''
+                        edd: ''
+                        entry_tax: 0
+                        estimated_delivery_days: '4'
+                        etd: Jul 01, 2024
+                        etd_hours: 91
+                        freight_charge: 54
+                        id: 459245934
+                        is_custom_rate: 1
+                        is_hyperlocal: false
+                        is_international: 0
+                        is_rto_address_available: true
+                        is_surface: true
+                        local_region: 0
+                        metro: 0
+                        min_weight: 0.5
+                        mode: 0
+                        new_edd: 0
+                        odablock: false
+                        other_charges: 0
+                        others: '{"allow_postcode_auto_sync":1,"cancel_real_time":true}'
+                        pickup_availability: '0'
+                        pickup_performance: 4.7
+                        pickup_priority: ''
+                        pickup_supress_hours: 0
+                        pod_available: Instant
+                        postcode: '175019'
+                        qc_courier: 0
+                        rank: ''
+                        rate: 54
+                        rating: 4.9
+                        realtime_tracking: Real Time
+                        region: 1
+                        rto_charges: 54
+                        rto_performance: 5
+                        seconds_left_for_pickup: 0
+                        secure_shipment_disabled: false
+                        ship_type: 1
+                        state: Himachal Pradesh
+                        suppress_date: ''
+                        suppress_text: ''
+                        suppression_dates: null
+                        surface_max_weight: '4.00'
+                        tracking_performance: 5
+                        volumetric_max_weight: null
+                        weight_cases: 4.6
+                        zone: z_e
+                      - air_max_weight: '0.00'
+                        assured_amount: 0
+                        base_courier_id: null
+                        base_weight: ''
+                        blocked: 0
+                        call_before_delivery: Available
+                        charge_weight: 2
+                        city: MANDI
+                        cod: 1
+                        cod_charges: 0
+                        cod_multiplier: 0
+                        cost: ''
+                        courier_company_id: 225
+                        courier_name: India Post-Business Parcel Surface Prepaid
+                        courier_type: '0'
+                        coverage_charges: 8.71
+                        cutoff_time: '10:00'
+                        delivery_boy_contact: Not Available
+                        delivery_performance: 4.5
+                        description: ''
+                        edd: ''
+                        entry_tax: 0
+                        estimated_delivery_days: '8'
+                        etd: Jul 05, 2024
+                        etd_hours: 184
+                        freight_charge: 123.9
+                        id: 396397972
+                        is_custom_rate: 0
+                        is_hyperlocal: false
+                        is_international: 0
+                        is_rto_address_available: true
+                        is_surface: true
+                        local_region: 0
+                        metro: 0
+                        min_weight: 2
+                        mode: 0
+                        new_edd: 0
+                        odablock: false
+                        other_charges: 0
+                        others: '{"cancel_real_time":true}'
+                        pickup_availability: '0'
+                        pickup_performance: 4.4
+                        pickup_priority: ''
+                        pickup_supress_hours: 0
+                        pod_available: On Request
+                        postcode: '175019'
+                        qc_courier: 0
+                        rank: ''
+                        rate: 123.9
+                        rating: 4.4
+                        realtime_tracking: Real Time
+                        region: 5
+                        rto_charges: 0
+                        rto_performance: 4.4
+                        seconds_left_for_pickup: 0
+                        secure_shipment_disabled: false
+                        ship_type: 1
+                        state: HIMACHAL PRADESH
+                        suppress_date: ''
+                        suppress_text: ''
+                        suppression_dates:
+                          action_on: '2023-11-11 20:29:04'
+                          delay_remark: Festival
+                          delivery_delay_by: 2065762
+                          delivery_delay_days: '1'
+                          delivery_delay_from: '2023-11-13'
+                          delivery_delay_to: '2023-11-13'
+                          pickup_delay_by: 2065762
+                          pickup_delay_days: '1'
+                          pickup_delay_from: '2023-11-13'
+                          pickup_delay_to: '2023-11-13'
+                        surface_max_weight: '35.00'
+                        tracking_performance: 4.5
+                        volumetric_max_weight: 35
+                        weight_cases: 4.2
+                        zone: z_e
+                      - air_max_weight: '0.00'
+                        assured_amount: 0
+                        base_courier_id: null
+                        base_weight: ''
+                        blocked: 0
+                        call_before_delivery: Available
+                        charge_weight: 2
+                        city: SUNDERNAGAR
+                        cod: 1
+                        cod_charges: 0
+                        cod_multiplier: 0
+                        cost: ''
+                        courier_company_id: 19
+                        courier_name: Ecom Express Surface 2kg
+                        courier_type: '0'
+                        coverage_charges: 0
+                        cutoff_time: '11:00'
+                        delivery_boy_contact: Not Available
+                        delivery_performance: 5
+                        description: ''
+                        edd: ''
+                        entry_tax: 0
+                        estimated_delivery_days: '6'
+                        etd: Jul 03, 2024
+                        etd_hours: 144
+                        freight_charge: 150.12
+                        id: 456774028
+                        is_custom_rate: 0
+                        is_hyperlocal: false
+                        is_international: 0
+                        is_rto_address_available: true
+                        is_surface: true
+                        local_region: 0
+                        metro: 0
+                        min_weight: 2
+                        mode: 0
+                        new_edd: 0
+                        odablock: false
+                        other_charges: 0
+                        others: '{"allow_postcode_auto_sync":1,"cancel_real_time":true,"wec":1}'
+                        pickup_availability: '0'
+                        pickup_performance: 4.5
+                        pickup_priority: ''
+                        pickup_supress_hours: 0
+                        pod_available: Instant
+                        postcode: '175019'
+                        qc_courier: 0
+                        rank: ''
+                        rate: 150.12
+                        rating: 4.62
+                        realtime_tracking: Real Time
+                        region: 1
+                        rto_charges: 142.6
+                        rto_performance: 5
+                        seconds_left_for_pickup: 0
+                        secure_shipment_disabled: false
+                        ship_type: 1
+                        state: HIMACHAL PRADESH
+                        suppress_date: ''
+                        suppress_text: ''
+                        suppression_dates:
+                          action_on: '2024-06-15 23:27:37'
+                          delay_remark: Festival
+                          delivery_delay_by: 2065762
+                          delivery_delay_days: '1'
+                          delivery_delay_from: '2024-06-17'
+                          delivery_delay_to: '2024-06-17'
+                          pickup_delay_by: 2065762
+                          pickup_delay_days: '1'
+                          pickup_delay_from: '2024-06-17'
+                          pickup_delay_to: '2024-06-17'
+                        surface_max_weight: '30.00'
+                        tracking_performance: 4
+                        volumetric_max_weight: null
+                        weight_cases: 4.6
+                        zone: z_e
+                      blocked_courier_companies:
+                      - block_reason: Operational Issues
+                        courier_company_id: 33
+                        courier_name: Xpressbees Air
+                        postcode: '175019'
+                      child_courier_id: null
+                      is_recommendation_enabled: 1
+                      recommendation_advance_rule: 0
+                      recommended_by:
+                        id: 6
+                        title: Recommendation By Shiprocket
+                      recommended_courier_company_id: 43
+                      shiprocket_recommended_courier_id: 43
+                    dg_courier: 0
+                    eligible_for_insurance: false
+                    insurace_opted_at_order_creation: false
+                    is_allow_templatized_pricing: true
+                    is_latlong: 0
+                    is_old_zone_opted: false
+                    is_zone_from_mongo: true
+                    label_generate_type: 2
+                    on_new_zone: 2
+                    seller_address: []
+                    status: 200
+                    user_insurance_manadatory: false
+                Invalid-Data:
+                  value:
+                    status: 404
+                    message: Order does not exist!
+              schema:
+                type: object
+                properties:
+                  company_auto_shipment_insurance_setting:
+                    type: boolean
+                  covid_zones:
+                    type: object
+                    properties:
+                      delivery_zone: {}
+                      pickup_zone: {}
+                  currency:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      available_courier_companies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            air_max_weight:
+                              type: string
+                            assured_amount:
+                              type: integer
+                            base_courier_id: {}
+                            base_weight:
+                              type: string
+                            blocked:
+                              type: integer
+                            call_before_delivery:
+                              type: string
+                            charge_weight:
+                              type: number
+                            city:
+                              type: string
+                            cod:
+                              type: integer
+                            cod_charges:
+                              type: integer
+                            cod_multiplier:
+                              type: number
+                            cost:
+                              type: string
+                            courier_company_id:
+                              type: integer
+                            courier_name:
+                              type: string
+                            courier_type:
+                              type: string
+                            coverage_charges:
+                              type: integer
+                            cutoff_time:
+                              type: string
+                            delivery_boy_contact:
+                              type: string
+                            delivery_performance:
+                              type: integer
+                            description:
+                              type: string
+                            edd:
+                              type: string
+                            entry_tax:
+                              type: integer
+                            estimated_delivery_days:
+                              type: string
+                            etd:
+                              type: string
+                            etd_hours:
+                              type: integer
+                            freight_charge:
+                              type: integer
+                            id:
+                              type: integer
+                            is_custom_rate:
+                              type: integer
+                            is_hyperlocal:
+                              type: boolean
+                            is_international:
+                              type: integer
+                            is_rto_address_available:
+                              type: boolean
+                            is_surface:
+                              type: boolean
+                            local_region:
+                              type: integer
+                            metro:
+                              type: integer
+                            min_weight:
+                              type: number
+                            mode:
+                              type: integer
+                            new_edd:
+                              type: integer
+                            odablock:
+                              type: boolean
+                            other_charges:
+                              type: integer
+                            others:
+                              type: string
+                            pickup_availability:
+                              type: string
+                            pickup_performance:
+                              type: number
+                            pickup_priority:
+                              type: string
+                            pickup_supress_hours:
+                              type: integer
+                            pod_available:
+                              type: string
+                            postcode:
+                              type: string
+                            qc_courier:
+                              type: integer
+                            rank:
+                              type: string
+                            rate:
+                              type: integer
+                            rating:
+                              type: number
+                            realtime_tracking:
+                              type: string
+                            region:
+                              type: integer
+                            rto_charges:
+                              type: integer
+                            rto_performance:
+                              type: integer
+                            seconds_left_for_pickup:
+                              type: integer
+                            secure_shipment_disabled:
+                              type: boolean
+                            ship_type:
+                              type: integer
+                            state:
+                              type: string
+                            suppress_date:
+                              type: string
+                            suppress_text:
+                              type: string
+                            suppression_dates: {}
+                            surface_max_weight:
+                              type: string
+                            tracking_performance:
+                              type: integer
+                            volumetric_max_weight: {}
+                            weight_cases:
+                              type: number
+                            zone:
+                              type: string
+                      blocked_courier_companies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            block_reason:
+                              type: string
+                            courier_company_id:
+                              type: integer
+                            courier_name:
+                              type: string
+                            postcode:
+                              type: string
+                      child_courier_id: {}
+                      is_recommendation_enabled:
+                        type: integer
+                      recommendation_advance_rule:
+                        type: integer
+                      recommended_by:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          title:
+                            type: string
+                      recommended_courier_company_id:
+                        type: integer
+                      shiprocket_recommended_courier_id:
+                        type: integer
+                  dg_courier:
+                    type: integer
+                  eligible_for_insurance:
+                    type: boolean
+                  insurace_opted_at_order_creation:
+                    type: boolean
+                  is_allow_templatized_pricing:
+                    type: boolean
+                  is_latlong:
+                    type: integer
+                  is_old_zone_opted:
+                    type: boolean
+                  is_zone_from_mongo:
+                    type: boolean
+                  label_generate_type:
+                    type: integer
+                  on_new_zone:
+                    type: integer
+                  seller_address:
+                    type: array
+                    items: {}
+                  status:
+                    type: integer
+                  user_insurance_manadatory:
+                    type: boolean
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Required field missing
+                    errors:
+                      weight:
+                      - The weight field is required when order id is not present.
+                      cod:
+                      - The cod field is required when order id is not present.
+                      order_id:
+                      - The order id field is required when pickup postcode / delivery postcode / cod / weight is not present.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      weight:
+                        type: array
+                        items:
+                          type: string
+                      cod:
+                        type: array
+                        items:
+                          type: string
+                      order_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/generate/pickup:
+    post:
+      summary: Request for Shipment Pickup
+      description: 'Use this API to create a pickup request for your order shipment. The API returns the pickup status along with the estimated pickup time. You will have to call the ''Generate Manifest'' API after the successful response of this API.
+
+        Note:
+
+        The AWB must be already generated for the shipment id to generate the pickup request.
+
+        Only one shipment_id can be passed at a time.
+
+        In case the pickup_date falls on a holiday or Sunday, the shipment will be booked for the next available date.
+
+        Parameters:'
+      operationId: requestForShipmentPickup
+      tags:
+      - Couriers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: The shipment id of the shipment which is requested for pickup.
+              required:
+              - shipment_id
+            example:
+              shipment_id:
+              - 16090109
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    pickup_status: 1
+                    response:
+                      pickup_scheduled_date: '2021-12-10 12:39:54'
+                      pickup_token_number: 'Reference No: 194_BIGFOOT 1966840_11122021'
+                      status: 3
+                      others: '{"tier_id":5,"etd_zone":"z_e","etd_hours":"{\"assign_to_pick\":6.9000000000000004,\"pick_to_ship\":22.600000000000001,\"ship_to_deliver\":151.40000000000001,\"etd_zone\":\"z_e\",\"pick_to_ship_table\":\"dev_etd_pickup_to_ship\",\"ship_to_deliver_table\":\"dev_etd_ship_to_deliver\"}","actual_etd":"2021-12-18 00:36:03","routing_code":"S2\/S-69\/1B\/016","addition_in_etd":["deduction_of_6_and_half_hours"],"shipment_metadata":{"type":"ship","device":"WebKit","platform":"desktop","client_ip":"94.237.77.195","created_at":"2021-12-10 12:36:03","request_type":"web"},"templatized_pricing":0,"selected_courier_type":"Best in price","recommended_courier_data":{"etd":"Dec 19, 2021","price":153,"rating":3.6,"courier_id":54},"recommendation_advance_rule":null,"dynamic_weight":"1.00"}'
+                      pickup_generated_date:
+                        date: '2021-12-10 12:39:54.034695'
+                        timezone_type: 3
+                        timezone: Asia/Kolkata
+                      data: Pickup is confirmed by Xpressbees 1kg For AWB :- 143254213727423
+              schema:
+                type: object
+                properties:
+                  pickup_status:
+                    type: integer
+                  response:
+                    type: object
+                    properties:
+                      pickup_scheduled_date:
+                        type: string
+                      pickup_token_number:
+                        type: string
+                      status:
+                        type: integer
+                      others:
+                        type: string
+                      pickup_generated_date:
+                        type: object
+                        properties:
+                          date:
+                            type: string
+                          timezone_type:
+                            type: integer
+                          timezone:
+                            type: string
+                      data:
+                        type: string
+        '400':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Invalid shipment id
+                    status_code: 400
+                Invalid-Data:
+                  value:
+                    message: Invalid shipment id
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/blocked-pincodes/upload:
+    post:
+      summary: Upload Blocked Pincodes
+      description: 'Adds pincodes to the seller''s delivery‑block list, or removes them.
+
+        The block action runs per‑pincode classification — valid entries are saved, invalid or duplicate entries are recorded in Activity Logs as a downloadable CSV instead of failing the whole request. The unblock action is all‑or‑nothing : the first invalid pincode aborts the call.
+
+        Authentication
+
+        Pass the bearer token via header or query parameter:
+
+        Request Body Parameters
+
+        Notes
+
+        Idempotency — block is naturally idempotent. unblock is similarly idempotent for already‑removed pincodes.
+
+        Request size cap — 1 MiB.
+
+        Unblock does not write to Activity Logs — only block produces a per‑pincode result CSV; unblock surfaces the first malformed entry inline in the response.
+
+        Timestamps — stored in IST ( Asia/Kolkata ).'
+      operationId: uploadBlockedPincodes
+      tags:
+      - Couriers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postcode:
+                  type: object
+                  properties:
+                    delivery_blocked:
+                      type: array
+                      items:
+                        type: string
+                action:
+                  type: string
+            example:
+              postcode:
+                delivery_blocked:
+                - '110001'
+                - '560034'
+              action: block
+      responses:
+        '200':
+          description: Success (no example response published in the collection)
+      servers:
+      - url: https://serviceability.shiprocket.in
+        description: Serviceability service host (as published in the collection)
+  /v1/external/block-pincodes/get:
+    get:
+      summary: Get Blocked Pincodes
+      description: 'Reads the seller''s delivery‑block list. Multi‑mode — the mode is selected by query parameters:
+
+        Only delivery_blocked data is exposed.
+
+        Authentication
+
+        Pass the bearer token via header or query parameter:
+
+        Query Parameters
+
+        Mode Precedence
+
+        is_download=1 — wins over everything
+
+        search (non‑empty after trim) — wins over pagination
+
+        Default — paginated list
+
+        Notes
+
+        Search isn''t validated server‑side — pass any string; the server does prefix matching as‑is.
+
+        CSV download URL is presigned for 24 hours — generate a fresh link by calling the endpoint again after expiry.
+
+        per_page is silently capped at 15; values above 15 are treated as 15.'
+      operationId: getBlockedPincodes
+      tags:
+      - Couriers
+      responses:
+        '200':
+          description: Paginated List — Default Page
+          content:
+            application/json:
+              examples:
+                Paginated-List-Default-Page:
+                  value:
+                    data:
+                      delivery_blocked:
+                      - '110001'
+                      - '110002'
+                      - '110003'
+                      - '110004'
+                      - '110005'
+                      - '110006'
+                      - '110007'
+                      - '110008'
+                      - '110009'
+                      - '110010'
+                      - '110011'
+                      - '110012'
+                      - '110013'
+                      - '110014'
+                      - '110015'
+                      total: 42
+                      per_page: 15
+                      current_page: 1
+                      last_page: 3
+                Paginated-List-Custom-Page-Size:
+                  value:
+                    data:
+                      delivery_blocked:
+                      - '110006'
+                      - '110007'
+                      - '110008'
+                      - '110009'
+                      - '110010'
+                      total: 42
+                      per_page: 5
+                      current_page: 2
+                      last_page: 9
+                Paginated-List-Page-Beyond-Data:
+                  value:
+                    data:
+                      delivery_blocked: []
+                      total: 42
+                      per_page: 15
+                      current_page: 99
+                      last_page: 3
+                Paginated-List-No-Blocked-Pincodes:
+                  value:
+                    data:
+                      delivery_blocked: []
+                      total: 0
+                      per_page: 15
+                      current_page: 1
+                      last_page: 1
+                Prefix-Search-Matching-Results:
+                  value:
+                    data:
+                      delivery_blocked:
+                      - '110001'
+                      - '110002'
+                      - '110003'
+                      - '110004'
+                      - '110005'
+                Prefix-Search-No-Matches:
+                  value:
+                    data:
+                      delivery_blocked: []
+                CSV-Download-With-Data:
+                  value:
+                    data:
+                      url: https://s3.amazonaws.com/shiprocket-blocked-pincodes/seller_123_blocked.csv?X-Amz-Expires=86400&X-Amz-Signature=abc123
+                CSV-Download-No-Data:
+                  value:
+                    data:
+                      url: null
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      delivery_blocked:
+                        type: array
+                        items:
+                          type: string
+                      total:
+                        type: integer
+                      per_page:
+                        type: integer
+                      current_page:
+                        type: integer
+                      last_page:
+                        type: integer
+        '400':
+          description: Error — Invalid Pagination Params
+          content:
+            application/json:
+              examples:
+                Error-Invalid-Pagination-Params:
+                  value:
+                    message: The per page must be at least 1. The current page must be at least 1.
+                    errors:
+                      per_page:
+                      - The per page must be at least 1.
+                      current_page:
+                      - The current page must be at least 1.
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      per_page:
+                        type: array
+                        items:
+                          type: string
+                      current_page:
+                        type: array
+                        items:
+                          type: string
+        '401':
+          description: Error — Unauthorized
+          content:
+            application/json:
+              examples:
+                Error-Unauthorized:
+                  value:
+                    message: Unauthenticated.
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Error — Internal Server Error
+          content:
+            application/json:
+              examples:
+                Error-Internal-Server-Error:
+                  value:
+                    message: Internal server error.
+                Error-CSV-Generation-Failed:
+                  value:
+                    message: Failed to generate CSV. Please try again later.
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      servers:
+      - url: https://serviceability.shiprocket.in
+        description: Serviceability service host (as published in the collection)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

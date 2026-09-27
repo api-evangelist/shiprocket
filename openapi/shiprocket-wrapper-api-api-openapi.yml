@@ -1,0 +1,620 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Wrapper API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Wrapper API
+  description: This is an all-in-one API to create an order, ship the order, add a new pickup location and generate a label along with the manifest for the same.
+paths:
+  /v1/external/shipments/create/forward-shipment:
+    post:
+      summary: Forward
+      description: 'Use this API to do multiple tasks in one go, namely creating a quick order, requesting its shipment, and finally generating the label and the manifest for the same order.
+
+        This API integrates several other APIs to perform all these tasks together.
+
+        Notes:
+
+        Use the ''vendor_details'' array to add a new pickup location to your account and assign it to your order.
+
+        The ''pickup_location'' field must contain a new pickup location name for adding a new pickup location to your Shiprocket account.
+
+        In case of multiple items per order, please pass the final weight (sum total weight of items) of the shipment.
+
+        Parameters:'
+      operationId: forward
+      tags:
+      - Wrapper API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  description: 'The mode of shipment, either surface or air. Value : Surface or Air'
+                request_pickup:
+                  type: boolean
+                  description: Use false if you dont want to request pickup. Default value is true.
+                print_label:
+                  type: boolean
+                  description: Use false if you dont want to print label. Default value is true.
+                generate_manifest:
+                  type: boolean
+                  description: Use false if you dont want to generate manifest. Default value is true.
+                ewaybill_no:
+                  type: string
+                courier_id:
+                  type: integer
+                  description: The courier id of the courier you want to assign. Refer to the servicability API to get id.
+                reseller_name:
+                  type: string
+                  description: To display the vendor name on the label
+                order_id:
+                  type: string
+                  description: The custom reference id you want to assign to the order.
+                isd_code:
+                  type: string
+                  description: The isd code
+                billing_isd_code:
+                  type: string
+                  description: The billing isd code.
+                order_date:
+                  type: string
+                  description: The date of the creation of order.
+                channel_id:
+                  type: string
+                  description: The channel id of the specific channel. Use the Channels API to get id.
+                company_name:
+                  type: string
+                  description: Name of the company.
+                billing_customer_name:
+                  type: string
+                  description: The first name of customer to be billed.
+                billing_last_name:
+                  type: string
+                  description: The last name of the billing customer.
+                billing_address:
+                  type: string
+                  description: The primary billing address.
+                billing_address_2:
+                  type: string
+                  description: Additional billing address details.
+                billing_city:
+                  type: string
+                  description: The billing city.
+                billing_state:
+                  type: string
+                  description: The billing address state.
+                billing_country:
+                  type: string
+                  description: The billing address country.
+                billing_pincode:
+                  type: integer
+                  description: The pincode of the billing address.
+                billing_email:
+                  type: string
+                  description: The billing customer email.
+                billing_phone:
+                  type: integer
+                  description: The billing customer phone.
+                billing_alternate_phone:
+                  type: integer
+                  description: The billing customer alternate phone.
+                shipping_is_billing:
+                  type: boolean
+                  description: Whether shipping details are the same as billing details. true for yes false for no.
+                shipping_customer_name:
+                  type: string
+                  description: Shipping customer's first name.
+                shipping_last_name:
+                  type: string
+                  description: Shipping customer's last name.
+                shipping_address:
+                  type: string
+                  description: The shipping address.
+                shipping_address_2:
+                  type: string
+                  description: Additional shipping address details.
+                shipping_city:
+                  type: string
+                  description: The shipping city.
+                shipping_state:
+                  type: string
+                  description: The state of the shipping address.
+                shipping_country:
+                  type: string
+                  description: The shipping address country.
+                shipping_pincode:
+                  type: integer
+                  description: Shipping pincode.
+                shipping_email:
+                  type: string
+                  description: The email of the shipping customer.
+                shipping_phone:
+                  type: integer
+                  description: The phone number of the shipping customer.
+                order_items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      sku:
+                        type: string
+                      units:
+                        type: string
+                      hsn:
+                        type: string
+                      selling_price:
+                        type: string
+                      tax:
+                        type: string
+                      discount:
+                        type: string
+                  description: Array containing further parameters.
+                payment_method:
+                  type: string
+                  description: If the payment method is Cash on delivery ( COD ) or Prepaid .
+                shipping_charges:
+                  type: integer
+                  description: The shipping charges if any in rupees.
+                giftwrap_charges:
+                  type: integer
+                  description: The gift-wrap charges if any in rupees.
+                transaction_charges:
+                  type: integer
+                  description: The transaction charges if any in rupees.
+                total_discount:
+                  type: integer
+                  description: The discount amount in rupees.
+                sub_total:
+                  type: integer
+                  description: The sub total amount in rupees.
+                weight:
+                  type: integer
+                  description: The weight of the shipment in kgs.
+                length:
+                  type: integer
+                  description: The length of the shipment in cms. Must be more than 0.5
+                breadth:
+                  type: integer
+                  description: The breadth of the shipment in cms. Must be more than 0.5
+                height:
+                  type: integer
+                  description: The height of the shipment in cms. Must be more than 0.5
+                pickup_location:
+                  type: string
+                  description: 'New pickup location name. Max: 36 char. Alphanumeric only.'
+                customer_gstin:
+                  type: string
+                  description: Goods and Services Tax Identification Number.
+                vendor_details:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    phone:
+                      type: string
+                    name:
+                      type: string
+                    address:
+                      type: string
+                    address_2:
+                      type: string
+                    city:
+                      type: string
+                    state:
+                      type: string
+                    country:
+                      type: string
+                    pin_code:
+                      type: string
+                    pickup_location:
+                      type: string
+                  description: Array containing further parameters. Use to assign/add a new pickup location to your account.
+              required:
+              - order_id
+              - order_date
+              - billing_customer_name
+              - billing_address
+              - billing_city
+              - billing_state
+              - billing_country
+              - billing_pincode
+              - billing_email
+              - billing_phone
+              - shipping_is_billing
+              - order_items
+              - payment_method
+              - sub_total
+              - weight
+              - length
+              - breadth
+              - height
+              - pickup_location
+            example:
+              mode: ''
+              request_pickup: ''
+              print_label: ''
+              generate_manifest: ''
+              ewaybill_no: ''
+              courier_id: ''
+              reseller_name: ''
+              order_id: ''
+              isd_code: ''
+              billing_isd_code: ''
+              order_date: ''
+              channel_id: ''
+              company_name: ''
+              billing_customer_name: ''
+              billing_last_name: ''
+              billing_address: ''
+              billing_address_2: ''
+              billing_city: ''
+              billing_state: ''
+              billing_country: ''
+              billing_pincode: ''
+              billing_email: ''
+              billing_phone: ''
+              billing_alternate_phone: ''
+              shipping_is_billing: '1'
+              shipping_customer_name: ''
+              shipping_last_name: ''
+              shipping_address: ''
+              shipping_address_2: ''
+              shipping_city: ''
+              shipping_state: ''
+              shipping_country: ''
+              shipping_pincode: ''
+              shipping_email: ''
+              shipping_phone: ''
+              order_items:
+              - name: ''
+                sku: ''
+                units: ''
+                hsn: ''
+                selling_price: ''
+                tax: ''
+                discount: ''
+              payment_method: ''
+              shipping_charges: ''
+              giftwrap_charges: ''
+              transaction_charges: ''
+              total_discount: ''
+              sub_total: ''
+              weight: ''
+              length: ''
+              breadth: ''
+              height: ''
+              pickup_location: ''
+              customer_gstin: ''
+              vendor_details:
+                email: ''
+                phone: ''
+                name: ''
+                address: ''
+                address_2: ''
+                city: ''
+                state: ''
+                country: ''
+                pin_code: ''
+                pickup_location: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    status: 1
+                    payload:
+                      pickup_location_added: 0
+                      order_created: 1
+                      awb_generated: 1
+                      label_generated: 1
+                      pickup_generated: 1
+                      manifest_generated: 1
+                      pickup_scheduled_date: '2022-06-04 09:00:00'
+                      pickup_booked_date: null
+                      order_id: 222521420
+                      shipment_id: 222002884
+                      awb_code: '14326421307048'
+                      courier_company_id: 25
+                      courier_name: Xpressbees 5kg
+                      assigned_date_time:
+                        date: '2022-06-03 13:52:05.051557'
+                        timezone_type: 3
+                        timezone: Asia/Kolkata
+                      applied_weight: 10
+                      cod: 1
+                      label_url: https://kr-shipmultichannel.s3.ap-southeast-1.amazonaws.com/25149/labels/shipping-label-222002884-14326421307048.pdf
+                      manifest_url: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/25149/manifest/MANIFEST-4757.pdf
+                      routing_code: N/S-01/12B/2
+                      rto_routing_code: ''
+                      pickup_token_number: 'Reference No: 194_BIGFOOT 2540335_04062022'
+                Invalid-Data:
+                  value:
+                    status: 0
+                    payload:
+                      action: Adding pickup location
+                      error_message: Oops! Invalid Data.
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  payload:
+                    type: object
+                    properties:
+                      pickup_location_added:
+                        type: integer
+                      order_created:
+                        type: integer
+                      awb_generated:
+                        type: integer
+                      label_generated:
+                        type: integer
+                      pickup_generated:
+                        type: integer
+                      manifest_generated:
+                        type: integer
+                      pickup_scheduled_date:
+                        type: string
+                      pickup_booked_date: {}
+                      order_id:
+                        type: integer
+                      shipment_id:
+                        type: integer
+                      awb_code:
+                        type: string
+                      courier_company_id:
+                        type: integer
+                      courier_name:
+                        type: string
+                      assigned_date_time:
+                        type: object
+                        properties:
+                          date:
+                            type: string
+                          timezone_type:
+                            type: integer
+                          timezone:
+                            type: string
+                      applied_weight:
+                        type: integer
+                      cod:
+                        type: integer
+                      label_url:
+                        type: string
+                      manifest_url:
+                        type: string
+                      routing_code:
+                        type: string
+                      rto_routing_code:
+                        type: string
+                      pickup_token_number:
+                        type: string
+        '422':
+          description: Missing Data
+          content:
+            application/json:
+              examples:
+                Missing-Data:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      order_id:
+                      - The order id field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      order_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/shipments/create/return-shipment:
+    post:
+      summary: Return
+      description: 'Use this API to perform multiple tasks like Create, AWB generation & scheduling reverse pickups for your Returns. The specifications are the same as the custom return order API, with a few exceptions.
+
+        Notes:
+
+        pickup_location field is not required.
+
+        Label and Manifest are not required in case of returns.
+
+        Parameters:'
+      operationId: return
+      tags:
+      - Wrapper API
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+            example: '{
+
+              "order_id": "",
+
+              "order_date": "",
+
+              "channel_id": "",
+
+              "pickup_customer_name": "",
+
+              "pickup_last_name": "",
+
+              "company_name":"",
+
+              "pickup_address": "",
+
+              "pickup_address_2": "",
+
+              "pickup_city": "",
+
+              "pickup_state": "",
+
+              "pickup_country": "",
+
+              "pickup_pincode": ,
+
+              "pickup_email": "",
+
+              "pickup_phone": "",
+
+              "pickup_isd_code": "",
+
+              "shipping_customer_name": "",
+
+              "shipping_last_name": "",
+
+              "shipping_address": "",
+
+              "shipping_address_2": "",
+
+              "shipping_city": "",
+
+              "shipping_country": "",
+
+              "shipping_pincode": ,
+
+              "shipping_state": "",
+
+              "shipping_email": "",
+
+              "shipping_isd_code": "",
+
+              "shipping_phone": ,
+
+              "order_items": [
+
+              {
+
+              "sku": "",
+
+              "name": "",
+
+              "units":"",
+
+              "selling_price":"",
+
+              "discount":""
+
+              }
+
+              ],
+
+              "payment_method": "",
+
+              "total_discount": "",
+
+              "sub_total":"",
+
+              "length":"",
+
+              "breadth":"",
+
+              "height":"",
+
+              "weight":"",
+
+              "request_pickup":""
+
+              }'
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            text/plain:
+              examples:
+                Successful-Call:
+                  value: '{
+
+                    "status": 1,
+
+                    "payload": {
+
+                    "order_created": 1,
+
+                    "awb_generated": 1,
+
+                    "pickup_generated": 1,
+
+                    "pickup_scheduled_date": "2022-02-17 09:00:00",
+
+                    "order_id": 186255214,
+
+                    "shipment_id": 185783600,
+
+                    "awb_code": "24112321126686",
+
+                    "courier_company_id": 125,
+
+                    "courier_name": "Xpressbees Reverse",
+
+                    "assigned_date_time": {
+
+                    "date": "2022-02-16 16:34:06.963419",
+
+                    "timezone_type": 3,
+
+                    "timezone": "Asia/Kolkata"
+
+                    },
+
+                    "applied_weight": 0.5,
+
+                    "cod": 0,
+
+                    "is_return": 1,
+
+                    "routing_code": "N/S-01/13B/015",
+
+                    "rto_routing_code": "",
+
+                    "pickup_token_number": "",
+
+                    }
+
+                    }'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

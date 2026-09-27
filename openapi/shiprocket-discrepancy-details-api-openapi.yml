@@ -1,0 +1,88 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Discrepancy Details API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Discrepancy Details
+  description: Use this API to get the discrepancy details of your account.
+paths:
+  /v1/external/billing/discrepancy:
+    get:
+      summary: Get Dicrepancy Data
+      description: 'Get the discrepancy data associated with your account, if any.
+
+        No parameters are required to use this API.
+
+        The data is displayed in JSON format.'
+      operationId: getDicrepancyData
+      tags:
+      - Discrepancy Details
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    status: 200
+                    data: []
+                    upper_fold_text: The entered weight for the below given shipment was incorrect. Please allow us to make deduction on the basis of correct charged weight as shared by the courier company.
+                    lower_fild_text: To raise a ticket for your queries, please call us on 011-39595108 or email us at support@shiprocket.in
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  data:
+                    type: array
+                    items: {}
+                  upper_fold_text:
+                    type: string
+                  lower_fild_text:
+                    type: string
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

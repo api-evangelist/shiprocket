@@ -1,0 +1,70 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Authentication API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Authentication API
+  description: The authentication token is an alphanumeric code, unique to your Shiprocket account, can be used from any system to validate your API calls to access Shiprocket's resources.
+paths:
+  /v1/external/auth/login:
+    post:
+      summary: Generate Token
+      operationId: generateToken
+      tags:
+      - Authentication API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              email: ''
+              password: ''
+      security: []
+      responses:
+        '200':
+          description: Success (no example response published in the collection)
+  /v1/external/auth/logout:
+    post:
+      summary: Token Logout
+      description: https://apiv2.shiprocket.in/v1/external/auth/logout
+      operationId: tokenLogout
+      tags:
+      - Authentication API
+      responses:
+        '200':
+          description: Success (no example response published in the collection)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

@@ -1,0 +1,1389 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Create Or Update Order API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Create Or Update Order
+  description: Using these APIs, you can create new orders in your Shiprocket account or update existing orders. You can also cancel an order, bulk import orders from a CSV file and update inventory for an ordered product.
+paths:
+  /v1/external/orders/create/adhoc:
+    post:
+      summary: Create Custom Order
+      description: 'Use this API to create a quick custom order. Quick orders are the ones where we do not store the product details in the master catalogue.
+
+        You have to pass all the required params at the minimum to create a quick custom order. You can add additional parameters as per your preference.
+
+        Note:
+
+        In case the ''shipping_is_billing'' field is false, further shipping detail fields are required.
+
+        If no channel id is passed, the order will be assigned to the default custom channel. If the channel id is not known, use the ''Get All Channels'' API to get the list of all integrated channels in your Shiprocket account.
+
+        order_id field cannot be equal to an already existing id. Doing so does not change or affect the existing order.
+
+        New orders cannot be created with order id''s same as that of cancelled orders. If error 422 shows up despite filling in the correct details, consider changing the order_id.
+
+        Be sure to input the correct calculated sub_total amount. The total is not calculated automatically through the API.
+
+        The ''order_id'' returned in the response is the Shiprocket order_id. Please save this order ID as we will use this in future API calls.
+
+        Parameters:'
+      operationId: createCustomOrder
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: 'The order id you want to specify to the order. Max char: 50. (Avoid passing character values as this contradicts some other API calls).'
+                order_date:
+                  type: string
+                  description: The date of order creation in yyyy-mm-dd format. Time is additional.
+                pickup_location:
+                  type: string
+                  description: The name of the pickup location added in your Shiprocket account. This cannot be a new location.
+                comment:
+                  type: string
+                  description: 'Option to add ''From'' field to the shipment. To do this, enter the name in the following format: ''Reseller: [name]''.'
+                reseller_name:
+                  type: string
+                  description: To display the vendor name on the label
+                company_name:
+                  type: string
+                  description: Name of the company.
+                billing_customer_name:
+                  type: string
+                  description: First name of the billed customer.
+                billing_last_name:
+                  type: string
+                  description: Last name of the billed customer.
+                billing_address:
+                  type: string
+                  description: address details of the billed customer.
+                billing_address_2:
+                  type: string
+                  description: Further address details of the billed customer.
+                billing_isd_code:
+                  type: string
+                  description: ISD code of the billing address.
+                billing_city:
+                  type: string
+                  description: 'Billing address city. Max char: 30.'
+                billing_pincode:
+                  type: integer
+                  description: Pincode of the billing address.
+                billing_state:
+                  type: string
+                  description: Billing address state.
+                billing_country:
+                  type: string
+                  description: Billing address country.
+                billing_email:
+                  type: string
+                  description: Email address of the billed customer.
+                billing_phone:
+                  type: integer
+                  description: The phone number of the billing customer.
+                billing_alternate_phone:
+                  type: integer
+                  description: Alternate phone number of the billing customer.
+                shipping_is_billing:
+                  type: boolean
+                  description: Whether the shipping address is the same as billing address. 1 or 'true' for yes and 0 or 'false' for no.
+                shipping_customer_name:
+                  type: string
+                  description: Name of the customer the order is shipped to. Required in case billing is not same as shipping.
+                shipping_last_name:
+                  type: string
+                  description: Last name of the shipping customer.
+                shipping_address:
+                  type: string
+                  description: Address of the Shipping customer. Required in case billing is not same as shipping.
+                shipping_address_2:
+                  type: string
+                  description: Further address details of shipping customer.
+                shipping_city:
+                  type: string
+                  description: Shipping address city.
+                shipping_pincode:
+                  type: integer
+                  description: Shipping address pincode.
+                shipping_country:
+                  type: string
+                  description: Shipping address country.
+                shipping_state:
+                  type: string
+                  description: Shipping address state.
+                shipping_email:
+                  type: string
+                  description: Email of the shipping customer.
+                shipping_phone:
+                  type: integer
+                  description: Phone no. of the shipping customer.
+                order_items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      sku:
+                        type: string
+                      units:
+                        type: string
+                      selling_price:
+                        type: string
+                      discount:
+                        type: string
+                      tax:
+                        type: string
+                      hsn:
+                        type: string
+                  description: List of items and their relevant fields in the form of Array.
+                payment_method:
+                  type: string
+                  description: The method of payment. Can be either COD (Cash on delivery) Or Prepaid.
+                shipping_charges:
+                  type: integer
+                  description: Shipping charges if any in Rupee.
+                giftwrap_charges:
+                  type: integer
+                  description: Giftwrap charges if any in Rupee.
+                transaction_charges:
+                  type: integer
+                  description: Transaction charges if any in Rupee.
+                total_discount:
+                  type: integer
+                  description: The total discount amount in Rupee.
+                sub_total:
+                  type: integer
+                  description: Calculated sub total amount in Rupee after deductions.
+                length:
+                  type: number
+                  description: The length of the item in cms. Must be more than 0.5.
+                breadth:
+                  type: number
+                  description: The breadth of the item in cms. Must be more than 0.5.
+                height:
+                  type: number
+                  description: The height of the item in cms. Must be more than 0.5.
+                weight:
+                  type: number
+                  description: The weight of the item in kgs. Must be more than 0.
+                ewaybill_no:
+                  type: string
+                customer_gstin:
+                  type: string
+                  description: Goods and Services Tax Identification Number.
+                invoice_number:
+                  type: string
+                order_type:
+                  type: string
+                  description: Key to differentiate between Essentials or Non Essentials Shipments. Order type can only be ESSENTIALS or NON ESSENTIALS. Please note it is case sensitive and blank values are allowed.
+              required:
+              - order_id
+              - order_date
+              - pickup_location
+              - billing_customer_name
+              - billing_address
+              - billing_city
+              - billing_pincode
+              - billing_state
+              - billing_country
+              - billing_email
+              - billing_phone
+              - shipping_is_billing
+              - order_items
+              - payment_method
+              - sub_total
+              - length
+              - breadth
+              - height
+              - weight
+            example:
+              order_id: ''
+              order_date: ''
+              pickup_location: ''
+              comment: ''
+              reseller_name: ''
+              company_name: ''
+              billing_customer_name: ''
+              billing_last_name: ''
+              billing_address: ''
+              billing_address_2: ''
+              billing_isd_code: ''
+              billing_city: ''
+              billing_pincode: ''
+              billing_state: ''
+              billing_country: ''
+              billing_email: ''
+              billing_phone: ''
+              billing_alternate_phone: ''
+              shipping_is_billing: ''
+              shipping_customer_name: ''
+              shipping_last_name: ''
+              shipping_address: ''
+              shipping_address_2: ''
+              shipping_city: ''
+              shipping_pincode: ''
+              shipping_country: ''
+              shipping_state: ''
+              shipping_email: ''
+              shipping_phone: ''
+              order_items:
+              - name: ''
+                sku: ''
+                units: ''
+                selling_price: ''
+                discount: ''
+                tax: ''
+                hsn: ''
+              payment_method: ''
+              shipping_charges: ''
+              giftwrap_charges: ''
+              transaction_charges: ''
+              total_discount: ''
+              sub_total: ''
+              length: ''
+              breadth: ''
+              height: ''
+              weight: ''
+              ewaybill_no: ''
+              customer_gstin: ''
+              invoice_number: ''
+              order_type: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    order_id: 16161616
+                    shipment_id: 15151515
+                    status: NEW
+                    status_code: 1
+                    onboarding_completed_now: 0
+                    awb_code: null
+                    courier_company_id: null
+                    courier_name: null
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                  shipment_id:
+                    type: integer
+                  status:
+                    type: string
+                  status_code:
+                    type: integer
+                  onboarding_completed_now:
+                    type: integer
+                  awb_code: {}
+                  courier_company_id: {}
+                  courier_name: {}
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Given channel id does not exist
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      order_id:
+                      - The order id field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      order_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/create:
+    post:
+      summary: Create Channel Specific Order
+      description: 'This API can be used to create a custom order, the same as the Custom order API, except that you have to specify and select a custom channel to create the order.
+
+        The order created will be added under the specified channel. All the other parameters are the same.
+
+        Note:
+
+        Channel_id field is required.
+
+        Order_id cannot be the same as the already existing order id.
+
+        Inventory Sync must be turned on to use this API. This can be done under the ''Channels'' portion on the left-hand panel of your Shiprocket account.
+
+        Inventory details of your Shiprocket account can be accessed using the ''Get Inventory Details'' API.
+
+        Parameters:'
+      operationId: createChannelSpecificOrder
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: 'The order id you want to specify to the order. Max char: 20. (Avoid passing character values as this contradicts some other API calls).'
+                order_date:
+                  type: string
+                  description: The date of order creation in yyyy-mm-dd format. Time is an additional option.
+                pickup_location:
+                  type: string
+                  description: The name of the pickup location added in your Shiprocket account. This cannot be a new location. Default Pickup location is selected in case the parameter is not filled.
+                channel_id:
+                  type: integer
+                  description: The id of the specific channel to be selected.
+                comment:
+                  type: string
+                  description: 'Option to add ''From'' field to the shipment. To do this, enter the name in the following format: ''Reseller: [name].'''
+                billing_customer_name:
+                  type: string
+                  description: First name of the customer who is billed.
+                billing_last_name:
+                  type: string
+                  description: Last name of the billed customer.
+                billing_address:
+                  type: string
+                  description: 'Primary address of the billed customer. Min char: 3.'
+                billing_address_2:
+                  type: string
+                  description: Further address details of the billed customer.
+                billing_city:
+                  type: string
+                  description: 'Billing address city. Max char: 30.'
+                billing_pincode:
+                  type: integer
+                  description: Pincode of the billing address.
+                billing_state:
+                  type: string
+                  description: Billing address state.
+                billing_country:
+                  type: string
+                  description: Billing address country.
+                billing_email:
+                  type: string
+                  description: Email address of the billed customer.
+                billing_phone:
+                  type: integer
+                  description: Phone number of the billed customer.
+                shipping_is_billing:
+                  type: integer
+                  description: Whether the shipping address is the same as billing address. 1 or 'true' for yes and 0 or 'false' for no.
+                shipping_customer_name:
+                  type: string
+                  description: Name of the customer the order is shipped to. Required in case billing is not same as shipping.
+                shipping_last_name:
+                  type: string
+                  description: Last name of the shipping customer.
+                shipping_address:
+                  type: string
+                  description: Address of the Shipping customer. Required in case billing is not same as shipping.
+                shipping_address_2:
+                  type: string
+                  description: Further address details of shipping customer.
+                shipping_city:
+                  type: string
+                  description: Shipping address city.
+                shipping_pincode:
+                  type: integer
+                  description: Shipping address pincode.
+                shipping_country:
+                  type: string
+                  description: Shipping address country.
+                shipping_state:
+                  type: string
+                  description: Shipping address state.
+                shipping_email:
+                  type: string
+                  description: Email of the shipping customer.
+                shipping_phone:
+                  type: integer
+                  description: Phone no. of the shipping customer
+                order_items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      sku:
+                        type: string
+                      units:
+                        type: string
+                      selling_price:
+                        type: string
+                      discount:
+                        type: string
+                      tax:
+                        type: string
+                      hsn:
+                        type: string
+                  description: Array containing further fields.
+                payment_method:
+                  type: string
+                  description: The method of payment. Can be either COD (Cash on delivery) Or Prepaid.
+                shipping_charges:
+                  type: integer
+                  description: Shipping charges if any in Rupee.
+                giftwrap_charges:
+                  type: integer
+                  description: Giftwrap charges if any in Rupee.
+                transaction_charges:
+                  type: integer
+                  description: Transaction charges if any in Rupee.
+                total_discount:
+                  type: integer
+                  description: The total discount amount in Rupee.
+                sub_total:
+                  type: integer
+                  description: Calculated sub total amount in Rupee.
+                length:
+                  type: integer
+                  description: The length of the item in cms. Must be more than 0.5.
+                breadth:
+                  type: integer
+                  description: The breadth of the item in cms. Must be more than 0.5.
+                height:
+                  type: integer
+                  description: The height of the item in cms. Must be more than 0.5.
+                weight:
+                  type: integer
+                  description: The weight of the item in kgs. Must be more than 0.
+              required:
+              - order_id
+              - order_date
+              - channel_id
+              - billing_customer_name
+              - billing_address
+              - billing_city
+              - billing_pincode
+              - billing_state
+              - billing_country
+              - billing_email
+              - billing_phone
+              - shipping_is_billing
+              - order_items
+              - payment_method
+              - sub_total
+              - length
+              - breadth
+              - height
+              - weight
+            example:
+              order_id: '3167'
+              order_date: 2020-01-14 13:25
+              pickup_location: mrj
+              channel_id: '443555'
+              comment: fast and furious
+              billing_customer_name: rahul
+              billing_last_name: ''
+              billing_address: malviya nagar
+              billing_address_2: ''
+              billing_city: new delhi
+              billing_pincode: '273303'
+              billing_state: delhi
+              billing_country: india
+              billing_email: raushanra4@gmail.com
+              billing_phone: '9721562372'
+              shipping_is_billing: 1
+              shipping_customer_name: ''
+              shipping_last_name: ''
+              shipping_address: ''
+              shipping_address_2: ''
+              shipping_city: ''
+              shipping_pincode: ''
+              shipping_country: ''
+              shipping_state: ''
+              shipping_email: ''
+              shipping_phone: ''
+              order_items:
+              - name: shoes
+                sku: shoes123
+                units: '2'
+                selling_price: '1500'
+                discount: '100'
+                tax: '50'
+                hsn: ''
+              payment_method: COD
+              shipping_charges: ''
+              giftwrap_charges: ''
+              transaction_charges: ''
+              total_discount: ''
+              sub_total: '2950'
+              length: '10'
+              breadth: '10'
+              height: '10'
+              weight: '1.5'
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    order_id: 16161717
+                    shipment_id: 16000061
+                    status: NEW
+                    status_code: 1
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                  shipment_id:
+                    type: integer
+                  status:
+                    type: string
+                  status_code:
+                    type: integer
+        '422':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      channel_id:
+                      - The selected channel id is invalid.
+                    status_code: 422
+                Missing-Fields:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      channel_id:
+                      - The channel id field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      channel_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+        '400':
+          description: Inventory Sync Error
+          content:
+            application/json:
+              examples:
+                Inventory-Sync-Error:
+                  value:
+                    message: Inventory sync is turned off. Please add a manual order!
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/address/pickup:
+    patch:
+      summary: Change/Update Pickup Location of Created Orders
+      description: 'Using this API, you can modify the pickup location of an already created order. Multiple order ids can be passed to update their pickup location together.
+
+        Note:
+
+        Pickup location can only be changed/updated to an already existing pickup location in your account.
+
+        The ''order_id'' to be passed is the Shiprocket order_id received at the time of order creation.
+
+        Multiple order ids can be passed as an array, separated by commas. eg: ["141414,142424,143434"]
+
+        Parameters:'
+      operationId: changeUpdatePickupLocationOfCreatedOrders
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: array
+                  items: {}
+                  description: The Shiprocket order_id specified to the order.
+                pickup_location:
+                  type: string
+                  description: The pickup location you want to change your current pickup location to.
+              required:
+              - order_id
+              - pickup_location
+            example:
+              order_id: []
+              pickup_location: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    message: Pickup location Updated
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Pickup Code does not exist
+                    status_code: 400
+                Missing-Fields:
+                  value:
+                    message: Order Id does not exists
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '500':
+          description: Wrong Format
+          content:
+            application/json:
+              examples:
+                Wrong-Format:
+                  value:
+                    message: Invalid argument supplied for foreach()
+                    status_code: 500
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/address/update:
+    post:
+      summary: Update Customer Delivery Address
+      description: 'You can update the customer''s name and delivery address through this API by passing the Shiprocket order id and the necessary customer details.
+
+        Parameters:'
+      operationId: updateCustomerDeliveryAddress
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: integer
+                  description: The Shiprocket order_id specified to the order.
+                shipping_customer_name:
+                  type: string
+                  description: The name of the customer.
+                shipping_phone:
+                  type: integer
+                  description: Phone number of the customer.
+                shipping_address:
+                  type: string
+                  description: Primary address of the customer.
+                shipping_address_2:
+                  type: string
+                  description: Further address details of the customer.
+                shipping_city:
+                  type: string
+                  description: Shipping city name.
+                shipping_state:
+                  type: string
+                  description: Shipping state name.
+                shipping_country:
+                  type: string
+                  description: Shipping country name.
+                shipping_pincode:
+                  type: integer
+                  description: Shipping address pincode.
+                shipping_email:
+                  type: string
+                  description: Customer's email address.
+                billing_alternate_phone:
+                  type: string
+                  description: The customer alternate phone.
+              required:
+              - order_id
+              - shipping_customer_name
+              - shipping_phone
+              - shipping_address
+              - shipping_city
+              - shipping_state
+              - shipping_country
+              - shipping_pincode
+            example:
+              order_id: ''
+              shipping_customer_name: ''
+              shipping_phone: ''
+              shipping_address: ''
+              shipping_address_2: ''
+              shipping_city: ''
+              shipping_state: ''
+              shipping_country: ''
+              shipping_pincode: ''
+              shipping_email: ''
+              billing_alternate_phone: ''
+      responses:
+        '202':
+          description: Successful Call
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      shipping_country:
+                      - The shipping country field is required.
+                    status_code: 422
+                Invalid-Data:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      order_id:
+                      - The selected order id is invalid.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      shipping_country:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/update/adhoc:
+    post:
+      summary: Update Order
+      description: 'Use this API to update your orders. You have to pass all the required params at the minimum to create a quick custom order. You can add additional parameters as per your preference.
+
+        You can update only the order_items details before assigning the AWB (before Ready to Ship status). You can only update these key-value pairs i.e., increase/decrease the quantity, update tax/discount, add/remove product items. We''ve also enabled changing the nature of the order from a non-document to a document. You jus t need to pass the is_document key with the value of 1 in the payload.'
+      operationId: updateOrder
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                order_date:
+                  type: string
+                pickup_location:
+                  type: string
+                channel_id:
+                  type: string
+                comment:
+                  type: string
+                billing_customer_name:
+                  type: string
+                billing_last_name:
+                  type: string
+                billing_address:
+                  type: string
+                billing_address_2:
+                  type: string
+                billing_city:
+                  type: string
+                billing_pincode:
+                  type: string
+                billing_state:
+                  type: string
+                billing_country:
+                  type: string
+                billing_email:
+                  type: string
+                billing_phone:
+                  type: string
+                shipping_is_billing:
+                  type: boolean
+                shipping_customer_name:
+                  type: string
+                shipping_last_name:
+                  type: string
+                shipping_address:
+                  type: string
+                shipping_address_2:
+                  type: string
+                shipping_city:
+                  type: string
+                shipping_pincode:
+                  type: string
+                shipping_country:
+                  type: string
+                shipping_state:
+                  type: string
+                shipping_email:
+                  type: string
+                shipping_phone:
+                  type: string
+                is_document:
+                  type: string
+                order_items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      sku:
+                        type: string
+                      units:
+                        type: integer
+                      selling_price:
+                        type: string
+                      discount:
+                        type: string
+                      tax:
+                        type: string
+                      hsn:
+                        type: integer
+                payment_method:
+                  type: string
+                shipping_charges:
+                  type: integer
+                giftwrap_charges:
+                  type: integer
+                transaction_charges:
+                  type: integer
+                total_discount:
+                  type: integer
+                sub_total:
+                  type: integer
+                length:
+                  type: integer
+                breadth:
+                  type: integer
+                height:
+                  type: integer
+                weight:
+                  type: number
+            example:
+              order_id: 4TestOrderOct28
+              order_date: '2024-10-28'
+              pickup_location: '23659_7026'
+              channel_id: ''
+              comment: 'Reseller: M/s Goku'
+              billing_customer_name: Naruto
+              billing_last_name: Uzumaki
+              billing_address: House 221B, Leaf Village
+              billing_address_2: Near Hokage House
+              billing_city: New Delhi
+              billing_pincode: '110002'
+              billing_state: Delhi
+              billing_country: India
+              billing_email: naruto@uzumaki.com
+              billing_phone: '9876543210'
+              shipping_is_billing: true
+              shipping_customer_name: ''
+              shipping_last_name: ''
+              shipping_address: ''
+              shipping_address_2: ''
+              shipping_city: ''
+              shipping_pincode: ''
+              shipping_country: ''
+              shipping_state: ''
+              shipping_email: ''
+              shipping_phone: ''
+              is_document: '0'
+              order_items:
+              - name: Agreement
+                sku: chakra123
+                units: 1
+                selling_price: '900'
+                discount: ''
+                tax: ''
+                hsn: 441122
+              payment_method: Prepaid
+              shipping_charges: 0
+              giftwrap_charges: 0
+              transaction_charges: 0
+              total_discount: 0
+              sub_total: 9000
+              length: 10
+              breadth: 15
+              height: 20
+              weight: 2.5
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    success: true
+                    partially_update: true
+                    not_updated_fields: order_date ,pickup_location ,channel_id ,comment ,reseller_name ,company_name ,billing_customer_name ,billing_last_name ,billing_address ,billing_address_2 ,billing_isd_code ,billing_city ,billing_pincode ,billing_state ,billing_country ,billing_email ,billing_phone ,billing_alternate_phone ,shipping_is_billing ,shipping_customer_name ,shipping_last_name ,shipping_address ,shipping_address_2 ,shipping_city ,shipping_pincode ,shipping_country ,shipping_state ,shipping_email ,shipping_phone ,payment_method ,ewaybill_no ,customer_gstin
+                    order_id: 79491
+                    shipment_id: 77906
+                    new_order_status: NEW
+                    old_order_status: 1
+                    awb_code: ''
+                    courier_company_id: ''
+                    courier_name: ''
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  partially_update:
+                    type: boolean
+                  not_updated_fields:
+                    type: string
+                  order_id:
+                    type: integer
+                  shipment_id:
+                    type: integer
+                  new_order_status:
+                    type: string
+                  old_order_status:
+                    type: integer
+                  awb_code:
+                    type: string
+                  courier_company_id:
+                    type: string
+                  courier_name:
+                    type: string
+  /v1/external/orders/cancel:
+    post:
+      summary: Cancel an Order
+      description: 'Use this API to cancel a created order. Multiple order_ids can be passed together as an array to cancel them simultaneously.
+
+        Parameters:'
+      operationId: cancelAnOrder
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items: {}
+                  description: The Shiprocket order id/ids of the orders that need to be canceled.
+              required:
+              - ids
+            example:
+              ids: []
+      responses:
+        '204':
+          description: Successful Call
+        '500':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Trying to get property of non-object
+                    status_code: 500
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Required field missing
+                    errors:
+                      ids:
+                      - The ids field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      ids:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/fulfill:
+    patch:
+      summary: Add Inventory for Ordered Product
+      description: 'Use this API to add inventory for ordered products that are out of stock or low on quantity. You have to pass the order id and order product id. You can also specify the number of items.
+
+        Notes:
+
+        Inventory sync of your account must be turned on to use this API.
+
+        The order_id to be passed is the shiprocket order id.
+
+        If you don''t know the product id, Use the ''Get Product Details'' API to get details about all the existing products.
+
+        Parameters:'
+      operationId: addInventoryForOrderedProduct
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      order_id:
+                        type: string
+                      order_product_id:
+                        type: string
+                      quantity:
+                        type: string
+                      action:
+                        type: string
+            example:
+              data:
+              - order_id: ''
+                order_product_id: ''
+                quantity: ''
+                action: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                  - data:
+                      order_id: 14124005
+                      order_product_id: 43737767570843
+                      quantity: '1'
+                      action: add
+                    success: true
+                    message: Inventory added successfully
+                Missing-Fields:
+                  value:
+                  - data:
+                      order_id: ''
+                      order_product_id: ''
+                      quantity: ''
+                      action: ''
+                    success: false
+                    message: Incorrect order_id or order status is no longer unfulfillable
+                Invalid-Data:
+                  value:
+                  - data:
+                      order_id: 10000001
+                      order_product_id: 17777771
+                      quantity: '1'
+                      action: add
+                    success: false
+                    message: Incorrect order_id or order status is no longer unfulfillable
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        order_id:
+                          type: integer
+                        order_product_id:
+                          type: integer
+                        quantity:
+                          type: string
+                        action:
+                          type: string
+                    success:
+                      type: boolean
+                    message:
+                      type: string
+  /v1/external/orders/mapping:
+    patch:
+      summary: Map Unmapped Products
+      description: 'This API maps your unmapped inventory products.
+
+        Note:
+
+        Products must be unmapped to run this API successfully.
+
+        Inventory sync must be turned on to use this API.
+
+        Parameters:'
+      operationId: mapUnmappedProducts
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      order_id:
+                        type: string
+                      order_product_id:
+                        type: string
+                      master_sku:
+                        type: string
+            example:
+              data:
+              - order_id: ''
+                order_product_id: ''
+                master_sku: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                  - data:
+                      order_id: 14303681
+                      order_product_id: 16487731
+                      master_sku: delta123
+                    status_code: 200
+                    success: true
+                    message: Product mapped sucessfully.
+                Missing-Fields:
+                  value:
+                  - data:
+                      order_id: ''
+                      order_product_id: ''
+                      master_sku: ''
+                    status_code: 0
+                    success: false
+                    message: No product found matching this master sku
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        order_id:
+                          type: integer
+                        order_product_id:
+                          type: integer
+                        master_sku:
+                          type: string
+                    status_code:
+                      type: integer
+                    success:
+                      type: boolean
+                    message:
+                      type: string
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                  - data:
+                      order_id: 16178831
+                      order_product_id: 17484610
+                      master_sku: chakra123
+                    status_code: 0
+                    message: Incorrect order_id or order status is  no longer unmapped
+                    success: false
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        order_id:
+                          type: integer
+                        order_product_id:
+                          type: integer
+                        master_sku:
+                          type: string
+                    status_code:
+                      type: integer
+                    message:
+                      type: string
+                    success:
+                      type: boolean
+  /v1/external/orders/import:
+    post:
+      summary: Import Orders in Bulk
+      description: Use this API to import orders in bulk to your Shiprocket account from an existing '.csv' file. The imported orders are automatically added to your panel.
+      operationId: importOrdersInBulk
+      tags:
+      - Create Or Update Order
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    id: 19739203
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Sorry, text/x-c file type is not allowed
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Oops! Something went wrong.
+                    errors:
+                      file:
+                      - The file field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      file:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

@@ -1,0 +1,257 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Countries API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Countries
+  description: The following APIs provide details about the various country codes and their respective zone details along with the locality details.
+paths:
+  /v1/external/countries:
+    get:
+      summary: Get Country Codes
+      description: 'This API lists all the countries present in the Shiprocket database and the respective country ids, ISO 2 and ISO 3 codes.
+
+        There are a total of 44 available countries in the database. You can use these codes to check the serviceability and use them in your dropdown menu.
+
+        No parameters are required to access this API.'
+      operationId: getCountryCodes
+      tags:
+      - Countries
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            text/plain:
+              examples:
+                Successful-Call:
+                  value: "{\n    \"status\": 200,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Afghanistan\",\n            \"iso_code_2\": \"AF\",\n            \"iso_code_3\": \"AFG\",\n            \"isd_code\": \"+93\",\n            \"address_format\": \"\",\n            \"postcode_required\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Albania\",\n            \"iso_code_2\": \"AL\",\n            \"iso_code_3\": \"ALB\",\n            \"isd_code\": \"+355\",\n            \"address_format\": \"\",\n            \"postcode_required\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Algeria\",\n            \"iso_code_2\": \"DZ\",\n            \"iso_code_3\": \"DZA\",\n            \"isd_code\": \"+213\",\n            \"address_format\": \"\",\n            \"postcode_required\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 4,\n            \"name\": \"American Samoa\",\n            \"iso_code_2\": \"AS\",\n            \"iso_code_3\": \"ASM\",\n            \"isd_code\": \"+1\",\n            \"address_format\": \"\",\n            \"postcode_required\": 1,\n            \"status\": 1\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Andorra\",\n            \"iso_code_2\": \"AD\",\n            \"iso_code_3\": \"AND\",\n            \"isd_code\": \"+376\",\n            \"address_format\": \"\",\n            \"postcode_required\": 1,\n            \"status\": 1\n        }\n        \t.\n        \t.\n        \t.\n        \t.\n    ]\n}"
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/countries/show/{country_id}:
+    get:
+      summary: Get All Zones
+      description: 'Use this API to get a further list of all the available zones within a country, along with their ids and details.
+
+        The country ID must be passed as a path parameter to access this API.
+
+        No other body parameters are required.
+
+        Path:'
+      operationId: getAllZones
+      tags:
+      - Countries
+      parameters:
+      - name: country_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    status: 200
+                    data:
+                    - id: 117
+                      country_id: 4
+                      code: E
+                      state_code: null
+                      name: Eastern
+                      status: 1
+                    - id: 118
+                      country_id: 4
+                      code: M
+                      state_code: null
+                      name: Manu'a
+                      status: 1
+                    - id: 119
+                      country_id: 4
+                      code: R
+                      state_code: null
+                      name: Rose Island
+                      status: 1
+                    - id: 120
+                      country_id: 4
+                      code: S
+                      state_code: null
+                      name: Swains Island
+                      status: 1
+                    - id: 121
+                      country_id: 4
+                      code: W
+                      state_code: null
+                      name: Western
+                      status: 1
+                Invalid-Data:
+                  value:
+                    status: 200
+                    data:
+                    - name: None
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        country_id:
+                          type: integer
+                        code:
+                          type: string
+                        state_code: {}
+                        name:
+                          type: string
+                        status:
+                          type: integer
+        '404':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/open/postcode/details:
+    get:
+      summary: Get Locality Details
+      description: 'Use this API to get further locality details of any given postcode.
+
+        Just pass the valid locality Pincode, and the details will be displayed in JSON format.
+
+        Parameters:'
+      operationId: getLocalityDetails
+      tags:
+      - Countries
+      parameters:
+      - name: postcode
+        in: query
+        schema:
+          type: integer
+        description: The Pincode you want to get the locality details.
+        required: true
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    success: true
+                    postcode_details:
+                      postcode: '110077'
+                      city: South West Delhi
+                      locality:
+                      - Bagdola
+                      - Barthal
+                      - Palam Extn (Harijan Basti)
+                      - Dhulsiras
+                      - Raj Nagar - II
+                      state: Delhi
+                      state_code: DL
+                      longitude: '77.399'
+                      latitude: '28.2636'
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  postcode_details:
+                    type: object
+                    properties:
+                      postcode:
+                        type: string
+                      city:
+                        type: string
+                      locality:
+                        type: array
+                        items:
+                          type: string
+                      state:
+                        type: string
+                      state_code:
+                        type: string
+                      longitude:
+                        type: string
+                      latitude:
+                        type: string
+        '403':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Mapped City-State details not found for 10000893
+                    status_code: 403
+                Missing-Fields:
+                  value:
+                    message: 'Mapped City-State details not found for '
+                    status_code: 403
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

@@ -1,0 +1,377 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Pickup Addresses API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Pickup Addresses
+  description: Use these APIs to get a list of all available pickup locations in your account or add a new pickup location.
+paths:
+  /v1/external/settings/company/pickup:
+    get:
+      summary: Get All Pickup Locations
+      description: 'Get a list of all pickup locations that have been added to your Shiprocket account through this API.
+
+        No parameters are required to use this API.'
+      operationId: getAllPickupLocations
+      tags:
+      - Pickup Addresses
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                      shipping_address:
+                      - id: 4984500
+                        pickup_location: Casa Moderna
+                        address_type: null
+                        address: 1900 GF, Sector 45
+                        address_2: near Park 1
+                        updated_address: false
+                        old_address: ''
+                        old_address2: ''
+                        tag: ''
+                        tag_value: ''
+                        instruction: ''
+                        city: Gurgaon
+                        state: Haryana
+                        country: India
+                        pin_code: '122003'
+                        email: abcxyz@gmail.com
+                        is_first_mile_pickup: 0
+                        phone: '9667667496'
+                        name: CASA MODERNA
+                        company_id: 1138022
+                        gstin: null
+                        vendor_name: null
+                        status: 2
+                        phone_verified: 1
+                        lat: '28.44786453607'
+                        long: '77.074250297017'
+                        open_time: null
+                        close_time: null
+                        warehouse_code: null
+                        alternate_phone: ''
+                        rto_address_id: 4984500
+                        lat_long_status: 1
+                        new: 1
+                        associated_rto_address: null
+                        is_primary_location: 1
+                      allow_more: 'true'
+                      is_blackbox_seller: false
+                      company_name: CASA MODERNA
+                      recent_addresses: []
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      shipping_address:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            pickup_location:
+                              type: string
+                            address_type: {}
+                            address:
+                              type: string
+                            address_2:
+                              type: string
+                            updated_address:
+                              type: boolean
+                            old_address:
+                              type: string
+                            old_address2:
+                              type: string
+                            tag:
+                              type: string
+                            tag_value:
+                              type: string
+                            instruction:
+                              type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            country:
+                              type: string
+                            pin_code:
+                              type: string
+                            email:
+                              type: string
+                            is_first_mile_pickup:
+                              type: integer
+                            phone:
+                              type: string
+                            name:
+                              type: string
+                            company_id:
+                              type: integer
+                            gstin: {}
+                            vendor_name: {}
+                            status:
+                              type: integer
+                            phone_verified:
+                              type: integer
+                            lat:
+                              type: string
+                            long:
+                              type: string
+                            open_time: {}
+                            close_time: {}
+                            warehouse_code: {}
+                            alternate_phone:
+                              type: string
+                            rto_address_id:
+                              type: integer
+                            lat_long_status:
+                              type: integer
+                            new:
+                              type: integer
+                            associated_rto_address: {}
+                            is_primary_location:
+                              type: integer
+                      allow_more:
+                        type: string
+                      is_blackbox_seller:
+                        type: boolean
+                      company_name:
+                        type: string
+                      recent_addresses:
+                        type: array
+                        items: {}
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/settings/company/addpickup:
+    post:
+      summary: Add a New Pickup Location
+      description: 'This API can be used to add a new pickup location to your account. Pass the minimum required parameters to add the location. Further details to the address can be added if required.
+
+        Parameters:'
+      operationId: addANewPickupLocation
+      tags:
+      - Pickup Addresses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pickup_location:
+                  type: string
+                  description: The nickname of the new pickup location. Max 36 characters.
+                name:
+                  type: string
+                  description: The shipper's name.
+                email:
+                  type: string
+                  description: The shipper's email address.
+                phone:
+                  type: integer
+                  description: Shipper's phone number.
+                address:
+                  type: string
+                  description: Shipper's primary address. Max 80 characters.
+                address_2:
+                  type: string
+                  description: Additional address details.
+                city:
+                  type: string
+                  description: Pickup location city name.
+                state:
+                  type: string
+                  description: Pickup location state name.
+                country:
+                  type: string
+                  description: Pickup location country.
+                pin_code:
+                  type: integer
+                  description: Pickup location pincode.
+              required:
+              - pickup_location
+              - name
+              - email
+              - phone
+              - address
+              - city
+              - state
+              - country
+              - pin_code
+            example:
+              pickup_location: ''
+              name: ''
+              email: ''
+              phone: ''
+              address: ''
+              address_2: ''
+              city: ''
+              state: ''
+              country: ''
+              pin_code: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    success: true
+                    address:
+                      company_id: 25149
+                      pickup_code: TESTADI
+                      address: Mutant Facility, Sector 3
+                      address_2: ''
+                      address_type: null
+                      city: South West Delhi
+                      state: Maharshtra
+                      country: India
+                      gstin: null
+                      pin_code: '110022'
+                      phone: '9777777779'
+                      email: deadpool@chimichanga.com
+                      name: Deadpool
+                      alternate_phone: null
+                      lat: null
+                      long: null
+                      status: 1
+                      phone_verified: 0
+                      rto_address_id: 1468067
+                      extra_info: '{"source":3}'
+                      updated_at: '2021-10-12 11:51:48'
+                      created_at: '2021-10-12 11:51:48'
+                      id: 1856901
+                    pickup_id: 1856901
+                    company_name: ShiprocketTest
+                    full_name: API
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  address:
+                    type: object
+                    properties:
+                      company_id:
+                        type: integer
+                      pickup_code:
+                        type: string
+                      address:
+                        type: string
+                      address_2:
+                        type: string
+                      address_type: {}
+                      city:
+                        type: string
+                      state:
+                        type: string
+                      country:
+                        type: string
+                      gstin: {}
+                      pin_code:
+                        type: string
+                      phone:
+                        type: string
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      alternate_phone: {}
+                      lat: {}
+                      long: {}
+                      status:
+                        type: integer
+                      phone_verified:
+                        type: integer
+                      rto_address_id:
+                        type: integer
+                      extra_info:
+                        type: string
+                      updated_at:
+                        type: string
+                      created_at:
+                        type: string
+                      id:
+                        type: integer
+                  pickup_id:
+                    type: integer
+                  company_name:
+                    type: string
+                  full_name:
+                    type: string
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Not a valid mobile number
+                    errors:
+                      phone:
+                      - The phone field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      phone:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

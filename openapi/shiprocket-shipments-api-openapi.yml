@@ -1,0 +1,407 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Shipments API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Shipments
+  description: 'These APIs can be used to get shipment details. You can either get all shipment details at once or the details of a particular shipment.
+
+    Below are some associated status codes related to the shipments:
+
+    Status Codes:'
+paths:
+  /v1/external/shipments:
+    get:
+      summary: Get All Shipment Details
+      description: 'Use this API to get the shipment details of all the shipments in your Shiprocket account.
+
+        The data is displayed in the default format if no filter or sort condition is passed. You can use the filter and sort conditions to streamline your data.
+
+        Parameters:'
+      operationId: getAllShipmentDetails
+      tags:
+      - Shipments
+      parameters:
+      - name: sort
+        in: query
+        schema:
+          type: string
+        description: 'The sort format: ASC or DESC'
+      - name: sort_by
+        in: query
+        schema:
+          type: string
+        description: The field to sort by.
+      - name: filter
+        in: query
+        schema:
+          type: string
+        description: The filter value.
+      - name: filter_by
+        in: query
+        schema:
+          type: string
+        description: The filed to filter by.
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                    - number: ''
+                      code: ''
+                      id: 3322791
+                      order_id: 3324748
+                      products:
+                      - name: gsdgw
+                        sku: '123'
+                        quantity: 2
+                      awb: '109123535421'
+                      status: CANCELED
+                      created_at: 28th Aug 2018 07:11 PM
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      payment_method: cod
+                    - number: ''
+                      code: ''
+                      id: 3322802
+                      order_id: 3324759
+                      products:
+                      - name: Black tshirt XL
+                        sku: BlackTshirt
+                        quantity: 2
+                      awb: '109123535594'
+                      status: CANCELED
+                      created_at: 28th Aug 2018 07:14 PM
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      payment_method: cod
+                    meta:
+                      pagination:
+                        total: 19631
+                        count: 15
+                        per_page: 2
+                        current_page: 1
+                        total_pages: 1309
+                        links:
+                          next: https://apiv2.shiprocket.in/v1/external/shipments?page=2
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        number:
+                          type: string
+                        code:
+                          type: string
+                        id:
+                          type: integer
+                        order_id:
+                          type: integer
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              sku:
+                                type: string
+                              quantity:
+                                type: integer
+                        awb:
+                          type: string
+                        status:
+                          type: string
+                        created_at:
+                          type: string
+                        channel_id:
+                          type: integer
+                        channel_name:
+                          type: string
+                        base_channel_code:
+                          type: string
+                        payment_method:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          count:
+                            type: integer
+                          per_page:
+                            type: integer
+                          current_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          links:
+                            type: object
+                            properties:
+                              next:
+                                type: string
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/shipments/{shipment_id}:
+    get:
+      summary: Get Details of Specific Shipment
+      description: 'Get the details of a specific Shipment by passing the value of shipment_id in the endpoint URL.
+
+        No other body parameters are required.
+
+        Path:'
+      operationId: getDetailsOfSpecificShipment
+      tags:
+      - Shipments
+      parameters:
+      - name: shipment_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                      id: 16016920
+                      order_id: 16167171
+                      channel_id: 76893
+                      company_id: 67216
+                      invoice_no: null
+                      invoice_date: null
+                      courier: null
+                      sr_courier_id: null
+                      awb: null
+                      awb_assign_date: null
+                      pickup_generated_date: null
+                      pickup_token_number: null
+                      method: Standard
+                      weight: '0.000'
+                      dimensions: 0.00x0.00x0.00
+                      quantity: 1
+                      cost: '0.00'
+                      tax: '0.00'
+                      cod_charges: '0.00'
+                      total: '9000.00'
+                      shipping_address:
+                        city: New Delhi
+                        state: DELHI
+                        address: House 221B, Leaf Village
+                        country: India
+                        pincode: '110002'
+                        address_2: Near Hokage House
+                        company_name: null
+                      customer_details: null
+                      status: 8
+                      shipped_date: null
+                      delivered_date: null
+                      returned_date: null
+                      label_url: null
+                      manifest_url: null
+                      created_at:
+                        date: '2019-07-31 12:37:41.000000'
+                        timezone_type: 3
+                        timezone: Asia/Kolkata
+                      updated_at:
+                        date: '2019-07-31 15:57:11.000000'
+                        timezone_type: 3
+                        timezone: Asia/Kolkata
+                Invalid-or-Wrong-Data:
+                  value: {}
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      order_id:
+                        type: integer
+                      channel_id:
+                        type: integer
+                      company_id:
+                        type: integer
+                      invoice_no: {}
+                      invoice_date: {}
+                      courier: {}
+                      sr_courier_id: {}
+                      awb: {}
+                      awb_assign_date: {}
+                      pickup_generated_date: {}
+                      pickup_token_number: {}
+                      method:
+                        type: string
+                      weight:
+                        type: string
+                      dimensions:
+                        type: string
+                      quantity:
+                        type: integer
+                      cost:
+                        type: string
+                      tax:
+                        type: string
+                      cod_charges:
+                        type: string
+                      total:
+                        type: string
+                      shipping_address:
+                        type: object
+                        properties:
+                          city:
+                            type: string
+                          state:
+                            type: string
+                          address:
+                            type: string
+                          country:
+                            type: string
+                          pincode:
+                            type: string
+                          address_2:
+                            type: string
+                          company_name: {}
+                      customer_details: {}
+                      status:
+                        type: integer
+                      shipped_date: {}
+                      delivered_date: {}
+                      returned_date: {}
+                      label_url: {}
+                      manifest_url: {}
+                      created_at:
+                        type: object
+                        properties:
+                          date:
+                            type: string
+                          timezone_type:
+                            type: integer
+                          timezone:
+                            type: string
+                      updated_at:
+                        type: object
+                        properties:
+                          date:
+                            type: string
+                          timezone_type:
+                            type: integer
+                          timezone:
+                            type: string
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/cancel/shipment/awbs:
+    post:
+      summary: Cancel a Shipment
+      description: 'Use this API to cancel a created shipment before the "Out for Pickup" state. Multiple AWBs can be passed together as an array to cancel them simultaneously.
+
+        Limit: 2000 AWBs
+
+        Parameters:'
+      operationId: cancelAShipment
+      tags:
+      - Shipments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                awbs:
+                  type: array
+                  items:
+                    type: string
+                  description: The AWB/List of AWBs that need to be canceled.
+              required:
+              - awbs
+            example:
+              awbs:
+              - '19041211125783'
+      responses:
+        '204':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    message: Bulk Shipment cancellation is in progress. Please wait for some time.
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

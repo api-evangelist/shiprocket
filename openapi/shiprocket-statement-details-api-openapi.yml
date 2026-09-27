@@ -1,0 +1,157 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Statement Details API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Statement Details
+paths:
+  /v1/external/account/details/statement:
+    get:
+      summary: Get Statement Details
+      description: 'Use this API to get the account statement details of your Shiprocket account.
+
+        No parameters are required to access this API. However, you sort and filter the data displayed using the optional parameters.
+
+        Parameters:'
+      operationId: getStatementDetails
+      tags:
+      - Statement Details
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: The page number you want to display.
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+        description: The number of orders to get per request.
+      - name: from
+        in: query
+        schema:
+          type: string
+        description: From a specific date.
+      - name: to
+        in: query
+        schema:
+          type: string
+        description: To a specific date.
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                    - transaction_id: ''
+                      order_id: ''
+                      channel_order_id: ''
+                      awb_code: ''
+                      return_awb_code: null
+                      applied_weight: ''
+                      charged_weight: ''
+                      billed_weight: ''
+                      action: ''
+                      charge: ''
+                      description: Wallet Balance
+                      debit_amount: ''
+                      credit_amount: ''
+                      balance_amount: '0'
+                      balance_weight: 0
+                      volumetric_weight: ''
+                      entered_weight: ''
+                      created_at: ''
+                      can_ship: true
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        transaction_id:
+                          type: string
+                        order_id:
+                          type: string
+                        channel_order_id:
+                          type: string
+                        awb_code:
+                          type: string
+                        return_awb_code: {}
+                        applied_weight:
+                          type: string
+                        charged_weight:
+                          type: string
+                        billed_weight:
+                          type: string
+                        action:
+                          type: string
+                        charge:
+                          type: string
+                        description:
+                          type: string
+                        debit_amount:
+                          type: string
+                        credit_amount:
+                          type: string
+                        balance_amount:
+                          type: string
+                        balance_weight:
+                          type: integer
+                        volumetric_weight:
+                          type: string
+                        entered_weight:
+                          type: string
+                        created_at:
+                          type: string
+                        can_ship:
+                          type: boolean
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

@@ -1,0 +1,3634 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Hyperlocal API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Hyperlocal
+paths:
+  /v1/external/orders/create/adhoc:
+    post:
+      summary: Create Custom Order
+      description: 'Use this API to create a quick custom order. Quick orders are the ones where we do not store the product details in the master catalogue.
+
+        You have to pass all the required params at the minimum to create a quick custom order. You can add additional parameters as per your preference.
+
+        Note:
+
+        In case the ''shipping_is_billing'' field is false, further shipping detail fields are required.
+
+        If no channel id is passed, the order will be assigned to the default custom channel. If the channel id is not known, use the ''Get All Channels'' API to get the list of all integrated channels in your Shiprocket account.
+
+        order_id field cannot be equal to an already existing id. Doing so does not change or affect the existing order.
+
+        New orders cannot be created with order id''s same as that of cancelled orders. If error 422 shows up despite filling in the correct details, consider changing the order_id.
+
+        Be sure to input the correct calculated sub_total amount. The total is not calculated automatically through the API.
+
+        The ''order_id'' returned in the response is the Shiprocket order_id. Please save this order ID as we will use this in future API calls.
+
+        Parameters:'
+      operationId: createCustomOrder
+      tags:
+      - Hyperlocal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: 'The order id you want to specify to the order. Max char: 50. (Avoid passing character values as this contradicts some other API calls).'
+                order_date:
+                  type: string
+                  description: The date of order creation in yyyy-mm-dd format. Time is additional.
+                pickup_location:
+                  type: string
+                  description: The name of the pickup location added in your Shiprocket account. This cannot be a new location.
+                comment:
+                  type: string
+                  description: 'Option to add ''From'' field to the shipment. To do this, enter the name in the following format: ''Reseller: [name]''.'
+                reseller_name:
+                  type: string
+                  description: To display the vendor name on the label
+                company_name:
+                  type: string
+                  description: Name of the company.
+                billing_customer_name:
+                  type: string
+                  description: First name of the billed customer.
+                billing_last_name:
+                  type: string
+                  description: Last name of the billed customer.
+                billing_address:
+                  type: string
+                  description: address details of the billed customer.
+                billing_address_2:
+                  type: string
+                  description: Further address details of the billed customer.
+                billing_isd_code:
+                  type: string
+                  description: ISD code of the billing address.
+                billing_city:
+                  type: string
+                  description: 'Billing address city. Max char: 30.'
+                billing_pincode:
+                  type: integer
+                  description: Pincode of the billing address.
+                billing_state:
+                  type: string
+                  description: Billing address state.
+                billing_country:
+                  type: string
+                  description: Billing address country.
+                billing_email:
+                  type: string
+                  description: Email address of the billed customer.
+                billing_phone:
+                  type: integer
+                  description: The phone number of the billing customer.
+                billing_alternate_phone:
+                  type: integer
+                  description: Alternate phone number of the billing customer.
+                shipping_is_billing:
+                  type: boolean
+                  description: Whether the shipping address is the same as billing address. 1 or 'true' for yes and 0 or 'false' for no.
+                shipping_customer_name:
+                  type: string
+                  description: Name of the customer the order is shipped to. Required in case billing is not same as shipping.
+                shipping_last_name:
+                  type: string
+                  description: Last name of the shipping customer.
+                shipping_address:
+                  type: string
+                  description: Address of the Shipping customer. Required in case billing is not same as shipping.
+                shipping_address_2:
+                  type: string
+                  description: Further address details of shipping customer.
+                shipping_city:
+                  type: string
+                  description: Shipping address city.
+                shipping_pincode:
+                  type: integer
+                  description: Shipping address pincode.
+                shipping_country:
+                  type: string
+                  description: Shipping address country.
+                shipping_state:
+                  type: string
+                  description: Shipping address state.
+                shipping_email:
+                  type: string
+                  description: Email of the shipping customer.
+                shipping_phone:
+                  type: integer
+                  description: Phone no. of the shipping customer.
+                order_items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      sku:
+                        type: string
+                      units:
+                        type: string
+                      selling_price:
+                        type: string
+                      discount:
+                        type: string
+                      tax:
+                        type: string
+                      hsn:
+                        type: string
+                  description: List of items and their relevant fields in the form of Array.
+                payment_method:
+                  type: string
+                  description: The method of payment. Can be either COD (Cash on delivery) Or Prepaid.
+                shipping_charges:
+                  type: integer
+                  description: Shipping charges if any in Rupee.
+                giftwrap_charges:
+                  type: integer
+                  description: Giftwrap charges if any in Rupee.
+                transaction_charges:
+                  type: integer
+                  description: Transaction charges if any in Rupee.
+                total_discount:
+                  type: integer
+                  description: The total discount amount in Rupee.
+                sub_total:
+                  type: integer
+                  description: Calculated sub total amount in Rupee after deductions.
+                length:
+                  type: number
+                  description: The length of the item in cms. Must be more than 0.5.
+                breadth:
+                  type: number
+                  description: The breadth of the item in cms. Must be more than 0.5.
+                height:
+                  type: number
+                  description: The height of the item in cms. Must be more than 0.5.
+                weight:
+                  type: number
+                  description: The weight of the item in kgs. Must be more than 0.
+                ewaybill_no:
+                  type: string
+                customer_gstin:
+                  type: string
+                  description: Goods and Services Tax Identification Number.
+                invoice_number:
+                  type: string
+                order_type:
+                  type: string
+                  description: Key to differentiate between Essentials or Non Essentials Shipments. Order type can only be ESSENTIALS or NON ESSENTIALS. Please note it is case sensitive and blank values are allowed.
+              required:
+              - order_id
+              - order_date
+              - pickup_location
+              - billing_customer_name
+              - billing_address
+              - billing_city
+              - billing_pincode
+              - billing_state
+              - billing_country
+              - billing_email
+              - billing_phone
+              - shipping_is_billing
+              - order_items
+              - payment_method
+              - sub_total
+              - length
+              - breadth
+              - height
+              - weight
+            example:
+              order_id: ''
+              order_date: ''
+              pickup_location: ''
+              comment: ''
+              reseller_name: ''
+              company_name: ''
+              billing_customer_name: ''
+              billing_last_name: ''
+              billing_address: ''
+              billing_address_2: ''
+              billing_isd_code: ''
+              billing_city: ''
+              billing_pincode: ''
+              billing_state: ''
+              billing_country: ''
+              billing_email: ''
+              billing_phone: ''
+              billing_alternate_phone: ''
+              shipping_is_billing: ''
+              shipping_customer_name: ''
+              shipping_last_name: ''
+              shipping_address: ''
+              shipping_address_2: ''
+              shipping_city: ''
+              shipping_pincode: ''
+              shipping_country: ''
+              shipping_state: ''
+              shipping_email: ''
+              shipping_phone: ''
+              order_items:
+              - name: ''
+                sku: ''
+                units: ''
+                selling_price: ''
+                discount: ''
+                tax: ''
+                hsn: ''
+              payment_method: ''
+              shipping_charges: ''
+              giftwrap_charges: ''
+              transaction_charges: ''
+              total_discount: ''
+              sub_total: ''
+              length: ''
+              breadth: ''
+              height: ''
+              weight: ''
+              ewaybill_no: ''
+              customer_gstin: ''
+              invoice_number: ''
+              order_type: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    order_id: 16161616
+                    shipment_id: 15151515
+                    status: NEW
+                    status_code: 1
+                    onboarding_completed_now: 0
+                    awb_code: null
+                    courier_company_id: null
+                    courier_name: null
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                  shipment_id:
+                    type: integer
+                  status:
+                    type: string
+                  status_code:
+                    type: integer
+                  onboarding_completed_now:
+                    type: integer
+                  awb_code: {}
+                  courier_company_id: {}
+                  courier_name: {}
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Given channel id does not exist
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Oops! Invalid Data.
+                    errors:
+                      order_id:
+                      - The order id field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      order_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/assign/awb:
+    post:
+      summary: Generate AWB for Shipment
+      description: 'This API can be used to assign the AWB (Air Waybill Number) to your shipment. The AWB is a unique number that helps you track the shipment and get details about it.
+
+        Parameters:'
+      operationId: generateAWBForShipment
+      tags:
+      - Hyperlocal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment_id:
+                  type: integer
+                  description: The shipment id of the order you want to create the AWB for.
+                courier_id:
+                  type: integer
+                  description: The courier id of the courier service you want to select. The default courier is selected in case no id is specified.
+                status:
+                  type: string
+                  description: 'Use this to change the courier of a shipment. Value: reassign. Note that this can be done only once in 24 hours.'
+              required:
+              - shipment_id
+            example:
+              shipment_id: ''
+              courier_id: ''
+              status: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    awb_assign_status: 1
+                    response:
+                      data:
+                        courier_company_id: 142
+                        awb_code: '321055706540'
+                        cod: 0
+                        order_id: 281248157
+                        shipment_id: 16090281
+                        awb_code_status: 1
+                        assigned_date_time:
+                          date: '2022-11-25 11:17:52.878599'
+                          timezone_type: 3
+                          timezone: Asia/Kolkata
+                        applied_weight: 0.5
+                        company_id: 25149
+                        courier_name: Amazon Surface
+                        child_courier_name: null
+                        pickup_scheduled_date: '2022-11-25 14:00:00'
+                        routing_code: ''
+                        rto_routing_code: ''
+                        invoice_no: retail5769122647118
+                        transporter_id: ''
+                        transporter_name: ''
+                        shipped_by:
+                          shipper_company_name: manoj
+                          shipper_address_1: Aligarh
+                          shipper_address_2: noida
+                          shipper_city: Jammu
+                          shipper_state: Jammu & Kashmir
+                          shipper_country: India
+                          shipper_postcode: '110030'
+                          shipper_first_mile_activated: 0
+                          shipper_phone: '8976967989'
+                          lat: '32.731899'
+                          long: '74.860376'
+                          shipper_email: hdhd@gshd.com
+                          rto_company_name: test
+                          rto_address_1: Unnamed Road, Bengaluru, Karnataka 560060, India
+                          rto_address_2: Katrabrahmpur
+                          rto_city: Bangalore
+                          rto_state: Karnataka
+                          rto_country: India
+                          rto_postcode: '560060'
+                          rto_phone: '9999999999'
+                          rto_email: test@test.com
+              schema:
+                type: object
+                properties:
+                  awb_assign_status:
+                    type: integer
+                  response:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          courier_company_id:
+                            type: integer
+                          awb_code:
+                            type: string
+                          cod:
+                            type: integer
+                          order_id:
+                            type: integer
+                          shipment_id:
+                            type: integer
+                          awb_code_status:
+                            type: integer
+                          assigned_date_time:
+                            type: object
+                            properties:
+                              date:
+                                type: string
+                              timezone_type:
+                                type: integer
+                              timezone:
+                                type: string
+                          applied_weight:
+                            type: number
+                          company_id:
+                            type: integer
+                          courier_name:
+                            type: string
+                          child_courier_name: {}
+                          pickup_scheduled_date:
+                            type: string
+                          routing_code:
+                            type: string
+                          rto_routing_code:
+                            type: string
+                          invoice_no:
+                            type: string
+                          transporter_id:
+                            type: string
+                          transporter_name:
+                            type: string
+                          shipped_by:
+                            type: object
+                            properties:
+                              shipper_company_name:
+                                type: string
+                              shipper_address_1:
+                                type: string
+                              shipper_address_2:
+                                type: string
+                              shipper_city:
+                                type: string
+                              shipper_state:
+                                type: string
+                              shipper_country:
+                                type: string
+                              shipper_postcode:
+                                type: string
+                              shipper_first_mile_activated:
+                                type: integer
+                              shipper_phone:
+                                type: string
+                              lat:
+                                type: string
+                              long:
+                                type: string
+                              shipper_email:
+                                type: string
+                              rto_company_name:
+                                type: string
+                              rto_address_1:
+                                type: string
+                              rto_address_2:
+                                type: string
+                              rto_city:
+                                type: string
+                              rto_state:
+                                type: string
+                              rto_country:
+                                type: string
+                              rto_postcode:
+                                type: string
+                              rto_phone:
+                                type: string
+                              rto_email:
+                                type: string
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Required field missing
+                    errors:
+                      shipment_id:
+                      - The shipment id field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      shipment_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Oops! Cannot reassign courier for this shipment.
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/serviceability:
+    get:
+      summary: Check Courier Serviceability
+      description: 'Use this API to check the availability of couriers between the pickup and delivery postal codes. Further details like the estimated time of delivery, the rates along with the ids are also shown.
+
+        Note:
+
+        One of either the ''order_id'' or ''cod'' and ''weight'' is required. If you specify the order id, the cod and weight fields are not required and vice versa.
+
+        You can add further fields to add the shipment details and filter the search.
+
+        Parameters:'
+      operationId: checkCourierServiceability
+      tags:
+      - Hyperlocal
+      parameters:
+      - name: pickup_postcode
+        in: query
+        schema:
+          type: integer
+        description: Postcode from where the order will be picked.
+        required: true
+      - name: delivery_postcode
+        in: query
+        schema:
+          type: integer
+        description: Postcode where the order will be delivered
+        required: true
+      - name: order_id
+        in: query
+        schema:
+          type: integer
+        description: If order id is already created in Shiprocket panel then you can use this shiprocket order id in servicibility
+      - name: cod
+        in: query
+        schema:
+          type: boolean
+        description: 1 for Cash on Delivery and 0 for Prepaid orders.
+      - name: weight
+        in: query
+        schema:
+          type: string
+        description: The weight of shipment in kgs.
+      - name: length
+        in: query
+        schema:
+          type: integer
+        description: The length of the shipment in cms.
+      - name: breadth
+        in: query
+        schema:
+          type: integer
+        description: The breadth of the shipment in cms.
+      - name: height
+        in: query
+        schema:
+          type: integer
+        description: The height of the shipment in cms.
+      - name: declared_value
+        in: query
+        schema:
+          type: integer
+        description: The price of the order shipment in rupees.
+      - name: mode
+        in: query
+        schema:
+          type: string
+        description: 'The mode of travel. Either: Surface or Air'
+      - name: is_return
+        in: query
+        schema:
+          type: integer
+        description: Whether the order is a return order or not. 1 in case of Yes and 0 for No. (declared_value field is required in case you use this parameter)
+      - name: couriers_type
+        in: query
+        schema:
+          type: integer
+        description: Use this to filter out and show only "documents" couriers like XB documents, etc. The only accepted value is 1.
+      - name: only_local
+        in: query
+        schema:
+          type: integer
+        description: Use this to filter out and show only Hyperlocal couriers. The only accepted value is 1.
+      - name: qc_check
+        in: query
+        schema:
+          type: integer
+        description: Use this filter to show only the QC-enabled couriers. is_return has to be set to 1
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    company_auto_shipment_insurance_setting: true
+                    covid_zones:
+                      delivery_zone: null
+                      pickup_zone: null
+                    currency: INR
+                    data:
+                      available_courier_companies:
+                      - air_max_weight: '0.00'
+                        assured_amount: 0
+                        base_courier_id: null
+                        base_weight: ''
+                        blocked: 0
+                        call_before_delivery: Available
+                        charge_weight: 0.5
+                        city: Mandi
+                        cod: 1
+                        cod_charges: 0
+                        cod_multiplier: 0.01
+                        cost: ''
+                        courier_company_id: 43
+                        courier_name: Delhivery Surface
+                        courier_type: '0'
+                        coverage_charges: 0
+                        cutoff_time: '11:00'
+                        delivery_boy_contact: Not Available
+                        delivery_performance: 5
+                        description: ''
+                        edd: ''
+                        entry_tax: 0
+                        estimated_delivery_days: '4'
+                        etd: Jul 01, 2024
+                        etd_hours: 91
+                        freight_charge: 54
+                        id: 459245934
+                        is_custom_rate: 1
+                        is_hyperlocal: false
+                        is_international: 0
+                        is_rto_address_available: true
+                        is_surface: true
+                        local_region: 0
+                        metro: 0
+                        min_weight: 0.5
+                        mode: 0
+                        new_edd: 0
+                        odablock: false
+                        other_charges: 0
+                        others: '{"allow_postcode_auto_sync":1,"cancel_real_time":true}'
+                        pickup_availability: '0'
+                        pickup_performance: 4.7
+                        pickup_priority: ''
+                        pickup_supress_hours: 0
+                        pod_available: Instant
+                        postcode: '175019'
+                        qc_courier: 0
+                        rank: ''
+                        rate: 54
+                        rating: 4.9
+                        realtime_tracking: Real Time
+                        region: 1
+                        rto_charges: 54
+                        rto_performance: 5
+                        seconds_left_for_pickup: 0
+                        secure_shipment_disabled: false
+                        ship_type: 1
+                        state: Himachal Pradesh
+                        suppress_date: ''
+                        suppress_text: ''
+                        suppression_dates: null
+                        surface_max_weight: '4.00'
+                        tracking_performance: 5
+                        volumetric_max_weight: null
+                        weight_cases: 4.6
+                        zone: z_e
+                      - air_max_weight: '0.00'
+                        assured_amount: 0
+                        base_courier_id: null
+                        base_weight: ''
+                        blocked: 0
+                        call_before_delivery: Available
+                        charge_weight: 2
+                        city: MANDI
+                        cod: 1
+                        cod_charges: 0
+                        cod_multiplier: 0
+                        cost: ''
+                        courier_company_id: 225
+                        courier_name: India Post-Business Parcel Surface Prepaid
+                        courier_type: '0'
+                        coverage_charges: 8.71
+                        cutoff_time: '10:00'
+                        delivery_boy_contact: Not Available
+                        delivery_performance: 4.5
+                        description: ''
+                        edd: ''
+                        entry_tax: 0
+                        estimated_delivery_days: '8'
+                        etd: Jul 05, 2024
+                        etd_hours: 184
+                        freight_charge: 123.9
+                        id: 396397972
+                        is_custom_rate: 0
+                        is_hyperlocal: false
+                        is_international: 0
+                        is_rto_address_available: true
+                        is_surface: true
+                        local_region: 0
+                        metro: 0
+                        min_weight: 2
+                        mode: 0
+                        new_edd: 0
+                        odablock: false
+                        other_charges: 0
+                        others: '{"cancel_real_time":true}'
+                        pickup_availability: '0'
+                        pickup_performance: 4.4
+                        pickup_priority: ''
+                        pickup_supress_hours: 0
+                        pod_available: On Request
+                        postcode: '175019'
+                        qc_courier: 0
+                        rank: ''
+                        rate: 123.9
+                        rating: 4.4
+                        realtime_tracking: Real Time
+                        region: 5
+                        rto_charges: 0
+                        rto_performance: 4.4
+                        seconds_left_for_pickup: 0
+                        secure_shipment_disabled: false
+                        ship_type: 1
+                        state: HIMACHAL PRADESH
+                        suppress_date: ''
+                        suppress_text: ''
+                        suppression_dates:
+                          action_on: '2023-11-11 20:29:04'
+                          delay_remark: Festival
+                          delivery_delay_by: 2065762
+                          delivery_delay_days: '1'
+                          delivery_delay_from: '2023-11-13'
+                          delivery_delay_to: '2023-11-13'
+                          pickup_delay_by: 2065762
+                          pickup_delay_days: '1'
+                          pickup_delay_from: '2023-11-13'
+                          pickup_delay_to: '2023-11-13'
+                        surface_max_weight: '35.00'
+                        tracking_performance: 4.5
+                        volumetric_max_weight: 35
+                        weight_cases: 4.2
+                        zone: z_e
+                      - air_max_weight: '0.00'
+                        assured_amount: 0
+                        base_courier_id: null
+                        base_weight: ''
+                        blocked: 0
+                        call_before_delivery: Available
+                        charge_weight: 2
+                        city: SUNDERNAGAR
+                        cod: 1
+                        cod_charges: 0
+                        cod_multiplier: 0
+                        cost: ''
+                        courier_company_id: 19
+                        courier_name: Ecom Express Surface 2kg
+                        courier_type: '0'
+                        coverage_charges: 0
+                        cutoff_time: '11:00'
+                        delivery_boy_contact: Not Available
+                        delivery_performance: 5
+                        description: ''
+                        edd: ''
+                        entry_tax: 0
+                        estimated_delivery_days: '6'
+                        etd: Jul 03, 2024
+                        etd_hours: 144
+                        freight_charge: 150.12
+                        id: 456774028
+                        is_custom_rate: 0
+                        is_hyperlocal: false
+                        is_international: 0
+                        is_rto_address_available: true
+                        is_surface: true
+                        local_region: 0
+                        metro: 0
+                        min_weight: 2
+                        mode: 0
+                        new_edd: 0
+                        odablock: false
+                        other_charges: 0
+                        others: '{"allow_postcode_auto_sync":1,"cancel_real_time":true,"wec":1}'
+                        pickup_availability: '0'
+                        pickup_performance: 4.5
+                        pickup_priority: ''
+                        pickup_supress_hours: 0
+                        pod_available: Instant
+                        postcode: '175019'
+                        qc_courier: 0
+                        rank: ''
+                        rate: 150.12
+                        rating: 4.62
+                        realtime_tracking: Real Time
+                        region: 1
+                        rto_charges: 142.6
+                        rto_performance: 5
+                        seconds_left_for_pickup: 0
+                        secure_shipment_disabled: false
+                        ship_type: 1
+                        state: HIMACHAL PRADESH
+                        suppress_date: ''
+                        suppress_text: ''
+                        suppression_dates:
+                          action_on: '2024-06-15 23:27:37'
+                          delay_remark: Festival
+                          delivery_delay_by: 2065762
+                          delivery_delay_days: '1'
+                          delivery_delay_from: '2024-06-17'
+                          delivery_delay_to: '2024-06-17'
+                          pickup_delay_by: 2065762
+                          pickup_delay_days: '1'
+                          pickup_delay_from: '2024-06-17'
+                          pickup_delay_to: '2024-06-17'
+                        surface_max_weight: '30.00'
+                        tracking_performance: 4
+                        volumetric_max_weight: null
+                        weight_cases: 4.6
+                        zone: z_e
+                      blocked_courier_companies:
+                      - block_reason: Operational Issues
+                        courier_company_id: 33
+                        courier_name: Xpressbees Air
+                        postcode: '175019'
+                      child_courier_id: null
+                      is_recommendation_enabled: 1
+                      recommendation_advance_rule: 0
+                      recommended_by:
+                        id: 6
+                        title: Recommendation By Shiprocket
+                      recommended_courier_company_id: 43
+                      shiprocket_recommended_courier_id: 43
+                    dg_courier: 0
+                    eligible_for_insurance: false
+                    insurace_opted_at_order_creation: false
+                    is_allow_templatized_pricing: true
+                    is_latlong: 0
+                    is_old_zone_opted: false
+                    is_zone_from_mongo: true
+                    label_generate_type: 2
+                    on_new_zone: 2
+                    seller_address: []
+                    status: 200
+                    user_insurance_manadatory: false
+                Invalid-Data:
+                  value:
+                    status: 404
+                    message: Order does not exist!
+              schema:
+                type: object
+                properties:
+                  company_auto_shipment_insurance_setting:
+                    type: boolean
+                  covid_zones:
+                    type: object
+                    properties:
+                      delivery_zone: {}
+                      pickup_zone: {}
+                  currency:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      available_courier_companies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            air_max_weight:
+                              type: string
+                            assured_amount:
+                              type: integer
+                            base_courier_id: {}
+                            base_weight:
+                              type: string
+                            blocked:
+                              type: integer
+                            call_before_delivery:
+                              type: string
+                            charge_weight:
+                              type: number
+                            city:
+                              type: string
+                            cod:
+                              type: integer
+                            cod_charges:
+                              type: integer
+                            cod_multiplier:
+                              type: number
+                            cost:
+                              type: string
+                            courier_company_id:
+                              type: integer
+                            courier_name:
+                              type: string
+                            courier_type:
+                              type: string
+                            coverage_charges:
+                              type: integer
+                            cutoff_time:
+                              type: string
+                            delivery_boy_contact:
+                              type: string
+                            delivery_performance:
+                              type: integer
+                            description:
+                              type: string
+                            edd:
+                              type: string
+                            entry_tax:
+                              type: integer
+                            estimated_delivery_days:
+                              type: string
+                            etd:
+                              type: string
+                            etd_hours:
+                              type: integer
+                            freight_charge:
+                              type: integer
+                            id:
+                              type: integer
+                            is_custom_rate:
+                              type: integer
+                            is_hyperlocal:
+                              type: boolean
+                            is_international:
+                              type: integer
+                            is_rto_address_available:
+                              type: boolean
+                            is_surface:
+                              type: boolean
+                            local_region:
+                              type: integer
+                            metro:
+                              type: integer
+                            min_weight:
+                              type: number
+                            mode:
+                              type: integer
+                            new_edd:
+                              type: integer
+                            odablock:
+                              type: boolean
+                            other_charges:
+                              type: integer
+                            others:
+                              type: string
+                            pickup_availability:
+                              type: string
+                            pickup_performance:
+                              type: number
+                            pickup_priority:
+                              type: string
+                            pickup_supress_hours:
+                              type: integer
+                            pod_available:
+                              type: string
+                            postcode:
+                              type: string
+                            qc_courier:
+                              type: integer
+                            rank:
+                              type: string
+                            rate:
+                              type: integer
+                            rating:
+                              type: number
+                            realtime_tracking:
+                              type: string
+                            region:
+                              type: integer
+                            rto_charges:
+                              type: integer
+                            rto_performance:
+                              type: integer
+                            seconds_left_for_pickup:
+                              type: integer
+                            secure_shipment_disabled:
+                              type: boolean
+                            ship_type:
+                              type: integer
+                            state:
+                              type: string
+                            suppress_date:
+                              type: string
+                            suppress_text:
+                              type: string
+                            suppression_dates: {}
+                            surface_max_weight:
+                              type: string
+                            tracking_performance:
+                              type: integer
+                            volumetric_max_weight: {}
+                            weight_cases:
+                              type: number
+                            zone:
+                              type: string
+                      blocked_courier_companies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            block_reason:
+                              type: string
+                            courier_company_id:
+                              type: integer
+                            courier_name:
+                              type: string
+                            postcode:
+                              type: string
+                      child_courier_id: {}
+                      is_recommendation_enabled:
+                        type: integer
+                      recommendation_advance_rule:
+                        type: integer
+                      recommended_by:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          title:
+                            type: string
+                      recommended_courier_company_id:
+                        type: integer
+                      shiprocket_recommended_courier_id:
+                        type: integer
+                  dg_courier:
+                    type: integer
+                  eligible_for_insurance:
+                    type: boolean
+                  insurace_opted_at_order_creation:
+                    type: boolean
+                  is_allow_templatized_pricing:
+                    type: boolean
+                  is_latlong:
+                    type: integer
+                  is_old_zone_opted:
+                    type: boolean
+                  is_zone_from_mongo:
+                    type: boolean
+                  label_generate_type:
+                    type: integer
+                  on_new_zone:
+                    type: integer
+                  seller_address:
+                    type: array
+                    items: {}
+                  status:
+                    type: integer
+                  user_insurance_manadatory:
+                    type: boolean
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Required field missing
+                    errors:
+                      weight:
+                      - The weight field is required when order id is not present.
+                      cod:
+                      - The cod field is required when order id is not present.
+                      order_id:
+                      - The order id field is required when pickup postcode / delivery postcode / cod / weight is not present.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      weight:
+                        type: array
+                        items:
+                          type: string
+                      cod:
+                        type: array
+                        items:
+                          type: string
+                      order_id:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders:
+    get:
+      summary: Get all Orders
+      description: 'This API call will display a list of all created and available orders in your Shiprocket account. The product and shipment details are displayed as sub-arrays within each order detail.
+
+        You can also sort and filter the data according to your needs by passing the optional parameters. Not passing anything will display the data in the default format.
+
+        You can also fetch the data based on the order update date. PFB the validations:
+
+        1. if updated_to => passed and updated_from not passed =>, error will come => Please send update_from date along with update_to date
+
+        2. if updated_from => passed and updated_to => paased => and from-to > 30 then error => Difference between updated_from and update_to date should not be greater than 30 days.
+
+        3. if updated_From Updated_from date should not be less than 30 days from current date
+
+        Parameters:'
+      operationId: getAllOrders
+      tags:
+      - Hyperlocal
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: The page number to display.
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+        description: The number of entries per page.
+      - name: sort
+        in: query
+        schema:
+          type: string
+        description: 'Sort conditions: ASC or DESC'
+      - name: sort_by
+        in: query
+        schema:
+          type: string
+        description: 'The Field to sort by: id or status'
+      - name: to
+        in: query
+        schema:
+          type: string
+        description: The end date.
+      - name: from
+        in: query
+        schema:
+          type: string
+        description: The start date.
+      - name: filter_by
+        in: query
+        schema:
+          type: string
+        description: Field to filter by.
+      - name: filter
+        in: query
+        schema:
+          type: string
+        description: Value of the field
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Search for AWB or by Channel order_id (order id specified by you).
+      - name: pickup_location
+        in: query
+        schema:
+          type: string
+        description: Search Orders on the basis of pickup location.
+      - name: channel_id
+        in: query
+        schema:
+          type: integer
+        description: Channel ID Returned in Get Integrated Channels API
+      - name: fbs
+        in: query
+        schema:
+          type: integer
+        description: Use this filter if you want to view and filter the SRF orders
+      - name: fbs_all_orders
+        in: query
+        schema:
+          type: integer
+        description: Use this filter if you want to view both SRF and Last mile (core) orders
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                    - id: 16178831
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      channel_order_id: 224-4779888
+                      customer_name: Majin Bu
+                      customer_email: naruto@uzumaki.com
+                      customer_phone: '9988998899'
+                      pickup_location: hell
+                      payment_status: ''
+                      total: '9000.00'
+                      tax: '0.00'
+                      sla: 2 days
+                      shipping_method: SR
+                      expedited: 0
+                      status: CANCELED
+                      status_code: 5
+                      payment_method: prepaid
+                      is_international: 0
+                      purpose_of_shipment: 0
+                      channel_created_at: 24 Jul 2019, 11:11 AM
+                      created_at: 31 Jul 2019, 03:03 PM
+                      products:
+                      - id: 18769728
+                        channel_order_product_id: '18769728'
+                        name: Kunai
+                        channel_sku: chakra123
+                        quantity: 10
+                        product_id: 17484610
+                        available: 50
+                        status: CANCELED
+                        hsn: '441122'
+                      shipments:
+                      - id: 16028538
+                        isd_code: ''
+                        courier: ''
+                        weight: 0
+                        dimensions: 0.00x0.00x0.00
+                        pickup_scheduled_date: null
+                        pickup_token_number: null
+                        awb: ''
+                        return_awb: ''
+                        volumetric_weight: 0
+                        pod: null
+                        etd: NA
+                        rto_delivered_date: '0000-00-00 00:00:00'
+                        delivered_date: null
+                        etd_escalation_btn: false
+                      activities:
+                      - ORDER_CREATED
+                      - ADDRESS_MODIFIED
+                      - ORDER_CANCELLED
+                      allow_return: 0
+                      is_incomplete: 0
+                      errors: []
+                      show_escalation_btn: 0
+                      escalation_status: ''
+                      escalation_history: []
+                    meta:
+                      pagination:
+                        total: 1
+                        count: 1
+                        per_page: 1
+                        current_page: 1
+                        total_pages: 1
+                        links: {}
+                Successful-Call-With-No-Parameters:
+                  value:
+                    data:
+                    - id: 16178831
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      channel_order_id: 224-4779888
+                      customer_name: Majin Bu
+                      customer_email: naruto@uzumaki.com
+                      customer_phone: '9988998899'
+                      pickup_location: hell
+                      payment_status: ''
+                      total: '9000.00'
+                      tax: '0.00'
+                      sla: 2 days
+                      shipping_method: SR
+                      expedited: 0
+                      status: CANCELED
+                      status_code: 5
+                      payment_method: prepaid
+                      is_international: 0
+                      purpose_of_shipment: 0
+                      channel_created_at: 24 Jul 2019, 11:11 AM
+                      created_at: 31 Jul 2019, 03:03 PM
+                      products:
+                      - id: 18769728
+                        channel_order_product_id: '18769728'
+                        name: Kunai
+                        channel_sku: chakra123
+                        quantity: 10
+                        product_id: 17484610
+                        available: 50
+                        status: CANCELED
+                        hsn: '441122'
+                      shipments:
+                      - id: 16028538
+                        isd_code: ''
+                        courier: ''
+                        weight: 0
+                        dimensions: 0.00x0.00x0.00
+                        pickup_scheduled_date: null
+                        pickup_token_number: null
+                        awb: ''
+                        return_awb: ''
+                        volumetric_weight: 0
+                        pod: null
+                        etd: NA
+                        rto_delivered_date: '0000-00-00 00:00:00'
+                        delivered_date: null
+                        etd_escalation_btn: false
+                      activities:
+                      - ORDER_CREATED
+                      - ADDRESS_MODIFIED
+                      - ORDER_CANCELLED
+                      allow_return: 0
+                      is_incomplete: 0
+                      errors: []
+                      show_escalation_btn: 0
+                      escalation_status: ''
+                      escalation_history: []
+                    - id: 16177223
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      channel_order_id: 224-47798
+                      customer_name: Naruto Uzumaki
+                      customer_email: naruto@uzumaki.com
+                      customer_phone: '9876543210'
+                      pickup_location: okooi
+                      payment_status: ''
+                      total: '9000.00'
+                      tax: '0.00'
+                      sla: 2 days
+                      shipping_method: SR
+                      expedited: 0
+                      status: NEW
+                      status_code: 1
+                      payment_method: prepaid
+                      is_international: 0
+                      purpose_of_shipment: 0
+                      channel_created_at: 24 Jul 2019, 11:11 AM
+                      created_at: 31 Jul 2019, 02:39 PM
+                      products:
+                      - id: 18766013
+                        channel_order_product_id: '18766013'
+                        name: Kunai
+                        channel_sku: chakra123
+                        quantity: 10
+                        product_id: 17484610
+                        available: 50
+                        status: UNDEFINED
+                        hsn: '441122'
+                      shipments:
+                      - id: 16026933
+                        isd_code: '+91'
+                        courier: ''
+                        weight: 0
+                        dimensions: 0.00x0.00x0.00
+                        pickup_scheduled_date: null
+                        pickup_token_number: null
+                        awb: ''
+                        return_awb: ''
+                        volumetric_weight: 0
+                        pod: null
+                        etd: NA
+                        rto_delivered_date: '0000-00-00 00:00:00'
+                        delivered_date: null
+                        etd_escalation_btn: false
+                      activities:
+                      - ORDER_CREATED
+                      allow_return: 0
+                      is_incomplete: 0
+                      errors: []
+                      show_escalation_btn: 0
+                      escalation_status: ''
+                      escalation_history: []
+                    meta:
+                      pagination:
+                        total: 19631
+                        count: 15
+                        per_page: 15
+                        current_page: 1
+                        total_pages: 1309
+                        links:
+                          next: https://apiv2.shiprocket.in/v1/external/orders?page=2
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        channel_id:
+                          type: integer
+                        channel_name:
+                          type: string
+                        base_channel_code:
+                          type: string
+                        channel_order_id:
+                          type: string
+                        customer_name:
+                          type: string
+                        customer_email:
+                          type: string
+                        customer_phone:
+                          type: string
+                        pickup_location:
+                          type: string
+                        payment_status:
+                          type: string
+                        total:
+                          type: string
+                        tax:
+                          type: string
+                        sla:
+                          type: string
+                        shipping_method:
+                          type: string
+                        expedited:
+                          type: integer
+                        status:
+                          type: string
+                        status_code:
+                          type: integer
+                        payment_method:
+                          type: string
+                        is_international:
+                          type: integer
+                        purpose_of_shipment:
+                          type: integer
+                        channel_created_at:
+                          type: string
+                        created_at:
+                          type: string
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              channel_order_product_id:
+                                type: string
+                              name:
+                                type: string
+                              channel_sku:
+                                type: string
+                              quantity:
+                                type: integer
+                              product_id:
+                                type: integer
+                              available:
+                                type: integer
+                              status:
+                                type: string
+                              hsn:
+                                type: string
+                        shipments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              isd_code:
+                                type: string
+                              courier:
+                                type: string
+                              weight:
+                                type: integer
+                              dimensions:
+                                type: string
+                              pickup_scheduled_date: {}
+                              pickup_token_number: {}
+                              awb:
+                                type: string
+                              return_awb:
+                                type: string
+                              volumetric_weight:
+                                type: integer
+                              pod: {}
+                              etd:
+                                type: string
+                              rto_delivered_date:
+                                type: string
+                              delivered_date: {}
+                              etd_escalation_btn:
+                                type: boolean
+                        activities:
+                          type: array
+                          items:
+                            type: string
+                        allow_return:
+                          type: integer
+                        is_incomplete:
+                          type: integer
+                        errors:
+                          type: array
+                          items: {}
+                        show_escalation_btn:
+                          type: integer
+                        escalation_status:
+                          type: string
+                        escalation_history:
+                          type: array
+                          items: {}
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          count:
+                            type: integer
+                          per_page:
+                            type: integer
+                          current_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          links:
+                            type: object
+                            properties: {}
+  /v1/external/orders/show/{id}:
+    get:
+      summary: Get Specific Order Details
+      description: 'Get the order and shipment details of a particular order through this API by passing the Shiprocket order_id in the endpoint URL itself — type in your order_id in place of {id}.
+
+        No other body parameters are required.
+
+        Note:
+
+        For SRF orders, you''ll receive an extra parameter viz., fulfillment_status. This key will have four values:
+
+        Ready to Pack,
+
+        Packed
+
+        Added to Picklist
+
+        Picked up
+
+        Path:'
+      operationId: getSpecificOrderDetails
+      tags:
+      - Hyperlocal
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                      id: 259492257
+                      channel_id: 38026
+                      channel_name: MANUAL1
+                      base_channel_code: CS
+                      is_international: 0
+                      is_document: 0
+                      channel_order_id: '1873081902'
+                      customer_name: 'DemoHome '
+                      customer_email: abc@gmail.com
+                      customer_phone: '9876543236'
+                      customer_address: 408, Gautami, Kondapur
+                      customer_address_2: null
+                      customer_city: North West Delhi
+                      customer_state: Delhi
+                      customer_pincode: '110088'
+                      customer_country: India
+                      pickup_code: ''
+                      pickup_location: ''
+                      pickup_location_id: ''
+                      pickup_id: ''
+                      ship_type: ''
+                      courier_mode: ''
+                      currency: INR
+                      country_code: 99
+                      exchange_rate_usd: 0
+                      exchange_rate_inr: 0
+                      state_code: 1483
+                      payment_status: ''
+                      delivery_code: '110088'
+                      total: 345
+                      total_inr: 0
+                      total_usd: 0
+                      net_total: '345.00'
+                      other_charges: '0.00'
+                      other_discounts: '0.00'
+                      giftwrap_charges: '0.00'
+                      expedited: 0
+                      sla: 2 days
+                      cod: 0
+                      tax: 0
+                      total_kerala_cess: ''
+                      discount: 0
+                      status: RETURN PENDING
+                      sub_status: null
+                      status_code: 21
+                      master_status: ''
+                      payment_method: prepaid
+                      purpose_of_shipment: 0
+                      channel_created_at: 21 Sep 2022 05:25 PM
+                      created_at: 21 Sep 2022 05:28 PM
+                      order_date: 21 Sep 2022
+                      updated_at: 21 Sep 2022 05:28 PM
+                      products:
+                      - id: 365076966
+                        order_id: 259492257
+                        product_id: 1620533
+                        name: watch
+                        sku: Tshirt-Blue-41
+                        description: 'WHEAT AND MESLIN DURUM WHEAT : OF SEED QUALITY'
+                        channel_order_product_id: '365076966'
+                        channel_sku: Tshirt-Blue-41
+                        hsn: ''
+                        model: null
+                        manufacturer: null
+                        brand: ''
+                        color: ''
+                        size: null
+                        custom_field: ''
+                        custom_field_value: ''
+                        custom_field_value_string: ''
+                        weight: 0
+                        dimensions: 0x0x0
+                        price: 345
+                        cost: 345
+                        mrp: 400
+                        quantity: 1
+                        returnable_quantity: 0
+                        tax: 0
+                        status: 1
+                        net_total: 345
+                        discount: 0
+                        product_options: []
+                        selling_price: 345
+                        tax_percentage: 0
+                        discount_including_tax: 0
+                        channel_category: Default Category
+                        packaging_material: ''
+                        additional_material: ''
+                        is_free_product: ''
+                      invoice_no: ''
+                      shipments:
+                        id: 258878960
+                        order_id: 259492257
+                        order_product_id: null
+                        channel_id: 38026
+                        code: ''
+                        cost: '0.00'
+                        tax: '0.00'
+                        awb: null
+                        rto_awb: ''
+                        awb_assign_date: null
+                        etd: ''
+                        delivered_date: ''
+                        quantity: 1
+                        cod_charges: '0.00'
+                        number: null
+                        name: null
+                        order_item_id: null
+                        weight: 1
+                        volumetric_weight: 0.266
+                        dimensions: 11.000x11.000x11.000
+                        comment: ''
+                        courier: ''
+                        courier_id: ''
+                        manifest_id: ''
+                        manifest_escalate: false
+                        status: PENDING
+                        isd_code: '+91'
+                        created_at: 21st Sep 2022 05:28 PM
+                        updated_at: 21st Sep 2022 05:28 PM
+                        pod: null
+                        eway_bill_number: '-'
+                        eway_bill_date: null
+                        length: 11
+                        breadth: 11
+                        height: 11
+                        rto_initiated_date: ''
+                        rto_delivered_date: ''
+                        shipped_date: ''
+                        package_images: ''
+                        is_rto: false
+                        eway_required: false
+                        invoice_link: ''
+                        is_darkstore_courier: 0
+                        courier_custom_rule: ''
+                        is_single_shipment: true
+                      awb_data:
+                        awb: ''
+                        applied_weight: ''
+                        charged_weight: ''
+                        billed_weight: ''
+                        routing_code: ''
+                        rto_routing_code: ''
+                        charges:
+                          zone: ''
+                          cod_charges: ''
+                          applied_weight_amount: ''
+                          freight_charges: ''
+                          applied_weight: ''
+                          charged_weight: ''
+                          charged_weight_amount: ''
+                          charged_weight_amount_rto: ''
+                          applied_weight_amount_rto: ''
+                          service_type_id: ''
+                      order_insurance:
+                        insurance_status: 'No'
+                        policy_no: N/A
+                        claim_enable: false
+                      return_pickup_data:
+                        id: 2143757
+                        name: ashwin ashwin
+                        email: ashwingunadeep@gmail.com
+                        address: shiprocket
+                        address_2: shiprocket
+                        city: South West Delhi
+                        state: Delhi
+                        country: India
+                        pin_code: '110030'
+                        phone: '9562817406'
+                        lat: null
+                        long: null
+                        order_id: 259492257
+                        created_at: '2022-09-21 17:28:40'
+                        updated_at: '2022-09-21 17:28:40'
+                      company_logo: null
+                      allow_return: 0
+                      is_return: 1
+                      is_incomplete: 0
+                      errors: null
+                      payment_code: null
+                      coupon_is_visible: false
+                      coupons: ''
+                      billing_city: ''
+                      billing_name: ''
+                      billing_email: ''
+                      billing_phone: ''
+                      billing_alternate_phone: ''
+                      billing_state_name: ''
+                      billing_address: ''
+                      billing_country_name: ''
+                      billing_pincode: ''
+                      billing_address_2: ''
+                      billing_mobile_country_code: '+91'
+                      isd_code: ''
+                      billing_state_id: ''
+                      billing_country_id: ''
+                      freight_description: Forward charges
+                      reseller_name: ''
+                      shipping_is_billing: 0
+                      company_name: shiprocket
+                      shipping_title: ''
+                      allow_channel_order_sync: false
+                      uib-tooltip-text: Re-fetch orders with updated details
+                      api_order_id: ''
+                      allow_multiship: 0
+                      other_sub_orders: []
+                      others:
+                        weight: '1'
+                        quantity: 1
+                        buyer_psid: null
+                        dimensions: 11x11x11
+                        api_order_id: ''
+                        company_name: shiprocket
+                        currency_code: INR
+                        package_count: '1'
+                        shipping_city: North West Delhi
+                        shipping_name: 'DemoHome '
+                        shipping_email: abc@gmail.com
+                        shipping_phone: '9876543236'
+                        shipping_state: Delhi
+                        custom_order_id: null
+                        billing_isd_code: '+91'
+                        forward_order_id: null
+                        shipping_address: 408, Gautami, Kondapur
+                        shipping_charges: '0'
+                        shipping_country: India
+                        shipping_pincode: '110088'
+                        shipping_address_2: ''
+                      is_order_verified: 0
+                      extra_info:
+                        qc_check: 1
+                        qc_params: Product Name,Size,Color,Brand,Product Image
+                        order_type: 1
+                        amazon_dg_status: false
+                        forward_order_id: ''
+                        bluedart_dg_status: false
+                        other_courier_dg_status: false
+                        insurace_opted_at_order_creation: false
+                      dup: 0
+                      is_blackbox_seller: false
+                      shipping_method: SR
+                      refund_detail:
+                        refund_mode: Store Credits
+                        account_holder_name: ''
+                        account_number: ''
+                        bank_ifsc: ''
+                        bank_name: ''
+                      pickup_address: []
+                      eway_bill_number: ''
+                      eway_bill_url: ''
+                      eway_required: false
+                      irn_no: ''
+                      engage: null
+                      seller_can_edit: false
+                      seller_can_cancell: false
+                      is_post_ship_status: false
+                      order_tag: ''
+                      qc_status: ''
+                      qc_reason: ''
+                      qc_image: ''
+                      product_qc:
+                      - product_id: 365076966
+                        qc_values:
+                          qc_product_name:
+                            value: watch
+                            name: Product Name
+                          qc_size:
+                            value: asdasd
+                            name: Size
+                          qc_color:
+                            value: asdasd
+                            name: Color
+                          qc_brand:
+                            value: asdas
+                            name: Brand
+                          qc_product_image:
+                            value: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/1663238198WTVf4.jpeg
+                            name: Product Image
+                      seller_request: null
+                      change_payment_mode: true
+                      etd_date: null
+                      out_for_delivery_date: null
+                      delivered_date: null
+                      remittance_date: ''
+                      remittance_utr: ''
+                      remittance_status: ''
+                      insurance_excluded: true
+                      can_edit_dimension: true
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      channel_id:
+                        type: integer
+                      channel_name:
+                        type: string
+                      base_channel_code:
+                        type: string
+                      is_international:
+                        type: integer
+                      is_document:
+                        type: integer
+                      channel_order_id:
+                        type: string
+                      customer_name:
+                        type: string
+                      customer_email:
+                        type: string
+                      customer_phone:
+                        type: string
+                      customer_address:
+                        type: string
+                      customer_address_2: {}
+                      customer_city:
+                        type: string
+                      customer_state:
+                        type: string
+                      customer_pincode:
+                        type: string
+                      customer_country:
+                        type: string
+                      pickup_code:
+                        type: string
+                      pickup_location:
+                        type: string
+                      pickup_location_id:
+                        type: string
+                      pickup_id:
+                        type: string
+                      ship_type:
+                        type: string
+                      courier_mode:
+                        type: string
+                      currency:
+                        type: string
+                      country_code:
+                        type: integer
+                      exchange_rate_usd:
+                        type: integer
+                      exchange_rate_inr:
+                        type: integer
+                      state_code:
+                        type: integer
+                      payment_status:
+                        type: string
+                      delivery_code:
+                        type: string
+                      total:
+                        type: integer
+                      total_inr:
+                        type: integer
+                      total_usd:
+                        type: integer
+                      net_total:
+                        type: string
+                      other_charges:
+                        type: string
+                      other_discounts:
+                        type: string
+                      giftwrap_charges:
+                        type: string
+                      expedited:
+                        type: integer
+                      sla:
+                        type: string
+                      cod:
+                        type: integer
+                      tax:
+                        type: integer
+                      total_kerala_cess:
+                        type: string
+                      discount:
+                        type: integer
+                      status:
+                        type: string
+                      sub_status: {}
+                      status_code:
+                        type: integer
+                      master_status:
+                        type: string
+                      payment_method:
+                        type: string
+                      purpose_of_shipment:
+                        type: integer
+                      channel_created_at:
+                        type: string
+                      created_at:
+                        type: string
+                      order_date:
+                        type: string
+                      updated_at:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            order_id:
+                              type: integer
+                            product_id:
+                              type: integer
+                            name:
+                              type: string
+                            sku:
+                              type: string
+                            description:
+                              type: string
+                            channel_order_product_id:
+                              type: string
+                            channel_sku:
+                              type: string
+                            hsn:
+                              type: string
+                            model: {}
+                            manufacturer: {}
+                            brand:
+                              type: string
+                            color:
+                              type: string
+                            size: {}
+                            custom_field:
+                              type: string
+                            custom_field_value:
+                              type: string
+                            custom_field_value_string:
+                              type: string
+                            weight:
+                              type: integer
+                            dimensions:
+                              type: string
+                            price:
+                              type: integer
+                            cost:
+                              type: integer
+                            mrp:
+                              type: integer
+                            quantity:
+                              type: integer
+                            returnable_quantity:
+                              type: integer
+                            tax:
+                              type: integer
+                            status:
+                              type: integer
+                            net_total:
+                              type: integer
+                            discount:
+                              type: integer
+                            product_options:
+                              type: array
+                              items: {}
+                            selling_price:
+                              type: integer
+                            tax_percentage:
+                              type: integer
+                            discount_including_tax:
+                              type: integer
+                            channel_category:
+                              type: string
+                            packaging_material:
+                              type: string
+                            additional_material:
+                              type: string
+                            is_free_product:
+                              type: string
+                      invoice_no:
+                        type: string
+                      shipments:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          order_id:
+                            type: integer
+                          order_product_id: {}
+                          channel_id:
+                            type: integer
+                          code:
+                            type: string
+                          cost:
+                            type: string
+                          tax:
+                            type: string
+                          awb: {}
+                          rto_awb:
+                            type: string
+                          awb_assign_date: {}
+                          etd:
+                            type: string
+                          delivered_date:
+                            type: string
+                          quantity:
+                            type: integer
+                          cod_charges:
+                            type: string
+                          number: {}
+                          name: {}
+                          order_item_id: {}
+                          weight:
+                            type: integer
+                          volumetric_weight:
+                            type: number
+                          dimensions:
+                            type: string
+                          comment:
+                            type: string
+                          courier:
+                            type: string
+                          courier_id:
+                            type: string
+                          manifest_id:
+                            type: string
+                          manifest_escalate:
+                            type: boolean
+                          status:
+                            type: string
+                          isd_code:
+                            type: string
+                          created_at:
+                            type: string
+                          updated_at:
+                            type: string
+                          pod: {}
+                          eway_bill_number:
+                            type: string
+                          eway_bill_date: {}
+                          length:
+                            type: integer
+                          breadth:
+                            type: integer
+                          height:
+                            type: integer
+                          rto_initiated_date:
+                            type: string
+                          rto_delivered_date:
+                            type: string
+                          shipped_date:
+                            type: string
+                          package_images:
+                            type: string
+                          is_rto:
+                            type: boolean
+                          eway_required:
+                            type: boolean
+                          invoice_link:
+                            type: string
+                          is_darkstore_courier:
+                            type: integer
+                          courier_custom_rule:
+                            type: string
+                          is_single_shipment:
+                            type: boolean
+                      awb_data:
+                        type: object
+                        properties:
+                          awb:
+                            type: string
+                          applied_weight:
+                            type: string
+                          charged_weight:
+                            type: string
+                          billed_weight:
+                            type: string
+                          routing_code:
+                            type: string
+                          rto_routing_code:
+                            type: string
+                          charges:
+                            type: object
+                            properties:
+                              zone:
+                                type: string
+                              cod_charges:
+                                type: string
+                              applied_weight_amount:
+                                type: string
+                              freight_charges:
+                                type: string
+                              applied_weight:
+                                type: string
+                              charged_weight:
+                                type: string
+                              charged_weight_amount:
+                                type: string
+                              charged_weight_amount_rto:
+                                type: string
+                              applied_weight_amount_rto:
+                                type: string
+                              service_type_id:
+                                type: string
+                      order_insurance:
+                        type: object
+                        properties:
+                          insurance_status:
+                            type: string
+                          policy_no:
+                            type: string
+                          claim_enable:
+                            type: boolean
+                      return_pickup_data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          email:
+                            type: string
+                          address:
+                            type: string
+                          address_2:
+                            type: string
+                          city:
+                            type: string
+                          state:
+                            type: string
+                          country:
+                            type: string
+                          pin_code:
+                            type: string
+                          phone:
+                            type: string
+                          lat: {}
+                          long: {}
+                          order_id:
+                            type: integer
+                          created_at:
+                            type: string
+                          updated_at:
+                            type: string
+                      company_logo: {}
+                      allow_return:
+                        type: integer
+                      is_return:
+                        type: integer
+                      is_incomplete:
+                        type: integer
+                      errors: {}
+                      payment_code: {}
+                      coupon_is_visible:
+                        type: boolean
+                      coupons:
+                        type: string
+                      billing_city:
+                        type: string
+                      billing_name:
+                        type: string
+                      billing_email:
+                        type: string
+                      billing_phone:
+                        type: string
+                      billing_alternate_phone:
+                        type: string
+                      billing_state_name:
+                        type: string
+                      billing_address:
+                        type: string
+                      billing_country_name:
+                        type: string
+                      billing_pincode:
+                        type: string
+                      billing_address_2:
+                        type: string
+                      billing_mobile_country_code:
+                        type: string
+                      isd_code:
+                        type: string
+                      billing_state_id:
+                        type: string
+                      billing_country_id:
+                        type: string
+                      freight_description:
+                        type: string
+                      reseller_name:
+                        type: string
+                      shipping_is_billing:
+                        type: integer
+                      company_name:
+                        type: string
+                      shipping_title:
+                        type: string
+                      allow_channel_order_sync:
+                        type: boolean
+                      uib-tooltip-text:
+                        type: string
+                      api_order_id:
+                        type: string
+                      allow_multiship:
+                        type: integer
+                      other_sub_orders:
+                        type: array
+                        items: {}
+                      others:
+                        type: object
+                        properties:
+                          weight:
+                            type: string
+                          quantity:
+                            type: integer
+                          buyer_psid: {}
+                          dimensions:
+                            type: string
+                          api_order_id:
+                            type: string
+                          company_name:
+                            type: string
+                          currency_code:
+                            type: string
+                          package_count:
+                            type: string
+                          shipping_city:
+                            type: string
+                          shipping_name:
+                            type: string
+                          shipping_email:
+                            type: string
+                          shipping_phone:
+                            type: string
+                          shipping_state:
+                            type: string
+                          custom_order_id: {}
+                          billing_isd_code:
+                            type: string
+                          forward_order_id: {}
+                          shipping_address:
+                            type: string
+                          shipping_charges:
+                            type: string
+                          shipping_country:
+                            type: string
+                          shipping_pincode:
+                            type: string
+                          shipping_address_2:
+                            type: string
+                      is_order_verified:
+                        type: integer
+                      extra_info:
+                        type: object
+                        properties:
+                          qc_check:
+                            type: integer
+                          qc_params:
+                            type: string
+                          order_type:
+                            type: integer
+                          amazon_dg_status:
+                            type: boolean
+                          forward_order_id:
+                            type: string
+                          bluedart_dg_status:
+                            type: boolean
+                          other_courier_dg_status:
+                            type: boolean
+                          insurace_opted_at_order_creation:
+                            type: boolean
+                      dup:
+                        type: integer
+                      is_blackbox_seller:
+                        type: boolean
+                      shipping_method:
+                        type: string
+                      refund_detail:
+                        type: object
+                        properties:
+                          refund_mode:
+                            type: string
+                          account_holder_name:
+                            type: string
+                          account_number:
+                            type: string
+                          bank_ifsc:
+                            type: string
+                          bank_name:
+                            type: string
+                      pickup_address:
+                        type: array
+                        items: {}
+                      eway_bill_number:
+                        type: string
+                      eway_bill_url:
+                        type: string
+                      eway_required:
+                        type: boolean
+                      irn_no:
+                        type: string
+                      engage: {}
+                      seller_can_edit:
+                        type: boolean
+                      seller_can_cancell:
+                        type: boolean
+                      is_post_ship_status:
+                        type: boolean
+                      order_tag:
+                        type: string
+                      qc_status:
+                        type: string
+                      qc_reason:
+                        type: string
+                      qc_image:
+                        type: string
+                      product_qc:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: integer
+                            qc_values:
+                              type: object
+                              properties:
+                                qc_product_name:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_size:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_color:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_brand:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_product_image:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                      seller_request: {}
+                      change_payment_mode:
+                        type: boolean
+                      etd_date: {}
+                      out_for_delivery_date: {}
+                      delivered_date: {}
+                      remittance_date:
+                        type: string
+                      remittance_utr:
+                        type: string
+                      remittance_status:
+                        type: string
+                      insurance_excluded:
+                        type: boolean
+                      can_edit_dimension:
+                        type: boolean
+        '404':
+          description: Incorrect Endpoint Path
+          content:
+            application/json:
+              examples:
+                Incorrect-Endpoint-Path:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Order ID not found
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/export:
+    post:
+      summary: Export your orders
+      description: 'This API downloads and creates a CSV file of all the orders in your Shiprocket account and sends the download URL to the linked email account of the API user.
+
+        The CSV file containing is accessible via this URL.
+
+        No parameters are required to access this API.'
+      operationId: exportYourOrders
+      tags:
+      - Hyperlocal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+            example: {}
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    status: 200
+                    is_background_downloading: 1
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  is_background_downloading:
+                    type: integer
+        '502':
+          description: Invalid Endpoint
+          content:
+            text/html:
+              examples:
+                Invalid-Endpoint:
+                  value: "<html>\n    <head>\n        <title>502 Bad Gateway</title>\n    </head>\n    <body bgcolor=\"white\">\n        <center>\n            <h1>502 Bad Gateway</h1>\n        </center>\n        <hr>\n        <center>nginx</center>\n    </body>\n</html>"
+  /v1/external/courier/track/awb/{awb_code}:
+    get:
+      summary: Get Tracking through AWB
+      description: 'Get the tracking details of your shipment by entering the AWB code of the same in the endpoint URL itself.
+
+        No other body parameters are required to access this API.
+
+        The response is displayed in JSON format.
+
+        Path:'
+      operationId: getTrackingThroughAWB
+      tags:
+      - Hyperlocal
+      parameters:
+      - name: awb_code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    tracking_data:
+                      track_status: 1
+                      shipment_status: 7
+                      shipment_track:
+                      - id: 236612717
+                        awb_code: '141123221084922'
+                        courier_company_id: 51
+                        shipment_id: 236612717
+                        order_id: 237157589
+                        pickup_date: '2022-07-18 20:28:00'
+                        delivered_date: '2022-07-19 11:37:00'
+                        weight: '0.30'
+                        packages: 1
+                        current_status: Delivered
+                        delivered_to: Chittoor
+                        destination: Chittoor
+                        consignee_name: ''
+                        origin: Banglore
+                        courier_agent_details: null
+                        courier_name: Xpressbees Surface
+                        edd: null
+                        pod: Available
+                        pod_status: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/courier/51/pod/141123221084922.png
+                      shipment_track_activities:
+                      - date: '2022-07-19 11:37:00'
+                        status: DLVD
+                        activity: Delivered
+                        location: MADANPALLI, Madanapalli, ANDHRA PRADESH
+                        sr-status: '7'
+                        sr-status-label: DELIVERED
+                      - date: '2022-07-19 08:57:00'
+                        status: OFD
+                        activity: 'Out for Delivery Out for delivery: 383439-Nandinayani Reddy Bhaskara Sitics Logistics  (356231) (383439)-PDS22200085719383439-FromMob , MobileNo:- 9963133564'
+                        location: MADANPALLI, Madanapalli, ANDHRA PRADESH
+                        sr-status: '17'
+                        sr-status-label: OUT FOR DELIVERY
+                      - date: '2022-07-19 07:33:00'
+                        status: RAD
+                        activity: 'Reached at Destination Shipment BagOut From Bag : nxbg03894488'
+                        location: MADANPALLI, Madanapalli, ANDHRA PRADESH
+                        sr-status: '38'
+                        sr-status-label: REACHED AT DESTINATION HUB
+                      - date: '2022-07-18 21:02:00'
+                        status: IT
+                        activity: InTransit Shipment added in Bag nxbg03894488
+                        location: BLR/FC1, BANGALORE, KARNATAKA
+                        sr-status: '18'
+                        sr-status-label: IN TRANSIT
+                      - date: '2022-07-18 20:28:00'
+                        status: PKD
+                        activity: Picked Shipment InScan from Manifest
+                        location: BLR/FC1, BANGALORE, KARNATAKA
+                        sr-status: '6'
+                        sr-status-label: SHIPPED
+                      - date: '2022-07-18 13:50:00'
+                        status: PUD
+                        activity: 'PickDone '
+                        location: RTO/CHD, BANGALORE, KARNATAKA
+                        sr-status: '42'
+                        sr-status-label: PICKED UP
+                      - date: '2022-07-18 10:04:00'
+                        status: OFP
+                        activity: 'Out for Pickup '
+                        location: RTO/CHD, BANGALORE, KARNATAKA
+                        sr-status: '19'
+                        sr-status-label: OUT FOR PICKUP
+                      - date: '2022-07-18 09:51:00'
+                        status: DRC
+                        activity: Pending Manifest Data Received
+                        location: RTO/CHD, BANGALORE, KARNATAKA
+                        sr-status: NA
+                        sr-status-label: NA
+                      track_url: https://shiprocket.co//tracking/141123221084922
+                      etd: '2022-07-20 19:28:00'
+                      qc_response:
+                        qc_image: ''
+                        qc_failed_reason: ''
+                Invalid-Data:
+                  value:
+                    tracking_data:
+                      track_status: 0
+                      error: Aahh! There is no activities found in our DB. Please have some patience it will be updated soon.
+              schema:
+                type: object
+                properties:
+                  tracking_data:
+                    type: object
+                    properties:
+                      track_status:
+                        type: integer
+                      shipment_status:
+                        type: integer
+                      shipment_track:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            awb_code:
+                              type: string
+                            courier_company_id:
+                              type: integer
+                            shipment_id:
+                              type: integer
+                            order_id:
+                              type: integer
+                            pickup_date:
+                              type: string
+                            delivered_date:
+                              type: string
+                            weight:
+                              type: string
+                            packages:
+                              type: integer
+                            current_status:
+                              type: string
+                            delivered_to:
+                              type: string
+                            destination:
+                              type: string
+                            consignee_name:
+                              type: string
+                            origin:
+                              type: string
+                            courier_agent_details: {}
+                            courier_name:
+                              type: string
+                            edd: {}
+                            pod:
+                              type: string
+                            pod_status:
+                              type: string
+                      shipment_track_activities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                            status:
+                              type: string
+                            activity:
+                              type: string
+                            location:
+                              type: string
+                            sr-status:
+                              type: string
+                            sr-status-label:
+                              type: string
+                      track_url:
+                        type: string
+                      etd:
+                        type: string
+                      qc_response:
+                        type: object
+                        properties:
+                          qc_image:
+                            type: string
+                          qc_failed_reason:
+                            type: string
+        '404':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/track/awbs:
+    post:
+      summary: Get Tracking Data for Multiple AWBS
+      description: 'Get the tracking details of multiple shipments by entering their AWB codes together as an array.
+
+        The response is displayed in JSON format.
+
+        Notes:
+
+        Data must be passed as a string array.
+
+        Maximum of 50 AWB codes is supported at a time.
+
+        Parameters:'
+      operationId: getTrackingDataForMultipleAWBS
+      tags:
+      - Hyperlocal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                awbs:
+                  type: array
+                  items:
+                    type: string
+                  description: The AWB codes of the shipments. Must be passed as an array.
+              required:
+              - awbs
+            example:
+              awbs:
+              - ''
+              - ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    '788829354408':
+                      tracking_data:
+                        track_status: 1
+                        shipment_status: 1
+                        shipment_track:
+                        - id: 8067757
+                          awb_code: '788829354408'
+                          courier_company_id: 2
+                          shipment_id: null
+                          order_id: 16240551
+                          pickup_date: null
+                          delivered_date: null
+                          weight: '2.5'
+                          packages: 1
+                          current_status: AWB Assigned
+                          delivered_to: New Delhi
+                          destination: New Delhi
+                          consignee_name: Naruto
+                          origin: Jammu
+                          courier_agent_details: null
+                        shipment_track_activities:
+                        - date: '2019-08-01 02:05:05'
+                          activity: Shipment information sent to FedEx - OC
+                          location: NA
+                        track_url: https://app.shiprocket.in/tracking/awb/788829354408
+                    '788830567028':
+                      tracking_data:
+                        track_status: 1
+                        shipment_status: 3
+                        shipment_track:
+                        - id: 8087109
+                          awb_code: '788830567028'
+                          courier_company_id: 2
+                          shipment_id: null
+                          order_id: 16255275
+                          pickup_date: null
+                          delivered_date: null
+                          weight: '2.5'
+                          packages: 1
+                          current_status: Pickup Generated
+                          delivered_to: New Delhi
+                          destination: New Delhi
+                          consignee_name: Naruto
+                          origin: Jammu
+                          courier_agent_details: null
+                        shipment_track_activities:
+                        - date: '2019-08-01 05:20:55'
+                          activity: Shipment information sent to FedEx - OC
+                          location: NA
+                        track_url: https://app.shiprocket.in/tracking/awb/788830567028
+                Invalid-or-Missing-Data:
+                  value: {}
+              schema:
+                type: object
+                properties:
+                  '788829354408':
+                    type: object
+                    properties:
+                      tracking_data:
+                        type: object
+                        properties:
+                          track_status:
+                            type: integer
+                          shipment_status:
+                            type: integer
+                          shipment_track:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                awb_code:
+                                  type: string
+                                courier_company_id:
+                                  type: integer
+                                shipment_id: {}
+                                order_id:
+                                  type: integer
+                                pickup_date: {}
+                                delivered_date: {}
+                                weight:
+                                  type: string
+                                packages:
+                                  type: integer
+                                current_status:
+                                  type: string
+                                delivered_to:
+                                  type: string
+                                destination:
+                                  type: string
+                                consignee_name:
+                                  type: string
+                                origin:
+                                  type: string
+                                courier_agent_details: {}
+                          shipment_track_activities:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                date:
+                                  type: string
+                                activity:
+                                  type: string
+                                location:
+                                  type: string
+                          track_url:
+                            type: string
+                  '788830567028':
+                    type: object
+                    properties:
+                      tracking_data:
+                        type: object
+                        properties:
+                          track_status:
+                            type: integer
+                          shipment_status:
+                            type: integer
+                          shipment_track:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                awb_code:
+                                  type: string
+                                courier_company_id:
+                                  type: integer
+                                shipment_id: {}
+                                order_id:
+                                  type: integer
+                                pickup_date: {}
+                                delivered_date: {}
+                                weight:
+                                  type: string
+                                packages:
+                                  type: integer
+                                current_status:
+                                  type: string
+                                delivered_to:
+                                  type: string
+                                destination:
+                                  type: string
+                                consignee_name:
+                                  type: string
+                                origin:
+                                  type: string
+                                courier_agent_details: {}
+                          shipment_track_activities:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                date:
+                                  type: string
+                                activity:
+                                  type: string
+                                location:
+                                  type: string
+                          track_url:
+                            type: string
+        '500':
+          description: Wrong Format
+          content:
+            application/json:
+              examples:
+                Wrong-Format:
+                  value:
+                    message: Invalid argument supplied for foreach()
+                    status_code: 500
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/track/shipment/{shipment_id}:
+    get:
+      summary: Get Tracking through Shipment ID
+      description: 'Get the tracking details of your shipment by entering the shipment_id of the same in the endpoint URL.
+
+        No other body parameters are required to access this API.
+
+        The response is displayed in JSON format.
+
+        Path:'
+      operationId: getTrackingThroughShipmentID
+      tags:
+      - Hyperlocal
+      parameters:
+      - name: shipment_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    tracking_data:
+                      track_status: 1
+                      shipment_status: 42
+                      shipment_track:
+                      - id: 185584215
+                        awb_code: '1091188857722'
+                        courier_company_id: 10
+                        shipment_id: 168347943
+                        order_id: 168807908
+                        pickup_date: null
+                        delivered_date: null
+                        weight: '0.10'
+                        packages: 1
+                        current_status: PICKED UP
+                        delivered_to: Mumbai
+                        destination: Mumbai
+                        consignee_name: Musarrat
+                        origin: PALWAL
+                        courier_agent_details: null
+                        edd: '2021-12-27 23:23:18'
+                      shipment_track_activities:
+                      - date: '2021-12-23 14:23:18'
+                        status: X-PPOM
+                        activity: In Transit - Shipment picked up
+                        location: Palwal_NewColony_D (Haryana)
+                        sr-status: '42'
+                      - date: '2021-12-23 14:19:37'
+                        status: FMPUR-101
+                        activity: Manifested - Pickup scheduled
+                        location: Palwal_NewColony_D (Haryana)
+                        sr-status: NA
+                      - date: '2021-12-23 14:19:34'
+                        status: X-UCI
+                        activity: Manifested - Consignment Manifested
+                        location: Palwal_NewColony_D (Haryana)
+                        sr-status: '5'
+                      track_url: https://shiprocket.co//tracking/1091188857722
+                      etd: '2021-12-28 10:19:35'
+                Invalid-Data:
+                  value:
+                    tracking_data:
+                      track_status: 0
+                      error: Aahh! There is no activities found in our DB. Please have some patience it will be updated soon.
+              schema:
+                type: object
+                properties:
+                  tracking_data:
+                    type: object
+                    properties:
+                      track_status:
+                        type: integer
+                      shipment_status:
+                        type: integer
+                      shipment_track:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            awb_code:
+                              type: string
+                            courier_company_id:
+                              type: integer
+                            shipment_id:
+                              type: integer
+                            order_id:
+                              type: integer
+                            pickup_date: {}
+                            delivered_date: {}
+                            weight:
+                              type: string
+                            packages:
+                              type: integer
+                            current_status:
+                              type: string
+                            delivered_to:
+                              type: string
+                            destination:
+                              type: string
+                            consignee_name:
+                              type: string
+                            origin:
+                              type: string
+                            courier_agent_details: {}
+                            edd:
+                              type: string
+                      shipment_track_activities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                            status:
+                              type: string
+                            activity:
+                              type: string
+                            location:
+                              type: string
+                            sr-status:
+                              type: string
+                      track_url:
+                        type: string
+                      etd:
+                        type: string
+        '404':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/courier/track:
+    get:
+      summary: Get Tracking Data through Order ID
+      description: 'Get the tracking details of your shipment by entering the Order ID of the same in the endpoint URL itself.
+
+        If you have the same order ID in more than one channel, then use the param channel_id.
+
+        The response is displayed in JSON format.
+
+        Parameters:
+
+        Path:'
+      operationId: getTrackingDataThroughOrderID
+      tags:
+      - Hyperlocal
+      parameters:
+      - name: order_id
+        in: query
+        schema:
+          type: string
+        description: The order ID/number of your store.
+        required: true
+        example: '123'
+      - name: channel_id
+        in: query
+        schema:
+          type: integer
+        description: Channel ID corresponding to the store
+        example: '12345'
+      responses:
+        '200':
+          description: Get Tracking Data through Order iD
+          content:
+            application/json:
+              examples:
+                Get-Tracking-Data-through-Order-iD:
+                  value:
+                  - tracking_data:
+                      track_status: 1
+                      shipment_status: 42
+                      shipment_track:
+                      - id: 185584215
+                        awb_code: '1091188857722'
+                        courier_company_id: 10
+                        shipment_id: 168347943
+                        order_id: 168807908
+                        pickup_date: null
+                        delivered_date: null
+                        weight: '0.10'
+                        packages: 1
+                        current_status: PICKED UP
+                        delivered_to: Mumbai
+                        destination: Mumbai
+                        consignee_name: Musarrat
+                        origin: PALWAL
+                        courier_agent_details: null
+                        edd: '2021-12-27 23:23:18'
+                      shipment_track_activities:
+                      - date: '2021-12-23 14:23:18'
+                        status: X-PPOM
+                        activity: In Transit - Shipment picked up
+                        location: Palwal_NewColony_D (Haryana)
+                        sr-status: '42'
+                      - date: '2021-12-23 14:19:37'
+                        status: FMPUR-101
+                        activity: Manifested - Pickup scheduled
+                        location: Palwal_NewColony_D (Haryana)
+                        sr-status: NA
+                      - date: '2021-12-23 14:19:34'
+                        status: X-UCI
+                        activity: Manifested - Consignment Manifested
+                        location: Palwal_NewColony_D (Haryana)
+                        sr-status: '5'
+                      track_url: https://shiprocket.co//tracking/1091188857722
+                      etd: '2021-12-28 10:19:35'
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tracking_data:
+                      type: object
+                      properties:
+                        track_status:
+                          type: integer
+                        shipment_status:
+                          type: integer
+                        shipment_track:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              awb_code:
+                                type: string
+                              courier_company_id:
+                                type: integer
+                              shipment_id:
+                                type: integer
+                              order_id:
+                                type: integer
+                              pickup_date: {}
+                              delivered_date: {}
+                              weight:
+                                type: string
+                              packages:
+                                type: integer
+                              current_status:
+                                type: string
+                              delivered_to:
+                                type: string
+                              destination:
+                                type: string
+                              consignee_name:
+                                type: string
+                              origin:
+                                type: string
+                              courier_agent_details: {}
+                              edd:
+                                type: string
+                        shipment_track_activities:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              date:
+                                type: string
+                              status:
+                                type: string
+                              activity:
+                                type: string
+                              location:
+                                type: string
+                              sr-status:
+                                type: string
+                        track_url:
+                          type: string
+                        etd:
+                          type: string
+  /v1/external/settings/company/pickup:
+    get:
+      summary: Get All Pickup Locations
+      description: 'Get a list of all pickup locations that have been added to your Shiprocket account through this API.
+
+        No parameters are required to use this API.'
+      operationId: getAllPickupLocations
+      tags:
+      - Hyperlocal
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                      shipping_address:
+                      - id: 4984500
+                        pickup_location: Casa Moderna
+                        address_type: null
+                        address: 1900 GF, Sector 45
+                        address_2: near Park 1
+                        updated_address: false
+                        old_address: ''
+                        old_address2: ''
+                        tag: ''
+                        tag_value: ''
+                        instruction: ''
+                        city: Gurgaon
+                        state: Haryana
+                        country: India
+                        pin_code: '122003'
+                        email: abcxyz@gmail.com
+                        is_first_mile_pickup: 0
+                        phone: '9667667496'
+                        name: CASA MODERNA
+                        company_id: 1138022
+                        gstin: null
+                        vendor_name: null
+                        status: 2
+                        phone_verified: 1
+                        lat: '28.44786453607'
+                        long: '77.074250297017'
+                        open_time: null
+                        close_time: null
+                        warehouse_code: null
+                        alternate_phone: ''
+                        rto_address_id: 4984500
+                        lat_long_status: 1
+                        new: 1
+                        associated_rto_address: null
+                        is_primary_location: 1
+                      allow_more: 'true'
+                      is_blackbox_seller: false
+                      company_name: CASA MODERNA
+                      recent_addresses: []
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      shipping_address:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            pickup_location:
+                              type: string
+                            address_type: {}
+                            address:
+                              type: string
+                            address_2:
+                              type: string
+                            updated_address:
+                              type: boolean
+                            old_address:
+                              type: string
+                            old_address2:
+                              type: string
+                            tag:
+                              type: string
+                            tag_value:
+                              type: string
+                            instruction:
+                              type: string
+                            city:
+                              type: string
+                            state:
+                              type: string
+                            country:
+                              type: string
+                            pin_code:
+                              type: string
+                            email:
+                              type: string
+                            is_first_mile_pickup:
+                              type: integer
+                            phone:
+                              type: string
+                            name:
+                              type: string
+                            company_id:
+                              type: integer
+                            gstin: {}
+                            vendor_name: {}
+                            status:
+                              type: integer
+                            phone_verified:
+                              type: integer
+                            lat:
+                              type: string
+                            long:
+                              type: string
+                            open_time: {}
+                            close_time: {}
+                            warehouse_code: {}
+                            alternate_phone:
+                              type: string
+                            rto_address_id:
+                              type: integer
+                            lat_long_status:
+                              type: integer
+                            new:
+                              type: integer
+                            associated_rto_address: {}
+                            is_primary_location:
+                              type: integer
+                      allow_more:
+                        type: string
+                      is_blackbox_seller:
+                        type: boolean
+                      company_name:
+                        type: string
+                      recent_addresses:
+                        type: array
+                        items: {}
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/settings/company/addpickup:
+    post:
+      summary: Add a New Pickup Location
+      description: 'This API can be used to add a new pickup location to your account. Pass the minimum required parameters to add the location. Further details to the address can be added if required.
+
+        Parameters:'
+      operationId: addANewPickupLocation
+      tags:
+      - Hyperlocal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pickup_location:
+                  type: string
+                  description: The nickname of the new pickup location. Max 36 characters.
+                name:
+                  type: string
+                  description: The shipper's name.
+                email:
+                  type: string
+                  description: The shipper's email address.
+                phone:
+                  type: integer
+                  description: Shipper's phone number.
+                address:
+                  type: string
+                  description: Shipper's primary address. Max 80 characters.
+                address_2:
+                  type: string
+                  description: Additional address details.
+                city:
+                  type: string
+                  description: Pickup location city name.
+                state:
+                  type: string
+                  description: Pickup location state name.
+                country:
+                  type: string
+                  description: Pickup location country.
+                pin_code:
+                  type: integer
+                  description: Pickup location pincode.
+              required:
+              - pickup_location
+              - name
+              - email
+              - phone
+              - address
+              - city
+              - state
+              - country
+              - pin_code
+            example:
+              pickup_location: ''
+              name: ''
+              email: ''
+              phone: ''
+              address: ''
+              address_2: ''
+              city: ''
+              state: ''
+              country: ''
+              pin_code: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    success: true
+                    address:
+                      company_id: 25149
+                      pickup_code: TESTADI
+                      address: Mutant Facility, Sector 3
+                      address_2: ''
+                      address_type: null
+                      city: South West Delhi
+                      state: Maharshtra
+                      country: India
+                      gstin: null
+                      pin_code: '110022'
+                      phone: '9777777779'
+                      email: deadpool@chimichanga.com
+                      name: Deadpool
+                      alternate_phone: null
+                      lat: null
+                      long: null
+                      status: 1
+                      phone_verified: 0
+                      rto_address_id: 1468067
+                      extra_info: '{"source":3}'
+                      updated_at: '2021-10-12 11:51:48'
+                      created_at: '2021-10-12 11:51:48'
+                      id: 1856901
+                    pickup_id: 1856901
+                    company_name: ShiprocketTest
+                    full_name: API
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  address:
+                    type: object
+                    properties:
+                      company_id:
+                        type: integer
+                      pickup_code:
+                        type: string
+                      address:
+                        type: string
+                      address_2:
+                        type: string
+                      address_type: {}
+                      city:
+                        type: string
+                      state:
+                        type: string
+                      country:
+                        type: string
+                      gstin: {}
+                      pin_code:
+                        type: string
+                      phone:
+                        type: string
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      alternate_phone: {}
+                      lat: {}
+                      long: {}
+                      status:
+                        type: integer
+                      phone_verified:
+                        type: integer
+                      rto_address_id:
+                        type: integer
+                      extra_info:
+                        type: string
+                      updated_at:
+                        type: string
+                      created_at:
+                        type: string
+                      id:
+                        type: integer
+                  pickup_id:
+                    type: integer
+                  company_name:
+                    type: string
+                  full_name:
+                    type: string
+        '422':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Not a valid mobile number
+                    errors:
+                      phone:
+                      - The phone field is required.
+                    status_code: 422
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      phone:
+                        type: array
+                        items:
+                          type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

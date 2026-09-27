@@ -41,26 +41,16 @@ tags_raw:
 - Courier Aggregation
 - India
 apis:
-- aid: shiprocket:shiprocket-api
-  name: Shiprocket API
-  description: >-
-    Public REST API (v1/external) for eCommerce shipping and order management: API-user login returning
-    a 10-day JWT, order create/update/cancel/import, courier serviceability, AWB assignment and pickup
-    scheduling, labels, manifests and invoices, shipment tracking by AWB/shipment/order, NDR actions,
-    returns and exchanges, hyperlocal and international orders, products, listings, channels, inventory,
-    countries/postcodes, wallet balance, statements and billing discrepancies. Published as a public Postman
-    collection (93 requests) with a tracking webhook.
+- aid: shiprocket:shiprocket-account-api
+  name: Shiprocket Account API
+  description: The Account API from Shiprocket — 1 operation(s) for account.
   humanURL: https://apidocs.shiprocket.in/
   baseURL: https://apiv2.shiprocket.in/v1/external
   tags:
-  - Shipping
-  - Logistics
-  - Order Management
-  - Tracking
-  - Courier Aggregation
+  - Account
   properties:
   - type: OpenAPI
-    url: openapi/shiprocket-api-openapi.yml
+    url: openapi/shiprocket-account-api-openapi.yml
   - type: Postman
     url: https://apidocs.shiprocket.in/
   - type: PostmanCollection
@@ -73,12 +63,8 @@ apis:
     url: https://www.shiprocket.in/developers/
   - type: Webhooks
     url: asyncapi/shiprocket-tracking-webhooks.yml
-  - type: MCPServer
-    url: mcp/shiprocket-mcp.yml
   - type: ToolCrosswalk
     url: mcp/shiprocket-tool-crosswalk.yml
-  - type: Overlay
-    url: overlays/shiprocket-api-overlay.yaml
   - type: ErrorCatalog
     url: errors/shiprocket-problem-types.yml
   - type: Conventions
@@ -89,9 +75,762 @@ apis:
     url: rate-limits/shiprocket-rate-limits.yml
   - type: DataModel
     url: data-model/shiprocket-data-model.yml
-  - type: AgentSkill
-    url: skills/_index.yml
-  image: https://sr-website.shiprocket.in/wp-content/uploads/2025/02/OG-Image-for-Shiprocket.png
+- aid: shiprocket:shiprocket-authentication-api-api
+  name: Shiprocket Authentication API
+  description: "The authentication token is an alphanumeric code, unique to your Shiprocket account, can\
+    \ be used from any system to validate your API calls to access Shiprocket's resources. Shiprocket\
+    \ API uses JWT tokens for validation.\n Use this API to validate your API user and obtain the authentication\
+    \ token. Copy this token and use it further to validate your API calls. The validity of this token\
+    \ is 10 days .\n Your API keys carry many privileges, so be sure to keep them secure! Do not share\
+    \ your secret token in publicly accessible areas such as GitHub, client-side code, and so forth.\n\
+    \ Steps To Use Token: \n Copy the token received in response.\n Include 'Authorization: Bearer [yourtokenvalue]'\
+    \ in the appropriate field of your code.\n That's all! In case of any error, try checking your parameters."
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Authentication API
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-authentication-api-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-channels-api
+  name: Shiprocket Channels API
+  description: >-
+    Use this API to get details about all the integrated channels in your Shiprocket account, including
+    channel id.
+
+    This channel id can be used to select or specify a custom channel at the time of order creation.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-channels-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-countries-api
+  name: Shiprocket Countries API
+  description: >-
+    The following APIs provide details about the various country codes and their respective zone details
+    along with the locality details.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Countries
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-countries-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-couriers-api
+  name: Shiprocket Couriers API
+  description: >-
+    Use these APIs to assign AWB to your order, check for courier serviceability, and request for the
+    pickup of your order.
+     All available couriers, along with their codes, are mentioned below:
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Couriers
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-couriers-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-create-or-update-order-api
+  name: Shiprocket Create Or Update Order API
+  description: >-
+    Using these APIs, you can create new orders in your Shiprocket account or update existing orders.
+    You can also cancel an order, bulk import orders from a CSV file and update inventory for an ordered
+    product.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Create Or Update Order
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-create-or-update-order-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-discrepancy-details-api
+  name: Shiprocket Discrepancy Details API
+  description: Use this API to get the discrepancy details of your account.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Discrepancy Details
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-discrepancy-details-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-file-imports-api
+  name: Shiprocket File Imports API
+  description: Check the status response of files that have been imported using the API.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - File Imports
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-file-imports-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-hyperlocal-api
+  name: Shiprocket Hyperlocal API
+  description: The Hyperlocal API from Shiprocket — 12 operation(s) for hyperlocal.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Hyperlocal
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-hyperlocal-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-international-api
+  name: Shiprocket International API
+  description: These endpoints are used for operations related to international orders and shipments.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - International
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-international-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-inventory-api
+  name: Shiprocket Inventory API
+  description: Use this API to update and get Inventory details.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Inventory
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-inventory-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-labels-manifests-invoice-api
+  name: Shiprocket Labels | Manifests | Invoice API
+  description: >-
+    These APIs are designed for the generation of manifests, invoices and labels for your shipment. You
+    can also get manifest details and print a manifest using the respective API's.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Labels | Manifests | Invoice
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-labels-manifests-invoice-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-listings-api
+  name: Shiprocket Listings API
+  description: The Listings API from Shiprocket — 6 operation(s) for listings.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Listings
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-listings-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-ndr-api
+  name: Shiprocket NDR API
+  description: >-
+    These APIs can be used to get details about your shipments that are in NDR, as well as manage them,
+    which includes fetching NDR shipments from your account (all or specific) and taking actions such
+    as Reattempt and RTO based on the reason.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - NDR
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-ndr-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-orders-api
+  name: Shiprocket Orders API
+  description: >-
+    These APIs can be used to get details about your created orders, as well as manage them, which include
+    fetching orders from your channel, syncing their status, and exporting them to a CSV file.
+     Filters:
+     The 'filter' values are mentioned below. Use these to filter your data:
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-orders-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-pickup-addresses-api
+  name: Shiprocket Pickup Addresses API
+  description: >-
+    Use these APIs to get a list of all available pickup locations in your account or add a new pickup
+    location.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Pickup Addresses
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-pickup-addresses-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-products-api
+  name: Shiprocket Products API
+  description: >-
+    Use these APIs to get information on your added products or update their details. You can also add
+    a new product or import them in bulk.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-products-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-return-exchange-orders-api
+  name: Shiprocket Return & Exchange Orders API
+  description: >-
+    The Return & Exchange Orders API from Shiprocket — 6 operation(s) for return & exchange orders.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Return & Exchange Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-return-exchange-orders-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-shipments-api
+  name: Shiprocket Shipments API
+  description: >-
+    These APIs can be used to get shipment details. You can either get all shipment details at once or
+    the details of a particular shipment.
+     Below are some associated status codes related to the shipments:
+     Status Codes:
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Shipments
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-shipments-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-statement-details-api
+  name: Shiprocket Statement Details API
+  description: The Statement Details API from Shiprocket — 1 operation(s) for statement details.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Statement Details
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-statement-details-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-tracking-api
+  name: Shiprocket Tracking API
+  description: >-
+    Use these APIs to get the tracking details of your shipments through the AWB code or the Shipment
+    ID.
+     Shipment Status Codes:
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Tracking
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-tracking-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
+- aid: shiprocket:shiprocket-wrapper-api-api
+  name: Shiprocket Wrapper API
+  description: >-
+    This is an all-in-one API to create an order, ship the order, add a new pickup location and generate
+    a label along with the manifest for the same.
+  humanURL: https://apidocs.shiprocket.in/
+  baseURL: https://apiv2.shiprocket.in/v1/external
+  tags:
+  - Wrapper API
+  properties:
+  - type: OpenAPI
+    url: openapi/shiprocket-wrapper-api-api-openapi.yml
+  - type: Postman
+    url: https://apidocs.shiprocket.in/
+  - type: PostmanCollection
+    url: postman/shiprocket-api.postman_collection.json
+  - type: Documentation
+    url: https://apidocs.shiprocket.in/
+  - type: APIReference
+    url: https://apidocs.shiprocket.in/
+  - type: GettingStarted
+    url: https://www.shiprocket.in/developers/
+  - type: Webhooks
+    url: asyncapi/shiprocket-tracking-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/shiprocket-tool-crosswalk.yml
+  - type: ErrorCatalog
+    url: errors/shiprocket-problem-types.yml
+  - type: Conventions
+    url: conventions/shiprocket-conventions.yml
+  - type: Authentication
+    url: authentication/shiprocket-authentication.yml
+  - type: RateLimits
+    url: rate-limits/shiprocket-rate-limits.yml
+  - type: DataModel
+    url: data-model/shiprocket-data-model.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

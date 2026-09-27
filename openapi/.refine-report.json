@@ -1,0 +1,44 @@
+{
+  "provider": "shiprocket",
+  "sources": [
+    "shiprocket-api-openapi.yml"
+  ],
+  "outputs": [
+    "shiprocket-account-api-openapi.yml",
+    "shiprocket-authentication-api-api-openapi.yml",
+    "shiprocket-channels-api-openapi.yml",
+    "shiprocket-countries-api-openapi.yml",
+    "shiprocket-couriers-api-openapi.yml",
+    "shiprocket-create-or-update-order-api-openapi.yml",
+    "shiprocket-discrepancy-details-api-openapi.yml",
+    "shiprocket-file-imports-api-openapi.yml",
+    "shiprocket-hyperlocal-api-openapi.yml",
+    "shiprocket-international-api-openapi.yml",
+    "shiprocket-inventory-api-openapi.yml",
+    "shiprocket-labels-manifests-invoice-api-openapi.yml",
+    "shiprocket-listings-api-openapi.yml",
+    "shiprocket-ndr-api-openapi.yml",
+    "shiprocket-orders-api-openapi.yml",
+    "shiprocket-pickup-addresses-api-openapi.yml",
+    "shiprocket-products-api-openapi.yml",
+    "shiprocket-return-exchange-orders-api-openapi.yml",
+    "shiprocket-shipments-api-openapi.yml",
+    "shiprocket-statement-details-api-openapi.yml",
+    "shiprocket-tracking-api-openapi.yml",
+    "shiprocket-wrapper-api-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/shiprocket-api-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [
+    "no openapi/_original/ archive: this run re-split PREVIOUSLY REFINED output, so any base URL it carries is inherited from an earlier pass rather than read from a document the provider published"
+  ],
+  "notes": [
+    "shiprocket-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shiprocket-api-openapi.yml: declared missing tag: Hyperlocal",
+    "shiprocket-api-openapi.yml: declared missing tag: Statement Details",
+    "apis.yml register: written (+22 apis, 22 total)"
+  ],
+  "skipped": []
+}

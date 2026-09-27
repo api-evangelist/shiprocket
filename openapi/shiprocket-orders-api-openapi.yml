@@ -1,0 +1,1449 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Orders API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Orders
+  description: 'These APIs can be used to get details about your created orders, as well as manage them, which include fetching orders from your channel, syncing their status, and exporting them to a CSV file.
+
+    Filters:
+
+    The ''filter'' values are mentioned below. Use these to filter your data:'
+paths:
+  /v1/external/orders:
+    get:
+      summary: Get all Orders
+      description: 'This API call will display a list of all created and available orders in your Shiprocket account. The product and shipment details are displayed as sub-arrays within each order detail.
+
+        You can also sort and filter the data according to your needs by passing the optional parameters. Not passing anything will display the data in the default format.
+
+        You can also fetch the data based on the order update date. PFB the validations:
+
+        1. if updated_to => passed and updated_from not passed =>, error will come => Please send update_from date along with update_to date
+
+        2. if updated_from => passed and updated_to => paased => and from-to > 30 then error => Difference between updated_from and update_to date should not be greater than 30 days.
+
+        3. if updated_From Updated_from date should not be less than 30 days from current date
+
+        Parameters:'
+      operationId: getAllOrders
+      tags:
+      - Orders
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: The page number to display.
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+        description: The number of entries per page.
+      - name: sort
+        in: query
+        schema:
+          type: string
+        description: 'Sort conditions: ASC or DESC'
+      - name: sort_by
+        in: query
+        schema:
+          type: string
+        description: 'The Field to sort by: id or status'
+      - name: to
+        in: query
+        schema:
+          type: string
+        description: The end date.
+      - name: from
+        in: query
+        schema:
+          type: string
+        description: The start date.
+      - name: filter_by
+        in: query
+        schema:
+          type: string
+        description: Field to filter by.
+      - name: filter
+        in: query
+        schema:
+          type: string
+        description: Value of the field
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Search for AWB or by Channel order_id (order id specified by you).
+      - name: pickup_location
+        in: query
+        schema:
+          type: string
+        description: Search Orders on the basis of pickup location.
+      - name: channel_id
+        in: query
+        schema:
+          type: integer
+        description: Channel ID Returned in Get Integrated Channels API
+      - name: fbs
+        in: query
+        schema:
+          type: integer
+        description: Use this filter if you want to view and filter the SRF orders
+      - name: fbs_all_orders
+        in: query
+        schema:
+          type: integer
+        description: Use this filter if you want to view both SRF and Last mile (core) orders
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                    - id: 16178831
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      channel_order_id: 224-4779888
+                      customer_name: Majin Bu
+                      customer_email: naruto@uzumaki.com
+                      customer_phone: '9988998899'
+                      pickup_location: hell
+                      payment_status: ''
+                      total: '9000.00'
+                      tax: '0.00'
+                      sla: 2 days
+                      shipping_method: SR
+                      expedited: 0
+                      status: CANCELED
+                      status_code: 5
+                      payment_method: prepaid
+                      is_international: 0
+                      purpose_of_shipment: 0
+                      channel_created_at: 24 Jul 2019, 11:11 AM
+                      created_at: 31 Jul 2019, 03:03 PM
+                      products:
+                      - id: 18769728
+                        channel_order_product_id: '18769728'
+                        name: Kunai
+                        channel_sku: chakra123
+                        quantity: 10
+                        product_id: 17484610
+                        available: 50
+                        status: CANCELED
+                        hsn: '441122'
+                      shipments:
+                      - id: 16028538
+                        isd_code: ''
+                        courier: ''
+                        weight: 0
+                        dimensions: 0.00x0.00x0.00
+                        pickup_scheduled_date: null
+                        pickup_token_number: null
+                        awb: ''
+                        return_awb: ''
+                        volumetric_weight: 0
+                        pod: null
+                        etd: NA
+                        rto_delivered_date: '0000-00-00 00:00:00'
+                        delivered_date: null
+                        etd_escalation_btn: false
+                      activities:
+                      - ORDER_CREATED
+                      - ADDRESS_MODIFIED
+                      - ORDER_CANCELLED
+                      allow_return: 0
+                      is_incomplete: 0
+                      errors: []
+                      show_escalation_btn: 0
+                      escalation_status: ''
+                      escalation_history: []
+                    meta:
+                      pagination:
+                        total: 1
+                        count: 1
+                        per_page: 1
+                        current_page: 1
+                        total_pages: 1
+                        links: {}
+                Successful-Call-With-No-Parameters:
+                  value:
+                    data:
+                    - id: 16178831
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      channel_order_id: 224-4779888
+                      customer_name: Majin Bu
+                      customer_email: naruto@uzumaki.com
+                      customer_phone: '9988998899'
+                      pickup_location: hell
+                      payment_status: ''
+                      total: '9000.00'
+                      tax: '0.00'
+                      sla: 2 days
+                      shipping_method: SR
+                      expedited: 0
+                      status: CANCELED
+                      status_code: 5
+                      payment_method: prepaid
+                      is_international: 0
+                      purpose_of_shipment: 0
+                      channel_created_at: 24 Jul 2019, 11:11 AM
+                      created_at: 31 Jul 2019, 03:03 PM
+                      products:
+                      - id: 18769728
+                        channel_order_product_id: '18769728'
+                        name: Kunai
+                        channel_sku: chakra123
+                        quantity: 10
+                        product_id: 17484610
+                        available: 50
+                        status: CANCELED
+                        hsn: '441122'
+                      shipments:
+                      - id: 16028538
+                        isd_code: ''
+                        courier: ''
+                        weight: 0
+                        dimensions: 0.00x0.00x0.00
+                        pickup_scheduled_date: null
+                        pickup_token_number: null
+                        awb: ''
+                        return_awb: ''
+                        volumetric_weight: 0
+                        pod: null
+                        etd: NA
+                        rto_delivered_date: '0000-00-00 00:00:00'
+                        delivered_date: null
+                        etd_escalation_btn: false
+                      activities:
+                      - ORDER_CREATED
+                      - ADDRESS_MODIFIED
+                      - ORDER_CANCELLED
+                      allow_return: 0
+                      is_incomplete: 0
+                      errors: []
+                      show_escalation_btn: 0
+                      escalation_status: ''
+                      escalation_history: []
+                    - id: 16177223
+                      channel_id: 76893
+                      channel_name: CUSTOM
+                      base_channel_code: CS
+                      channel_order_id: 224-47798
+                      customer_name: Naruto Uzumaki
+                      customer_email: naruto@uzumaki.com
+                      customer_phone: '9876543210'
+                      pickup_location: okooi
+                      payment_status: ''
+                      total: '9000.00'
+                      tax: '0.00'
+                      sla: 2 days
+                      shipping_method: SR
+                      expedited: 0
+                      status: NEW
+                      status_code: 1
+                      payment_method: prepaid
+                      is_international: 0
+                      purpose_of_shipment: 0
+                      channel_created_at: 24 Jul 2019, 11:11 AM
+                      created_at: 31 Jul 2019, 02:39 PM
+                      products:
+                      - id: 18766013
+                        channel_order_product_id: '18766013'
+                        name: Kunai
+                        channel_sku: chakra123
+                        quantity: 10
+                        product_id: 17484610
+                        available: 50
+                        status: UNDEFINED
+                        hsn: '441122'
+                      shipments:
+                      - id: 16026933
+                        isd_code: '+91'
+                        courier: ''
+                        weight: 0
+                        dimensions: 0.00x0.00x0.00
+                        pickup_scheduled_date: null
+                        pickup_token_number: null
+                        awb: ''
+                        return_awb: ''
+                        volumetric_weight: 0
+                        pod: null
+                        etd: NA
+                        rto_delivered_date: '0000-00-00 00:00:00'
+                        delivered_date: null
+                        etd_escalation_btn: false
+                      activities:
+                      - ORDER_CREATED
+                      allow_return: 0
+                      is_incomplete: 0
+                      errors: []
+                      show_escalation_btn: 0
+                      escalation_status: ''
+                      escalation_history: []
+                    meta:
+                      pagination:
+                        total: 19631
+                        count: 15
+                        per_page: 15
+                        current_page: 1
+                        total_pages: 1309
+                        links:
+                          next: https://apiv2.shiprocket.in/v1/external/orders?page=2
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        channel_id:
+                          type: integer
+                        channel_name:
+                          type: string
+                        base_channel_code:
+                          type: string
+                        channel_order_id:
+                          type: string
+                        customer_name:
+                          type: string
+                        customer_email:
+                          type: string
+                        customer_phone:
+                          type: string
+                        pickup_location:
+                          type: string
+                        payment_status:
+                          type: string
+                        total:
+                          type: string
+                        tax:
+                          type: string
+                        sla:
+                          type: string
+                        shipping_method:
+                          type: string
+                        expedited:
+                          type: integer
+                        status:
+                          type: string
+                        status_code:
+                          type: integer
+                        payment_method:
+                          type: string
+                        is_international:
+                          type: integer
+                        purpose_of_shipment:
+                          type: integer
+                        channel_created_at:
+                          type: string
+                        created_at:
+                          type: string
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              channel_order_product_id:
+                                type: string
+                              name:
+                                type: string
+                              channel_sku:
+                                type: string
+                              quantity:
+                                type: integer
+                              product_id:
+                                type: integer
+                              available:
+                                type: integer
+                              status:
+                                type: string
+                              hsn:
+                                type: string
+                        shipments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              isd_code:
+                                type: string
+                              courier:
+                                type: string
+                              weight:
+                                type: integer
+                              dimensions:
+                                type: string
+                              pickup_scheduled_date: {}
+                              pickup_token_number: {}
+                              awb:
+                                type: string
+                              return_awb:
+                                type: string
+                              volumetric_weight:
+                                type: integer
+                              pod: {}
+                              etd:
+                                type: string
+                              rto_delivered_date:
+                                type: string
+                              delivered_date: {}
+                              etd_escalation_btn:
+                                type: boolean
+                        activities:
+                          type: array
+                          items:
+                            type: string
+                        allow_return:
+                          type: integer
+                        is_incomplete:
+                          type: integer
+                        errors:
+                          type: array
+                          items: {}
+                        show_escalation_btn:
+                          type: integer
+                        escalation_status:
+                          type: string
+                        escalation_history:
+                          type: array
+                          items: {}
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          count:
+                            type: integer
+                          per_page:
+                            type: integer
+                          current_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          links:
+                            type: object
+                            properties: {}
+  /v1/external/orders/show/{id}:
+    get:
+      summary: Get Specific Order Details
+      description: 'Get the order and shipment details of a particular order through this API by passing the Shiprocket order_id in the endpoint URL itself — type in your order_id in place of {id}.
+
+        No other body parameters are required.
+
+        Note:
+
+        For SRF orders, you''ll receive an extra parameter viz., fulfillment_status. This key will have four values:
+
+        Ready to Pack,
+
+        Packed
+
+        Added to Picklist
+
+        Picked up
+
+        Path:'
+      operationId: getSpecificOrderDetails
+      tags:
+      - Orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                      id: 259492257
+                      channel_id: 38026
+                      channel_name: MANUAL1
+                      base_channel_code: CS
+                      is_international: 0
+                      is_document: 0
+                      channel_order_id: '1873081902'
+                      customer_name: 'DemoHome '
+                      customer_email: abc@gmail.com
+                      customer_phone: '9876543236'
+                      customer_address: 408, Gautami, Kondapur
+                      customer_address_2: null
+                      customer_city: North West Delhi
+                      customer_state: Delhi
+                      customer_pincode: '110088'
+                      customer_country: India
+                      pickup_code: ''
+                      pickup_location: ''
+                      pickup_location_id: ''
+                      pickup_id: ''
+                      ship_type: ''
+                      courier_mode: ''
+                      currency: INR
+                      country_code: 99
+                      exchange_rate_usd: 0
+                      exchange_rate_inr: 0
+                      state_code: 1483
+                      payment_status: ''
+                      delivery_code: '110088'
+                      total: 345
+                      total_inr: 0
+                      total_usd: 0
+                      net_total: '345.00'
+                      other_charges: '0.00'
+                      other_discounts: '0.00'
+                      giftwrap_charges: '0.00'
+                      expedited: 0
+                      sla: 2 days
+                      cod: 0
+                      tax: 0
+                      total_kerala_cess: ''
+                      discount: 0
+                      status: RETURN PENDING
+                      sub_status: null
+                      status_code: 21
+                      master_status: ''
+                      payment_method: prepaid
+                      purpose_of_shipment: 0
+                      channel_created_at: 21 Sep 2022 05:25 PM
+                      created_at: 21 Sep 2022 05:28 PM
+                      order_date: 21 Sep 2022
+                      updated_at: 21 Sep 2022 05:28 PM
+                      products:
+                      - id: 365076966
+                        order_id: 259492257
+                        product_id: 1620533
+                        name: watch
+                        sku: Tshirt-Blue-41
+                        description: 'WHEAT AND MESLIN DURUM WHEAT : OF SEED QUALITY'
+                        channel_order_product_id: '365076966'
+                        channel_sku: Tshirt-Blue-41
+                        hsn: ''
+                        model: null
+                        manufacturer: null
+                        brand: ''
+                        color: ''
+                        size: null
+                        custom_field: ''
+                        custom_field_value: ''
+                        custom_field_value_string: ''
+                        weight: 0
+                        dimensions: 0x0x0
+                        price: 345
+                        cost: 345
+                        mrp: 400
+                        quantity: 1
+                        returnable_quantity: 0
+                        tax: 0
+                        status: 1
+                        net_total: 345
+                        discount: 0
+                        product_options: []
+                        selling_price: 345
+                        tax_percentage: 0
+                        discount_including_tax: 0
+                        channel_category: Default Category
+                        packaging_material: ''
+                        additional_material: ''
+                        is_free_product: ''
+                      invoice_no: ''
+                      shipments:
+                        id: 258878960
+                        order_id: 259492257
+                        order_product_id: null
+                        channel_id: 38026
+                        code: ''
+                        cost: '0.00'
+                        tax: '0.00'
+                        awb: null
+                        rto_awb: ''
+                        awb_assign_date: null
+                        etd: ''
+                        delivered_date: ''
+                        quantity: 1
+                        cod_charges: '0.00'
+                        number: null
+                        name: null
+                        order_item_id: null
+                        weight: 1
+                        volumetric_weight: 0.266
+                        dimensions: 11.000x11.000x11.000
+                        comment: ''
+                        courier: ''
+                        courier_id: ''
+                        manifest_id: ''
+                        manifest_escalate: false
+                        status: PENDING
+                        isd_code: '+91'
+                        created_at: 21st Sep 2022 05:28 PM
+                        updated_at: 21st Sep 2022 05:28 PM
+                        pod: null
+                        eway_bill_number: '-'
+                        eway_bill_date: null
+                        length: 11
+                        breadth: 11
+                        height: 11
+                        rto_initiated_date: ''
+                        rto_delivered_date: ''
+                        shipped_date: ''
+                        package_images: ''
+                        is_rto: false
+                        eway_required: false
+                        invoice_link: ''
+                        is_darkstore_courier: 0
+                        courier_custom_rule: ''
+                        is_single_shipment: true
+                      awb_data:
+                        awb: ''
+                        applied_weight: ''
+                        charged_weight: ''
+                        billed_weight: ''
+                        routing_code: ''
+                        rto_routing_code: ''
+                        charges:
+                          zone: ''
+                          cod_charges: ''
+                          applied_weight_amount: ''
+                          freight_charges: ''
+                          applied_weight: ''
+                          charged_weight: ''
+                          charged_weight_amount: ''
+                          charged_weight_amount_rto: ''
+                          applied_weight_amount_rto: ''
+                          service_type_id: ''
+                      order_insurance:
+                        insurance_status: 'No'
+                        policy_no: N/A
+                        claim_enable: false
+                      return_pickup_data:
+                        id: 2143757
+                        name: ashwin ashwin
+                        email: ashwingunadeep@gmail.com
+                        address: shiprocket
+                        address_2: shiprocket
+                        city: South West Delhi
+                        state: Delhi
+                        country: India
+                        pin_code: '110030'
+                        phone: '9562817406'
+                        lat: null
+                        long: null
+                        order_id: 259492257
+                        created_at: '2022-09-21 17:28:40'
+                        updated_at: '2022-09-21 17:28:40'
+                      company_logo: null
+                      allow_return: 0
+                      is_return: 1
+                      is_incomplete: 0
+                      errors: null
+                      payment_code: null
+                      coupon_is_visible: false
+                      coupons: ''
+                      billing_city: ''
+                      billing_name: ''
+                      billing_email: ''
+                      billing_phone: ''
+                      billing_alternate_phone: ''
+                      billing_state_name: ''
+                      billing_address: ''
+                      billing_country_name: ''
+                      billing_pincode: ''
+                      billing_address_2: ''
+                      billing_mobile_country_code: '+91'
+                      isd_code: ''
+                      billing_state_id: ''
+                      billing_country_id: ''
+                      freight_description: Forward charges
+                      reseller_name: ''
+                      shipping_is_billing: 0
+                      company_name: shiprocket
+                      shipping_title: ''
+                      allow_channel_order_sync: false
+                      uib-tooltip-text: Re-fetch orders with updated details
+                      api_order_id: ''
+                      allow_multiship: 0
+                      other_sub_orders: []
+                      others:
+                        weight: '1'
+                        quantity: 1
+                        buyer_psid: null
+                        dimensions: 11x11x11
+                        api_order_id: ''
+                        company_name: shiprocket
+                        currency_code: INR
+                        package_count: '1'
+                        shipping_city: North West Delhi
+                        shipping_name: 'DemoHome '
+                        shipping_email: abc@gmail.com
+                        shipping_phone: '9876543236'
+                        shipping_state: Delhi
+                        custom_order_id: null
+                        billing_isd_code: '+91'
+                        forward_order_id: null
+                        shipping_address: 408, Gautami, Kondapur
+                        shipping_charges: '0'
+                        shipping_country: India
+                        shipping_pincode: '110088'
+                        shipping_address_2: ''
+                      is_order_verified: 0
+                      extra_info:
+                        qc_check: 1
+                        qc_params: Product Name,Size,Color,Brand,Product Image
+                        order_type: 1
+                        amazon_dg_status: false
+                        forward_order_id: ''
+                        bluedart_dg_status: false
+                        other_courier_dg_status: false
+                        insurace_opted_at_order_creation: false
+                      dup: 0
+                      is_blackbox_seller: false
+                      shipping_method: SR
+                      refund_detail:
+                        refund_mode: Store Credits
+                        account_holder_name: ''
+                        account_number: ''
+                        bank_ifsc: ''
+                        bank_name: ''
+                      pickup_address: []
+                      eway_bill_number: ''
+                      eway_bill_url: ''
+                      eway_required: false
+                      irn_no: ''
+                      engage: null
+                      seller_can_edit: false
+                      seller_can_cancell: false
+                      is_post_ship_status: false
+                      order_tag: ''
+                      qc_status: ''
+                      qc_reason: ''
+                      qc_image: ''
+                      product_qc:
+                      - product_id: 365076966
+                        qc_values:
+                          qc_product_name:
+                            value: watch
+                            name: Product Name
+                          qc_size:
+                            value: asdasd
+                            name: Size
+                          qc_color:
+                            value: asdasd
+                            name: Color
+                          qc_brand:
+                            value: asdas
+                            name: Brand
+                          qc_product_image:
+                            value: https://s3-ap-southeast-1.amazonaws.com/kr-shipmultichannel/1663238198WTVf4.jpeg
+                            name: Product Image
+                      seller_request: null
+                      change_payment_mode: true
+                      etd_date: null
+                      out_for_delivery_date: null
+                      delivered_date: null
+                      remittance_date: ''
+                      remittance_utr: ''
+                      remittance_status: ''
+                      insurance_excluded: true
+                      can_edit_dimension: true
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      channel_id:
+                        type: integer
+                      channel_name:
+                        type: string
+                      base_channel_code:
+                        type: string
+                      is_international:
+                        type: integer
+                      is_document:
+                        type: integer
+                      channel_order_id:
+                        type: string
+                      customer_name:
+                        type: string
+                      customer_email:
+                        type: string
+                      customer_phone:
+                        type: string
+                      customer_address:
+                        type: string
+                      customer_address_2: {}
+                      customer_city:
+                        type: string
+                      customer_state:
+                        type: string
+                      customer_pincode:
+                        type: string
+                      customer_country:
+                        type: string
+                      pickup_code:
+                        type: string
+                      pickup_location:
+                        type: string
+                      pickup_location_id:
+                        type: string
+                      pickup_id:
+                        type: string
+                      ship_type:
+                        type: string
+                      courier_mode:
+                        type: string
+                      currency:
+                        type: string
+                      country_code:
+                        type: integer
+                      exchange_rate_usd:
+                        type: integer
+                      exchange_rate_inr:
+                        type: integer
+                      state_code:
+                        type: integer
+                      payment_status:
+                        type: string
+                      delivery_code:
+                        type: string
+                      total:
+                        type: integer
+                      total_inr:
+                        type: integer
+                      total_usd:
+                        type: integer
+                      net_total:
+                        type: string
+                      other_charges:
+                        type: string
+                      other_discounts:
+                        type: string
+                      giftwrap_charges:
+                        type: string
+                      expedited:
+                        type: integer
+                      sla:
+                        type: string
+                      cod:
+                        type: integer
+                      tax:
+                        type: integer
+                      total_kerala_cess:
+                        type: string
+                      discount:
+                        type: integer
+                      status:
+                        type: string
+                      sub_status: {}
+                      status_code:
+                        type: integer
+                      master_status:
+                        type: string
+                      payment_method:
+                        type: string
+                      purpose_of_shipment:
+                        type: integer
+                      channel_created_at:
+                        type: string
+                      created_at:
+                        type: string
+                      order_date:
+                        type: string
+                      updated_at:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            order_id:
+                              type: integer
+                            product_id:
+                              type: integer
+                            name:
+                              type: string
+                            sku:
+                              type: string
+                            description:
+                              type: string
+                            channel_order_product_id:
+                              type: string
+                            channel_sku:
+                              type: string
+                            hsn:
+                              type: string
+                            model: {}
+                            manufacturer: {}
+                            brand:
+                              type: string
+                            color:
+                              type: string
+                            size: {}
+                            custom_field:
+                              type: string
+                            custom_field_value:
+                              type: string
+                            custom_field_value_string:
+                              type: string
+                            weight:
+                              type: integer
+                            dimensions:
+                              type: string
+                            price:
+                              type: integer
+                            cost:
+                              type: integer
+                            mrp:
+                              type: integer
+                            quantity:
+                              type: integer
+                            returnable_quantity:
+                              type: integer
+                            tax:
+                              type: integer
+                            status:
+                              type: integer
+                            net_total:
+                              type: integer
+                            discount:
+                              type: integer
+                            product_options:
+                              type: array
+                              items: {}
+                            selling_price:
+                              type: integer
+                            tax_percentage:
+                              type: integer
+                            discount_including_tax:
+                              type: integer
+                            channel_category:
+                              type: string
+                            packaging_material:
+                              type: string
+                            additional_material:
+                              type: string
+                            is_free_product:
+                              type: string
+                      invoice_no:
+                        type: string
+                      shipments:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          order_id:
+                            type: integer
+                          order_product_id: {}
+                          channel_id:
+                            type: integer
+                          code:
+                            type: string
+                          cost:
+                            type: string
+                          tax:
+                            type: string
+                          awb: {}
+                          rto_awb:
+                            type: string
+                          awb_assign_date: {}
+                          etd:
+                            type: string
+                          delivered_date:
+                            type: string
+                          quantity:
+                            type: integer
+                          cod_charges:
+                            type: string
+                          number: {}
+                          name: {}
+                          order_item_id: {}
+                          weight:
+                            type: integer
+                          volumetric_weight:
+                            type: number
+                          dimensions:
+                            type: string
+                          comment:
+                            type: string
+                          courier:
+                            type: string
+                          courier_id:
+                            type: string
+                          manifest_id:
+                            type: string
+                          manifest_escalate:
+                            type: boolean
+                          status:
+                            type: string
+                          isd_code:
+                            type: string
+                          created_at:
+                            type: string
+                          updated_at:
+                            type: string
+                          pod: {}
+                          eway_bill_number:
+                            type: string
+                          eway_bill_date: {}
+                          length:
+                            type: integer
+                          breadth:
+                            type: integer
+                          height:
+                            type: integer
+                          rto_initiated_date:
+                            type: string
+                          rto_delivered_date:
+                            type: string
+                          shipped_date:
+                            type: string
+                          package_images:
+                            type: string
+                          is_rto:
+                            type: boolean
+                          eway_required:
+                            type: boolean
+                          invoice_link:
+                            type: string
+                          is_darkstore_courier:
+                            type: integer
+                          courier_custom_rule:
+                            type: string
+                          is_single_shipment:
+                            type: boolean
+                      awb_data:
+                        type: object
+                        properties:
+                          awb:
+                            type: string
+                          applied_weight:
+                            type: string
+                          charged_weight:
+                            type: string
+                          billed_weight:
+                            type: string
+                          routing_code:
+                            type: string
+                          rto_routing_code:
+                            type: string
+                          charges:
+                            type: object
+                            properties:
+                              zone:
+                                type: string
+                              cod_charges:
+                                type: string
+                              applied_weight_amount:
+                                type: string
+                              freight_charges:
+                                type: string
+                              applied_weight:
+                                type: string
+                              charged_weight:
+                                type: string
+                              charged_weight_amount:
+                                type: string
+                              charged_weight_amount_rto:
+                                type: string
+                              applied_weight_amount_rto:
+                                type: string
+                              service_type_id:
+                                type: string
+                      order_insurance:
+                        type: object
+                        properties:
+                          insurance_status:
+                            type: string
+                          policy_no:
+                            type: string
+                          claim_enable:
+                            type: boolean
+                      return_pickup_data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          email:
+                            type: string
+                          address:
+                            type: string
+                          address_2:
+                            type: string
+                          city:
+                            type: string
+                          state:
+                            type: string
+                          country:
+                            type: string
+                          pin_code:
+                            type: string
+                          phone:
+                            type: string
+                          lat: {}
+                          long: {}
+                          order_id:
+                            type: integer
+                          created_at:
+                            type: string
+                          updated_at:
+                            type: string
+                      company_logo: {}
+                      allow_return:
+                        type: integer
+                      is_return:
+                        type: integer
+                      is_incomplete:
+                        type: integer
+                      errors: {}
+                      payment_code: {}
+                      coupon_is_visible:
+                        type: boolean
+                      coupons:
+                        type: string
+                      billing_city:
+                        type: string
+                      billing_name:
+                        type: string
+                      billing_email:
+                        type: string
+                      billing_phone:
+                        type: string
+                      billing_alternate_phone:
+                        type: string
+                      billing_state_name:
+                        type: string
+                      billing_address:
+                        type: string
+                      billing_country_name:
+                        type: string
+                      billing_pincode:
+                        type: string
+                      billing_address_2:
+                        type: string
+                      billing_mobile_country_code:
+                        type: string
+                      isd_code:
+                        type: string
+                      billing_state_id:
+                        type: string
+                      billing_country_id:
+                        type: string
+                      freight_description:
+                        type: string
+                      reseller_name:
+                        type: string
+                      shipping_is_billing:
+                        type: integer
+                      company_name:
+                        type: string
+                      shipping_title:
+                        type: string
+                      allow_channel_order_sync:
+                        type: boolean
+                      uib-tooltip-text:
+                        type: string
+                      api_order_id:
+                        type: string
+                      allow_multiship:
+                        type: integer
+                      other_sub_orders:
+                        type: array
+                        items: {}
+                      others:
+                        type: object
+                        properties:
+                          weight:
+                            type: string
+                          quantity:
+                            type: integer
+                          buyer_psid: {}
+                          dimensions:
+                            type: string
+                          api_order_id:
+                            type: string
+                          company_name:
+                            type: string
+                          currency_code:
+                            type: string
+                          package_count:
+                            type: string
+                          shipping_city:
+                            type: string
+                          shipping_name:
+                            type: string
+                          shipping_email:
+                            type: string
+                          shipping_phone:
+                            type: string
+                          shipping_state:
+                            type: string
+                          custom_order_id: {}
+                          billing_isd_code:
+                            type: string
+                          forward_order_id: {}
+                          shipping_address:
+                            type: string
+                          shipping_charges:
+                            type: string
+                          shipping_country:
+                            type: string
+                          shipping_pincode:
+                            type: string
+                          shipping_address_2:
+                            type: string
+                      is_order_verified:
+                        type: integer
+                      extra_info:
+                        type: object
+                        properties:
+                          qc_check:
+                            type: integer
+                          qc_params:
+                            type: string
+                          order_type:
+                            type: integer
+                          amazon_dg_status:
+                            type: boolean
+                          forward_order_id:
+                            type: string
+                          bluedart_dg_status:
+                            type: boolean
+                          other_courier_dg_status:
+                            type: boolean
+                          insurace_opted_at_order_creation:
+                            type: boolean
+                      dup:
+                        type: integer
+                      is_blackbox_seller:
+                        type: boolean
+                      shipping_method:
+                        type: string
+                      refund_detail:
+                        type: object
+                        properties:
+                          refund_mode:
+                            type: string
+                          account_holder_name:
+                            type: string
+                          account_number:
+                            type: string
+                          bank_ifsc:
+                            type: string
+                          bank_name:
+                            type: string
+                      pickup_address:
+                        type: array
+                        items: {}
+                      eway_bill_number:
+                        type: string
+                      eway_bill_url:
+                        type: string
+                      eway_required:
+                        type: boolean
+                      irn_no:
+                        type: string
+                      engage: {}
+                      seller_can_edit:
+                        type: boolean
+                      seller_can_cancell:
+                        type: boolean
+                      is_post_ship_status:
+                        type: boolean
+                      order_tag:
+                        type: string
+                      qc_status:
+                        type: string
+                      qc_reason:
+                        type: string
+                      qc_image:
+                        type: string
+                      product_qc:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: integer
+                            qc_values:
+                              type: object
+                              properties:
+                                qc_product_name:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_size:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_color:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_brand:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                                qc_product_image:
+                                  type: object
+                                  properties:
+                                    value:
+                                      type: string
+                                    name:
+                                      type: string
+                      seller_request: {}
+                      change_payment_mode:
+                        type: boolean
+                      etd_date: {}
+                      out_for_delivery_date: {}
+                      delivered_date: {}
+                      remittance_date:
+                        type: string
+                      remittance_utr:
+                        type: string
+                      remittance_status:
+                        type: string
+                      insurance_excluded:
+                        type: boolean
+                      can_edit_dimension:
+                        type: boolean
+        '404':
+          description: Incorrect Endpoint Path
+          content:
+            application/json:
+              examples:
+                Incorrect-Endpoint-Path:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+        '400':
+          description: Invalid Data
+          content:
+            application/json:
+              examples:
+                Invalid-Data:
+                  value:
+                    message: Order ID not found
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/orders/export:
+    post:
+      summary: Export your orders
+      description: 'This API downloads and creates a CSV file of all the orders in your Shiprocket account and sends the download URL to the linked email account of the API user.
+
+        The CSV file containing is accessible via this URL.
+
+        No parameters are required to access this API.'
+      operationId: exportYourOrders
+      tags:
+      - Orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+            example: {}
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    status: 200
+                    is_background_downloading: 1
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  is_background_downloading:
+                    type: integer
+        '502':
+          description: Invalid Endpoint
+          content:
+            text/html:
+              examples:
+                Invalid-Endpoint:
+                  value: "<html>\n    <head>\n        <title>502 Bad Gateway</title>\n    </head>\n    <body bgcolor=\"white\">\n        <center>\n            <h1>502 Bad Gateway</h1>\n        </center>\n        <hr>\n        <center>nginx</center>\n    </body>\n</html>"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.

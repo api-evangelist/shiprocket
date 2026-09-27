@@ -1,0 +1,271 @@
+openapi: 3.2.0
+info:
+  title: Shiprocket Inventory API
+  version: v1
+  description: 'Shiprocket''s public REST API (v1/external) for eCommerce shipping and order management: authentication, order create/update/cancel/import, courier serviceability and AWB assignment, pickup scheduling, labels/manifests/invoices, shipment tracking, NDR actions, returns and exchanges, hyperlocal and international shipping, products, listings, channels, inventory, countries/postcodes, wallet balance, statements and discrepancies.'
+  termsOfService: https://www.shiprocket.in/terms-conditions/
+  contact:
+    name: Shiprocket API integration support
+    email: integration@shiprocket.com
+    url: https://apidocs.shiprocket.in/
+servers:
+- url: https://apiv2.shiprocket.in
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Inventory
+  description: Use this API to update and get Inventory details.
+paths:
+  /v1/external/inventory:
+    get:
+      summary: Get Inventory Details
+      description: 'This API can be used to check the inventory details of a product sku.
+
+        There are no required parameters for this API, but additional parameters can be used to sort and filter the data.
+
+        In case no filter conditions are passed, the details are displayed in the default JSON format.
+
+        Parameters:'
+      operationId: getInventoryDetails
+      tags:
+      - Inventory
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: The page number to be displayed.
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+        description: The total products you want to diplay in each page.
+      - name: sort
+        in: query
+        schema:
+          type: string
+        description: 'Sort conditions if any. Value: ASC or DESC'
+      - name: sort_by
+        in: query
+        schema:
+          type: integer
+        description: Allows you to choose the field by which the data will be sorted. Could be sorted by id, by sku, time created etc.
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                    - id: 3448631
+                      sku: '123'
+                      category_name: Default Category
+                      is_combo: 0
+                      name: gsdgw
+                      type: Single
+                      color: ''
+                      brand: ''
+                      total_quantity: 6
+                      available_quantity: 6
+                      blocked_quantity: 0
+                      updated_on: 15 Oct 2018 04:14 PM
+                    - id: 3448637
+                      sku: BlackTshirt
+                      category_name: Default Category
+                      is_combo: 0
+                      name: Black tshirt XL
+                      type: Single
+                      color: ''
+                      brand: ''
+                      total_quantity: 12
+                      available_quantity: 12
+                      blocked_quantity: 0
+                      updated_on: 23 Jan 2019 12:03 PM
+                    meta:
+                      pagination:
+                        total: 12080
+                        count: 2
+                        per_page: 2
+                        current_page: 1
+                        total_pages: 6040
+                        links:
+                          next: https://apiv2.shiprocket.in/v1/external/inventory?page=2
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        sku:
+                          type: string
+                        category_name:
+                          type: string
+                        is_combo:
+                          type: integer
+                        name:
+                          type: string
+                        type:
+                          type: string
+                        color:
+                          type: string
+                        brand:
+                          type: string
+                        total_quantity:
+                          type: integer
+                        available_quantity:
+                          type: integer
+                        blocked_quantity:
+                          type: integer
+                        updated_on:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          count:
+                            type: integer
+                          per_page:
+                            type: integer
+                          current_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          links:
+                            type: object
+                            properties:
+                              next:
+                                type: string
+        '404':
+          description: Wrong Endpoint
+          content:
+            application/json:
+              examples:
+                Wrong-Endpoint:
+                  value:
+                    message: 404 Not Found
+                    status_code: 404
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+  /v1/external/inventory/{product_id}/update:
+    put:
+      summary: Update Your Inventory
+      description: 'This API is used to update your product inventory details.
+
+        First, you need to pass the product_id of the product in the endpoint URL.
+
+        You can then set the quantity and action you want to perform on the existing inventory of the specified product.
+
+        Note:
+
+        The product_id can be found using the ''Get Inventory Details'' API.
+
+        The id is to be passed in the endpoint URL itself.
+
+        Path:
+
+        Parameters:'
+      operationId: updateYourInventory
+      tags:
+      - Inventory
+      parameters:
+      - name: product_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: The quantity of the product you want.
+                action:
+                  type: integer
+                  description: 'The action you want to perform. Value : - add : Adds the specific quantity to the product inventory. - replace : Replaces the existing quantity with the specified number. - remove : Removes the specific number from the product inventory.'
+              required:
+              - quantity
+              - action
+            example:
+              quantity: ''
+              action: ''
+      responses:
+        '200':
+          description: Successful Call
+          content:
+            application/json:
+              examples:
+                Successful-Call:
+                  value:
+                    data:
+                      available_quantity: 51
+                      blocked_quantity: 0
+                      total_quantity: 51
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      available_quantity:
+                        type: integer
+                      blocked_quantity:
+                        type: integer
+                      total_quantity:
+                        type: integer
+        '400':
+          description: Missing Fields
+          content:
+            application/json:
+              examples:
+                Missing-Fields:
+                  value:
+                    message: Quantity must be numeric, and upto 8 digits are allowed!
+                    status_code: 400
+                Invalid-Data:
+                  value:
+                    message: Cannot update inventory for a combo product
+                    status_code: 400
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status_code:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT obtained from POST /v1/external/auth/login using an API user email + password (Settings > API > Add New API User). The token is valid for 10 days; send it as Authorization: Bearer <token>.'
+externalDocs:
+  url: https://apidocs.shiprocket.in/
+  description: Shiprocket API documentation (Postman documenter)
+x-generated-from:
+  type: postman-collection
+  url: https://apidocs.shiprocket.in/api/collections/8407119/SzYW1zB2?environment=8407119-3ebd70ec-0118-4aa7-a886-4802616014f5&segregateAuth=true&versionTag=latest
+  documenter: https://apidocs.shiprocket.in/
+  collection_id: f5af337c-69fc-49c7-8418-e2f6ee461674
+  generated: '2026-09-18'
+  method: generated
+  note: Faithful conversion; schemas inferred from published parameter tables and examples.
