@@ -1,7 +1,7 @@
 {
   "provider": "shiprocket",
   "sources": [
-    "shiprocket-api-openapi.yml"
+    "_original/shiprocket-api-openapi.yml"
   ],
   "outputs": [
     "shiprocket-account-api-openapi.yml",
@@ -27,18 +27,38 @@
     "shiprocket-tracking-api-openapi.yml",
     "shiprocket-wrapper-api-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/shiprocket-api-openapi.yml"
-  ],
+  "archived": [],
   "errors": [],
-  "warnings": [
-    "no openapi/_original/ archive: this run re-split PREVIOUSLY REFINED output, so any base URL it carries is inherited from an earlier pass rather than read from a document the provider published"
-  ],
+  "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "shiprocket-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "shiprocket-api-openapi.yml: declared missing tag: Hyperlocal",
     "shiprocket-api-openapi.yml: declared missing tag: Statement Details",
-    "apis.yml register: written (+22 apis, 22 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "shiprocket-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-authentication-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-channels-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-countries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-couriers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-create-or-update-order-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-discrepancy-details-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-file-imports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-hyperlocal-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-international-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-inventory-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-labels-manifests-invoice-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-listings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-ndr-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-pickup-addresses-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-return-exchange-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-shipments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-statement-details-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-tracking-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shiprocket-wrapper-api-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
