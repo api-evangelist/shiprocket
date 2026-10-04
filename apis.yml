@@ -551,6 +551,8 @@ apis:
   humanURL: https://apidocs.shiprocket.in/
   baseURL: https://apiv2.shiprocket.in/v1/external
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -623,6 +625,8 @@ apis:
   humanURL: https://apidocs.shiprocket.in/
   baseURL: https://apiv2.shiprocket.in/v1/external
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
@@ -837,6 +841,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/shiprocket-capability-edges.yml
+  name: Shiprocket Business Capability Map
 - type: DomainSecurity
   url: security/shiprocket-domain-security.yml
 - type: Authentication
