@@ -1,0 +1,115 @@
+slug: shiprocket
+provider: Shiprocket
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 10
+edges:
+- tag: Shipments
+  spec_file: shiprocket-shipments-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.85
+  evidence: GET /v1/external/shipments  Get All Shipment Details; POST /v1/external/orders/cancel/shipment/awbs  Cancel
+    a Shipment
+  reason: Operations retrieve and cancel courier shipments, which is direct transport/logistics execution
+    within the supply chain.
+- tag: Tracking
+  spec_file: shiprocket-tracking-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.85
+  evidence: GET /v1/external/courier/track/awb/{awb_code}  Get Tracking through AWB; GET /v1/external/courier/track/shipment/{shipment_id}
+  reason: Courier shipment tracking by AWB/shipment/order is transport visibility, a core logistics operations
+    activity.
+- tag: Couriers
+  spec_file: shiprocket-couriers-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.82
+  evidence: POST /v1/external/courier/assign/awb Generate AWB for Shipment; GET /v1/external/courier/serviceability
+    Check Courier Serviceability; POST /v1/external/courier/generate/pickup Request for Shipment Pickup
+  reason: Operations select carriers, check serviceability, assign airway bills and schedule shipment
+    pickups — transport execution within the supply chain, i.e. Logistics Operations Management.
+- tag: Hyperlocal
+  spec_file: shiprocket-hyperlocal-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.8
+  evidence: GET /v1/external/courier/serviceability Check Courier Serviceability; GET /v1/external/courier/track/awb/{awb_code}
+    Get Tracking through AWB; POST /v1/external/settings/company/addpickup Add a New Pickup Location
+  reason: 'Hyperlocal delivery flow: serviceability check, AWB generation, shipment tracking and pickup-location
+    management — transport/logistics execution.'
+- tag: International
+  spec_file: shiprocket-international-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.8
+  evidence: POST /v1/external/international/shipments/create/forward-shipment International Wrapper API;
+    GET /v1/external/international/courier/serviceability Serviceability; POST /v1/external/international/courier/assign/awb
+    AWB Assignment
+  reason: Cross-border shipment creation, courier serviceability, AWB assignment and tracking — international
+    logistics execution. KYC/bank-detail endpoints are ancillary onboarding steps for the same shipping
+    flow.
+- tag: Create Or Update Order
+  spec_file: shiprocket-create-or-update-order-api-openapi.yml
+  capability_id: BC-520.40
+  capability_id_l1: BC-520
+  capability_name: Order Fulfilment Management
+  confidence: 0.76
+  evidence: POST /v1/external/orders/create/adhoc Create Custom Order; POST /v1/external/orders/cancel
+    Cancel an Order; PATCH /v1/external/orders/fulfill Add Inventory for Ordered Product
+  reason: Creation, amendment, cancellation and fulfilment of shipping orders including pickup/delivery
+    address changes — order fulfilment orchestration rather than sales pipeline or billing.
+- tag: Labels | Manifests | Invoice
+  spec_file: shiprocket-labels-manifests-invoice-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.74
+  evidence: POST /v1/external/manifests/generate Generate Manifest; POST /v1/external/courier/generate/label
+    Generate Label; POST /v1/external/orders/print/invoice Generate Invoice
+  reason: Generation of shipping documentation (labels, manifests, shipping invoices) attached to dispatch
+    — logistics execution paperwork, not financial accounts receivable invoicing.
+- tag: Inventory
+  spec_file: shiprocket-inventory-api-openapi.yml
+  capability_id: BC-530.10
+  capability_id_l1: BC-530
+  capability_name: Stock Level Management
+  confidence: 0.72
+  evidence: GET /v1/external/inventory Get Inventory Details; PUT /v1/external/inventory/{product_id}/update
+    Update Your Inventory
+  reason: Reads and updates stock quantities per product — inventory/stock level management. Only two
+    generic operations, so sub-capability choice carries some uncertainty.
+- tag: NDR
+  spec_file: shiprocket-ndr-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.72
+  evidence: GET /v1/external/ndr/all Get All NDR Shipments; POST /v1/external/ndr/{awb}/action Action
+    NDR
+  reason: Non-Delivery Report handling — listing failed delivery attempts and issuing re-attempt/return
+    actions. This is delivery exception handling within logistics operations.
+- tag: Wrapper API
+  spec_file: shiprocket-wrapper-api-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.7
+  evidence: POST /v1/external/shipments/create/forward-shipment  Forward; POST /v1/external/shipments/create/return-shipment  Return
+  reason: Despite the generic 'Wrapper API' tag, the operations create forward and return shipments, which
+    is transport execution. Tag name is uninformative so confidence is tempered.
