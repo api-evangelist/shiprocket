@@ -19,7 +19,7 @@ x-tier: stub
 x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-09-18'
-modified: '2026-09-18'
+modified: '2026-10-06'
 tags:
 - Company
 - Shipping
@@ -841,6 +841,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- url: https://www.shiprocket.in/feed/
+  type: BlogRSS
 - type: CapabilityMap
   url: capabilities/shiprocket-capability-edges.yml
   name: Shiprocket Business Capability Map
