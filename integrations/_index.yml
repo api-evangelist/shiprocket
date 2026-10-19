@@ -39,3 +39,74 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: shiprocket-ondc-open-network-for-digital-commerce
+  label: ONDC (Open Network for Digital Commerce)
+  partner_name: ONDC (Open Network for Digital Commerce)
+  category: ONDC network participant (India Stack)
+  type: contract
+  channel: regulator-register
+  evidence: https://prod.registry.ondc.org/lookup
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: ONDC production network registry (prod.registry.ondc.org/lookup)
+    standard: ONDC network protocol (Beckn) participant subscription
+    spec_file: null
+    role: ondc-network-participant
+    registered_name: BigFoot Retail Solutions (Shiprocket)
+    register_id: lbnp-ondc.shiprocket.in
+    subscriber_ids:
+    - lbnp-ondc.shiprocket.in
+    - ondc.shiprocket.in
+    matched_domain: shiprocket.in
+    matched_by: domain+verified
+    identity_source: 'hand-verified 2026-10-19: the registry carries no entity name; logistics / seller nodes'
+    network_domains:
+    - nic2004:60232
+    certified_products:
+    - product: ONDC buyer-app
+      role: BAP
+      lapsed: false
+      valid_until: '2035-10-20T18:00:15.071Z'
+    - product: ONDC seller-app
+      role: BPP
+      lapsed: false
+      valid_until: '2027-09-26T13:40:33.000Z'
+    signal_note: certified_products = one per ROLE (buyer-app / seller-app / gateway); a SUBSCRIBED record follows
+      ONDC pre-production log validation; lapsed when no record of that role is SUBSCRIBED and in validity. Network
+      domains and subscriber counts are context, never counted
+    detected_by: sweep-india-stack.py
+    detected: '2026-10-19'
+  status: not-a-workflow
+  arazzo: null
+- slug: shiprocket-npm-registry
+  label: npm registry
+  partner: npm
+  partner_name: npm registry
+  category: official SDK (JavaScript/TypeScript)
+  type: register
+  channel: package-registry
+  evidence: https://www.npmjs.com/package/@bfrs/agentic-components
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@bfrs/agentic-components'
+      version: 0.8.7
+      released: '2026-10-12'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@bfrs/agentic-components
+      repo_leg: github-org:bfrs
+      publisher_leg: org:bfrs
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
