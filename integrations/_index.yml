@@ -14,31 +14,6 @@
   relationship: carrier-coverage
   status: not-a-workflow
   arazzo: null
-- slug: shiprocket-shopify-own
-  label: Shopify (own)
-  partner: shopify
-  partner_name: Shopify (own)
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://apps.shopify.com/shiprocket
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: shiprocket-wordpress-own
-  label: WordPress (own)
-  partner: wordpress
-  partner_name: WordPress (own)
-  category: WordPress plugin
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://wordpress.org/plugins/shiprocket-login/
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
 - slug: shiprocket-npm-registry
   label: npm registry
   partner: npm
@@ -118,6 +93,44 @@
   marketplace: own
   channel: partner-built
   evidence: https://sellercentral.amazon.com/selling-partner-appstore/dp/amzn1.sellerapps.app.4c929356-ba33-46e6-ad5d-4ba45b599817
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: shiprocket-shopify-own
+  label: Shopify (own)
+  partner: shopify
+  partner_name: Shopify (own)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://apps.shopify.com/shiprocket
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: shiprocket-wordpress-own
+  label: WordPress (own)
+  partner: wordpress
+  partner_name: WordPress (own)
+  category: WordPress plugin
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://wordpress.org/plugins/shiprocket-login/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: shiprocket-wix-own
+  label: Wix (own)
+  partner: wix
+  partner_name: Wix (own)
+  category: Shipping & Delivery
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.wix.com/app-market/developer/shiprocket
   source: edge
   relationship: platform-app
   status: not-a-workflow

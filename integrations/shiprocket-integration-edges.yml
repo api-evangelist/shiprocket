@@ -25,6 +25,7 @@ checked:
 - https://advertising.amazon.com/partners/directory
 - https://sellercentral.amazon.com/gspn
 - https://sellercentral.amazon.com/selling-partner-appstore
+- wix/integrations/wix-integration-edges.yml
 summary: null
 marketplace_apps: []
 edges:
@@ -39,44 +40,6 @@ edges:
   detected_by: detect-carrier-edges.py
   first_seen: '2026-10-13'
   matched_by: domain:shiprocket.in
-- partner_name: Shopify (own)
-  partner: shopify
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://apps.shopify.com/shiprocket
-  mirror_of: shopify/integrations/shopify-integration-edges.yml
-  apps:
-  - 'Shiprocket: eCommerce Shipping'
-  - Shiprocket Engage ‑ Reduce RTO
-  - Shiprocket Promise
-  - postship-1
-  listing_count: 4
-  detected: '2026-10-15'
-  detected_by: mirror-platform-listings.py
-  publisher_verified:
-  - Built for Shopify
-- partner_name: WordPress (own)
-  partner: wordpress
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://wordpress.org/plugins/shiprocket-login/
-  mirror_of: wordpress/integrations/wordpress-integration-edges.yml
-  apps:
-  - Fastrr Login
-  listing_count: 1
-  detected: '2026-10-15'
-  detected_by: mirror-platform-listings.py
-  category: WordPress plugin
 - partner_name: npm registry
   partner: npm
   partner_match: register
@@ -162,4 +125,61 @@ edges:
   - Shiprocket - Logistics Solution
   detected: '2026-10-21'
   detected_by: sweep-amazon-sp-api-appstore.py
+- partner_name: Shopify (own)
+  partner: shopify
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://apps.shopify.com/shiprocket
+  mirror_of: shopify/integrations/shopify-integration-edges.yml
+  apps:
+  - 'Shiprocket: eCommerce Shipping'
+  - Shiprocket Engage ‑ Reduce RTO
+  - Shiprocket Promise
+  - postship-1
+  listing_count: 4
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
+  publisher_verified:
+  - Built for Shopify
+- partner_name: WordPress (own)
+  partner: wordpress
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://wordpress.org/plugins/shiprocket-login/
+  mirror_of: wordpress/integrations/wordpress-integration-edges.yml
+  apps:
+  - Fastrr Login
+  listing_count: 1
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
+  category: WordPress plugin
+- partner_name: Wix (own)
+  partner: wix
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.wix.com/app-market/developer/shiprocket
+  mirror_of: wix/integrations/wix-integration-edges.yml
+  apps:
+  - Shiprocket
+  listing_count: 1
+  detected: '2026-10-22'
+  detected_by: mirror-platform-listings.py
+  category: Shipping & Delivery
+  publisher_verified:
+  - Verified by Wix
 templates: []
