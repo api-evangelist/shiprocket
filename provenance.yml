@@ -9,6 +9,9 @@ artifacts:
   authentication/shiprocket-authentication.yml:
     method: searched
     evidence: declared in the artifact
+  capabilities/shiprocket-capability-edges.yml:
+    method: unknown
+    evidence: no authorship recorded
   components/shiprocket-components.yml:
     method: searched
     evidence: declared in the artifact
@@ -27,7 +30,13 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-09-24T161608.yml:
+  integrations/_index.yml:
+    method: generated
+    evidence: carries an API Evangelist house phrase
+  integrations/shiprocket-integration-edges.yml:
+    method: searched
+    evidence: declared in the artifact
+  kin/checks-2026-10-11T110117.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-18T231945.yml:
@@ -66,6 +75,21 @@ artifacts:
   kin/score-2026-09-24T161608.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T210408.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-25T232841.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T000835.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-03T024842.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-10-11T110117.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/shiprocket-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -78,12 +102,78 @@ artifacts:
   mcp/shiprocket-tool-crosswalk.yml:
     method: derived
     evidence: declared in the artifact
-  openapi/shiprocket-api-openapi.yml:
+  openapi/_original/shiprocket-api-openapi.yml:
     method: generated
     evidence: declared in the artifact
+  openapi/shiprocket-account-api-openapi.yml:
+    method: generated
+    evidence: declared in the artifact
+  openapi/shiprocket-authentication-api-api-openapi.yml:
+    method: generated
+    evidence: declared in the artifact
+  openapi/shiprocket-channels-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-countries-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-couriers-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-create-or-update-order-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-discrepancy-details-api-openapi.yml:
+    method: generated
+    evidence: declared in the artifact
+  openapi/shiprocket-file-imports-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-hyperlocal-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-international-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-inventory-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-labels-manifests-invoice-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-listings-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-ndr-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-orders-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-pickup-addresses-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-products-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-return-exchange-orders-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-shipments-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-statement-details-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-tracking-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
+  openapi/shiprocket-wrapper-api-api-openapi.yml:
+    method: derived
+    evidence: paths are a subset of openapi/_original/ (split from the harvested spec)
   overlays/shiprocket-api-overlay.yaml:
-    method: generated
-    evidence: declared in the artifact
+    method: derived
+    evidence: an API Evangelist overlay (title) over the provider's contract
   packages/shiprocket-packages.yml:
     method: searched
     evidence: declared in the artifact
@@ -91,8 +181,8 @@ artifacts:
     method: searched
     evidence: declared in the artifact
   postman/shiprocket-api.postman_collection.json:
-    method: derived
-    evidence: openapi/shiprocket-api
+    method: unknown
+    evidence: no authorship recorded
   rate-limits/shiprocket-rate-limits.yml:
     method: searched
     evidence: declared in the artifact
